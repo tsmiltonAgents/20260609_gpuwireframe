@@ -1,0 +1,113 @@
+---
+import '../styles/style.css';
+const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Side Channel Cloud</title>
+</head>
+<body data-base={base}>
+  <div class="progress" id="progress"></div>
+
+  <header class="topbar">
+    <div class="brand"><span class="glyph"></span> <b>SIDE&nbsp;CHANNEL</b> <span>// CLOUD</span></div>
+    <nav class="navlinks">
+      <a href={base} class="active">Landing prototype</a>
+      <a href={base + 'gallery/'}>Model picker</a>
+    </nav>
+  </header>
+
+  <!-- pinned wireframe on the right -->
+  <div class="scroll-stage">
+    <canvas id="stage-canvas"></canvas>
+    <div class="frameline"></div>
+    <div class="scroll-scan"></div>
+    <div class="readout">
+      MODEL ····· <b data-model-name>—</b><br>
+      SUBSYSTEM · <b id="ro-sub">all subsystems</b><br>
+      RENDER ···· <b id="ro-mode">SOLID</b> &nbsp; SCROLL <b id="ro-pct">0%</b>
+    </div>
+  </div>
+
+  <!-- scrolling copy on the left -->
+  <main class="scroll-content">
+
+    <section class="section hero" data-tags="" data-xray="false">
+      <span class="tag">Bare-metal GPU · side-channel access</span>
+      <h1>Rent the rack.<br><em>Read the side&nbsp;channels.</em></h1>
+      <p>Side Channel Cloud gives you real <span data-model-name>GPU hardware</span> —
+         not a virtualised abstraction — plus direct telemetry into the power, thermal
+         and fabric side channels of every tray and rack you provision.</p>
+      <div class="cta">
+        <a class="btn on" href={base + 'gallery/'}>Browse hardware →</a>
+        <a class="btn" href="#provision">Provision a tray</a>
+      </div>
+    </section>
+
+    <section class="section" data-tags="gpu,memory" data-xray="false">
+      <span class="tag">01 — Real silicon</span>
+      <h2>Actual <em>accelerators</em>,<br>down to the die.</h2>
+      <p>Reserve whole trays of SXM or PCIe GPUs with their HBM stacks, baseboards and
+         interconnect intact. What you see in the wireframe is what lands in your slot —
+         same topology, same part numbers.</p>
+      <div class="kv">
+        <div><div class="n">8×</div><div class="l">GPUs / tray</div></div>
+        <div><div class="n">0</div><div class="l">hypervisor hops</div></div>
+      </div>
+    </section>
+
+    <section class="section" data-tags="coldplate,tube,manifold,heatsink" data-xray="true">
+      <span class="tag">02 — Thermal side channel</span>
+      <h2>See inside<br>the <em>cooling loop</em>.</h2>
+      <p>Per-die cold-plate temperatures, coolant flow and pressure are streamed to you
+         in real time. The chassis drops away in x-ray and the loop lights up — the same
+         view your provisioned telemetry feed exposes.</p>
+      <div class="kv">
+        <div><div class="n">&lt;1s</div><div class="l">thermal sample</div></div>
+        <div><div class="n">D2C</div><div class="l">direct-to-chip</div></div>
+      </div>
+    </section>
+
+    <section class="section" data-tags="nic,interconnect,connector" data-xray="true">
+      <span class="tag">03 — Fabric tap</span>
+      <h2>Tap the<br><em>fabric</em>.</h2>
+      <p>NVLink, mezzanine and NIC counters are exposed as a side channel you can scope:
+         per-link bandwidth, error rates and topology — observability that normally stops
+         at the cage door.</p>
+      <div class="kv">
+        <div><div class="n">900 GB/s</div><div class="l">per-link visible</div></div>
+        <div><div class="n">full</div><div class="l">topology map</div></div>
+      </div>
+    </section>
+
+    <section class="section" data-tags="power,busbar" data-xray="true">
+      <span class="tag">04 — Power side channel</span>
+      <h2>Meter <em>every watt</em>.</h2>
+      <p>Rail-level power down to the VRM and busbar. Watch draw move with your workload,
+         attribute energy per job, and catch a hot phase before it throttles you.</p>
+      <div class="kv">
+        <div><div class="n">mV</div><div class="l">rail resolution</div></div>
+        <div><div class="n">48V</div><div class="l">DC busbar</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="provision" data-tags="" data-xray="false">
+      <span class="tag">05 — Provision</span>
+      <h2>Spin up a<br><em>tray</em> in minutes.</h2>
+      <p>Choose a tray or rack from the hardware library, get bare-metal access plus the
+         full side-channel feed, and tear it down when you're done.</p>
+      <div class="cta">
+        <a class="btn on" href={base + 'gallery/'}>Open the model picker →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    import '../scripts/scroll-site.js';
+  </script>
+</body>
+</html>
