@@ -16,7 +16,7 @@ export function tagColor(tag) {
 
 // Convert a freshly built model group in place. Returns a controller object.
 export function wireify(root, opts = {}) {
-  const fillColor = opts.fill != null ? opts.fill : 0x14181d;
+  const fillColor = opts.fill != null ? opts.fill : 0x171b19;
   const lines = [];   // { line, tag, baseColor, fill }
   const byTag = {};
 
@@ -99,5 +99,5 @@ export function wireifyLoaded(root, accent = 0x3df0ff) {
     if (!obj.isMesh) return;
     obj.userData.tag = obj.userData.tag || 'default';
   });
-  return wireify(root, { fill: 0x14181d });
+  return wireify(root, { fill: 0x171b19 });
 }

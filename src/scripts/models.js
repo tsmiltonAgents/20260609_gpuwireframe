@@ -18,29 +18,31 @@ const EIA_EXT = 48.26;           // 19in flange-to-flange
 // Muted engineering palette — desaturated, close-value hues. Reads like a
 // CAD viewport with layer colours, not a neon render.
 // ---------------------------------------------------------------------------
+// Hues derived from the Amodo Design palette (teal 79BCBA, terracotta
+// CA4F3E, cream FCF9ED, violet 6A3866), desaturated for layer-colour duty.
 export const TAG_COLORS = {
-  frame:        0x7d8794, // structural steel / sheet metal
-  chassis:      0x7d8794,
-  rail:         0x6b7682,
-  pcb:          0x5f8a6e, // solder-mask green, muted
-  gpu:          0x7fa8c9, // steel blue
-  heatsink:     0x9aa6b2,
-  coldplate:    0x8fb0c4,
-  tube:         0x6f93a8, // coolant
-  manifold:     0x6f93a8,
-  memory:       0xa08fb5, // muted violet
-  cpu:          0xc4ad7a, // muted brass
-  power:        0xbf9468,
-  busbar:       0xc9a26b,
-  fan:          0x8b97a3,
-  nic:          0x9b8fc0,
-  interconnect: 0x9b8fc0,
-  cable:        0x8a7f9e,
-  drive:        0x7fa394,
-  connector:    0xb3a274,
-  bezel:        0x848e9a,
-  label:        0x9aa4b0,
-  default:      0x8c96a2,
+  frame:        0x8a918b, // warm structural grey
+  chassis:      0x8a918b,
+  rail:         0x757c76,
+  pcb:          0x6f8a72, // muted solder-mask green
+  gpu:          0x79bcba, // amodo teal
+  heatsink:     0xa2a89f,
+  coldplate:    0x8fbcba,
+  tube:         0x6fa3a1, // coolant teal
+  manifold:     0x6fa3a1,
+  memory:       0xa886a4, // violet, lightened
+  cpu:          0xc2a886, // warm brass
+  power:        0xc08a6e, // terracotta, muted
+  busbar:       0xc4705f, // terracotta
+  fan:          0x969d97,
+  nic:          0x9d8aa8, // violet-grey
+  interconnect: 0x9d8aa8,
+  cable:        0x94748f,
+  drive:        0x84a98f,
+  connector:    0xb9a07a,
+  bezel:        0x8d948e,
+  label:        0xa8aea8,
+  default:      0x939a94,
 };
 
 // ---------------------------------------------------------------------------
@@ -658,17 +660,315 @@ function buildPcieServer() {
   };
 }
 
+// ===========================================================================
+// 8. H100 SXM5 module — component close-up, exploded heatsink
+// ===========================================================================
+function buildSxm5Module() {
+  const g = new THREE.Group();
+
+  // Substrate + stiffener frame
+  add(g, box(14, 0.25, 10.5), 'pcb', [0, 0, 0]);
+  add(g, box(14, 0.45, 0.7), 'frame', [0, 0.2, -4.9]);
+  add(g, box(14, 0.45, 0.7), 'frame', [0, 0.2, 4.9]);
+  add(g, box(0.7, 0.45, 9.1), 'frame', [-6.65, 0.2, 0]);
+  add(g, box(0.7, 0.45, 9.1), 'frame', [6.65, 0.2, 0]);
+
+  // GH100 die (814 mm² ≈ 33 × 26 mm) on interposer
+  add(g, box(4.6, 0.18, 4.2), 'gpu', [0, 0.34, 0]);                    // interposer
+  add(g, box(3.3, 0.3, 2.6), 'gpu', [0, 0.55, 0]);                     // die
+  // 6× HBM3 stacks, 3 per side
+  for (const sx of [-1, 1])
+    for (let i = 0; i < 3; i++)
+      add(g, box(1.1, 0.28, 1.2), 'memory', [sx * 1.95, 0.5, -1.45 + i * 1.45]);
+
+  // Capacitor fields above/below the package
+  for (const sz of [-1, 1])
+    for (let r = 0; r < 3; r++)
+      for (let i = 0; i < 16; i++)
+        add(g, box(0.22, 0.16, 0.4), 'power', [-3.4 + i * 0.45, 0.3, sz * (3.0 + r * 0.6)]);
+  // VRM stages along the long edges
+  for (const sx of [-1, 1])
+    for (let i = 0; i < 6; i++)
+      add(g, box(0.9, 0.4, 1.3), 'power', [sx * 5.6, 0.4, -3.6 + i * 1.45]);
+
+  // 4× mounting bolts
+  for (const dx of [-6.3, 6.3]) for (const dz of [-4.6, 4.6])
+    add(g, cyl(0.28, 0.6, 10), 'frame', [dx, 0.3, dz]);
+  // 2× high-density mezzanine connectors, underside
+  for (const dz of [-3.4, 3.4])
+    add(g, box(9.8, 0.7, 1.3), 'connector', [0, -0.6, dz]);
+
+  // Exploded heatsink hovering above: vapour chamber + heat pipes + fins
+  const hs = new THREE.Group();
+  add(hs, box(13, 0.5, 9.6), 'coldplate', [0, 0, 0]);                  // vapour chamber
+  for (let i = 0; i < 4; i++)                                          // heat pipes
+    add(hs, cyl(0.4, 12.6, 10), 'tube', [0, 0.55, -3 + i * 2], [0, 0, Math.PI / 2]);
+  const fins = 26;
+  for (let i = 0; i < fins; i++)
+    add(hs, box(0.08, 3.4, 9.6), 'heatsink', [-6.2 + i * (12.4 / (fins - 1)), 2.3, 0]);
+  hs.position.set(0, 3.6, 0);
+  g.add(hs);
+  // assembly leader lines at the corners
+  for (const dx of [-6.3, 6.3]) for (const dz of [-4.6, 4.6])
+    add(g, cyl(0.04, 3.4, 6), 'label', [dx, 2.2, dz]);
+
+  return {
+    group: center(g),
+    info: {
+      id: 'sxm5-module',
+      name: 'H100 SXM5 Module',
+      tagline: 'Component view · exploded heatsink · 700 W',
+      dims: '140 × 105 mm module · die 814 mm²',
+      specs: ['GH100 die on CoWoS interposer', '6× HBM3 stacks (80 GB)',
+        '2× mezzanine connectors, underside', 'Vapour chamber + 4 heat pipes',
+        'Capacitor field + edge VRM stages', 'Shown with heatsink exploded'],
+      featureTags: ['gpu', 'memory', 'heatsink', 'power'],
+    },
+  };
+}
+
+// ===========================================================================
+// 9. GB200 superchip board — Bianca close-up
+// ===========================================================================
+function buildGb200Superchip() {
+  const g = new THREE.Group();
+  biancaModule(g, [0, 0, 0]);
+  // NVLink-C2C bridges between Grace and each GPU (flat ribbons on board)
+  for (const z of [6.5, -7]) add(g, box(7.5, 0.12, 3.2), 'interconnect', [0, 0.3, z]);
+  // Board-edge I/O: NVLink connector + power input at rear
+  add(g, box(16, 1.0, 1.2), 'connector', [0, 0.5, -22.6]);
+  add(g, box(4.5, 1.4, 1.4), 'busbar', [7, 0.6, -22.6]);
+  // Side mounting rails
+  for (const sx of [-10.2, 10.2]) add(g, box(0.6, 0.9, 44), 'frame', [sx, 0.35, 0]);
+
+  return {
+    group: center(g),
+    info: {
+      id: 'gb200-superchip',
+      name: 'GB200 Superchip Board',
+      tagline: '1× Grace + 2× Blackwell · NVLink-C2C · close-up',
+      dims: '200 × 440 mm carrier',
+      specs: ['Grace: 72-core Arm, LPDDR5X on package', '2× Blackwell, 6 HBM3e stacks each',
+        'NVLink-C2C die-to-die ribbons, 900 GB/s', 'Stepped shared cold plate',
+        '14-phase VRM banks both edges', 'Rear NVLink + 48 V input'],
+      featureTags: ['gpu', 'cpu', 'memory', 'interconnect'],
+    },
+  };
+}
+
+// ===========================================================================
+// 10. 1U fabric switch — 32× OSFP, Quantum-class
+// ===========================================================================
+function buildFabricSwitch() {
+  const g = new THREE.Group();
+  const W = EIA_EXT, H = U + 0.4, D = 66;
+  trayShell(g, W, H, D);
+  add(g, box(W - 4, 0.2, D - 10), 'pcb', [0, -H / 2 + 0.5, 1]);
+
+  // Front: 32× OSFP cages in 2 rows of 16
+  for (let r = 0; r < 2; r++)
+    for (let i = 0; i < 16; i++)
+      add(g, box(2.2, 1.5, 5), 'nic', [-W / 2 + 3.4 + i * 2.65, -H / 2 + 1.3 + r * 1.9, -D / 2 + 3]);
+  // mgmt block right of cages
+  add(g, box(2.6, 1.2, 3), 'connector', [W / 2 - 3, -H / 2 + 1.2, -D / 2 + 2.5]);
+
+  // Switch ASIC + radial fin sink with heat pipes
+  add(g, box(6.5, 0.5, 6.5), 'interconnect', [0, -H / 2 + 0.85, 4]);
+  finStack(g, 11, 2.4, 10, 20, 'heatsink', [0, -H / 2 + 2.4, 4]);
+  for (let i = 0; i < 4; i++)
+    add(g, cyl(0.4, 14, 10), 'tube', [0, -H / 2 + 1.35, -0.5 + i * 3], [0, 0, Math.PI / 2]);
+  // VRM bank beside ASIC
+  for (let i = 0; i < 8; i++)
+    add(g, box(1.3, 0.7, 2.6), 'power', [-9.5 + i * 1.4, -H / 2 + 0.85, 11]);
+
+  // Rear: 6 fan modules + 2 PSUs
+  for (let i = 0; i < 6; i++)
+    fanUnit(g, 1.6, 2.4, 'fan', [-W / 2 + 4.4 + i * 4.2, 0, D / 2 - 2.4]);
+  for (const px of [W / 2 - 6.5, W / 2 - 14])
+    add(g, box(6.5, H - 1, 14), 'power', [px - 4, 0, D / 2 - 8]);
+
+  return {
+    group: center(g),
+    info: {
+      id: 'fabric-switch-1u',
+      name: '1U Fabric Switch (32× OSFP)',
+      tagline: 'Quantum-class · 25.6 Tb/s ASIC · N+1 fans',
+      dims: '44 H × 438 W × 660 D mm · 1U',
+      specs: ['32× OSFP cages, 2×16 front', '25.6 Tb/s switch ASIC',
+        'Fin stack + 4 heat pipes', '8-phase ASIC VRM',
+        '6× hot-swap fan modules', '1+1 PSU, rear'],
+      featureTags: ['nic', 'interconnect', 'heatsink', 'fan'],
+    },
+  };
+}
+
+// ===========================================================================
+// 11. 4U in-rack CDU — coolant distribution unit
+// ===========================================================================
+function buildCdu() {
+  const g = new THREE.Group();
+  const W = EIA_EXT, H = 4 * U, D = 76;
+  trayShell(g, W, H, D);
+
+  // 2× redundant pump assemblies (volute + body + motor + outlet riser)
+  for (const px of [-14, -2]) {
+    add(g, cyl(4.2, 5, 20), 'tube', [px - 3.5, -H / 2 + 5, -16], [0, 0, Math.PI / 2]); // volute
+    add(g, cyl(3.0, 7, 18), 'tube', [px + 2.5, -H / 2 + 5, -16], [0, 0, Math.PI / 2]); // body
+    add(g, cyl(2.4, 6, 16), 'fan', [px + 9, -H / 2 + 5, -16], [0, 0, Math.PI / 2]);    // motor
+    add(g, cyl(1.1, 6, 12), 'tube', [px - 3.5, -H / 2 + 10, -16]);                 // outlet riser
+    add(g, cyl(1.1, 14, 12), 'tube', [px - 3.5, -H / 2 + 13.4, -9.5], [Math.PI / 2, 0, 0]); // run to HX
+  }
+
+  // Brazed-plate heat exchanger: stack of 36 plates
+  const hx = new THREE.Group();
+  for (let i = 0; i < 36; i++)
+    add(hx, box(0.22, 13, 11), 'coldplate', [-4.4 + i * 0.25, 0, 0]);
+  for (const sx of [-4.8, 4.8]) add(hx, box(0.7, 13.6, 11.6), 'frame', [sx, 0, 0]);
+  hx.position.set(9, -H / 2 + 8, 8);
+  g.add(hx);
+
+  // Reservoir with sight glass
+  add(g, box(9, 11, 9), 'tube', [-14, -H / 2 + 7, 8]);
+  add(g, cyl(0.5, 9, 8), 'label', [-9.2, -H / 2 + 7, 8]);
+
+  // Secondary (rack) manifolds, front, with 4 QD pairs
+  for (const my of [-H / 2 + 2.2, -H / 2 + 13]) {
+    add(g, cyl(1.5, 34, 14), 'manifold', [-3, my, -D / 2 + 6], [0, 0, Math.PI / 2]);
+    for (let i = 0; i < 4; i++) qdFitting(g, 0.8, [-13 + i * 7, my, -D / 2 + 3.4], [0, 0, 0]);
+  }
+  // Facility (primary) connections, rear
+  for (const fy of [-H / 2 + 3.5, -H / 2 + 11])
+    qdFitting(g, 1.6, [16, fy, D / 2 - 2], [0, Math.PI, 0]);
+
+  // Interconnecting pipework
+  add(g, cyl(1.1, 22, 12), 'tube', [9, -H / 2 + 14.6, -3], [Math.PI / 2, 0, 0]);
+  add(g, cyl(1.1, 16, 12), 'tube', [0, -H / 2 + 14.6, -14], [0, 0, Math.PI / 2]);
+  add(g, cyl(1.1, 10, 12), 'tube', [-14, -H / 2 + 12.6, 1], [Math.PI / 2, 0, 0]);
+
+  // Controller + front display
+  add(g, box(10, 0.2, 12), 'pcb', [14, -H / 2 + 1.2, -8]);
+  add(g, box(7, 2.6, 0.5), 'label', [14, 1.5, -D / 2 - 0.3]);
+
+  return {
+    group: center(g),
+    info: {
+      id: 'cdu-4u',
+      name: '4U In-Rack CDU',
+      tagline: 'Liquid-to-liquid · 2N pumps · plate heat exchanger',
+      dims: '178 H × 482.6 W × 760 D mm · 4U',
+      specs: ['2× redundant pump assemblies', '36-plate brazed heat exchanger',
+        'Reservoir with sight glass', 'Secondary manifolds + 8 QD ports',
+        'Facility supply/return, rear', 'Controls: flow, ΔP, ΔT per loop'],
+      featureTags: ['tube', 'manifold', 'coldplate', 'fan'],
+    },
+  };
+}
+
+// ===========================================================================
+// 12. ORv3 power shelf — 6× rectifier modules onto 48 V busbar
+// ===========================================================================
+function buildPowerShelf() {
+  const g = new THREE.Group();
+  const W = 54, H = 4.8, D = 60;   // 1OU OCP shelf
+  trayShell(g, W, H, D);
+
+  for (let i = 0; i < 6; i++) {
+    const x = -W / 2 + 5 + i * 8.7;
+    const r = new THREE.Group();
+    add(r, box(8.0, H - 1.2, 48), 'power', [0, 0, 0]);                 // module body
+    finStack(r, 7.4, H - 1.6, 0.2, 14, 'power', [0, 0, -24.2]);        // front vents
+    latch(r, [-2.6, 0, -24.8], false);                                  // extraction handle
+    add(r, box(0.5, 0.5, 0.3), 'label', [3, H / 2 - 1, -24.3]);        // status LED
+    add(r, box(2.6, 1.4, 1.6), 'connector', [0, 0, 24.4]);             // output blade
+    r.position.set(x, 0, -2);
+    g.add(r);
+  }
+
+  // Rear: horizontal 48 V output busbar + AC inlets
+  add(g, box(W - 6, 2.2, 1.4), 'busbar', [0, 0, D / 2 - 1.6]);
+  for (let i = 0; i < 6; i++)
+    add(g, box(2.8, 1.6, 2.2), 'connector', [-W / 2 + 5 + i * 8.7, -H / 2 + 1.4, D / 2 - 2.4]);
+
+  return {
+    group: center(g),
+    info: {
+      id: 'orv3-power-shelf',
+      name: 'ORv3 Power Shelf',
+      tagline: '6× hot-swap rectifiers · 48 V DC output · 33 kW',
+      dims: '48 H × 540 W × 600 D mm · 1OU',
+      specs: ['6× 5.5 kW rectifier modules', '5+1 redundant, hot-swap',
+        '48 V DC busbar output, rear', 'Per-module AC inlet',
+        'Front extraction handles + status LED', 'Feeds the rack busbar directly'],
+      featureTags: ['power', 'busbar', 'connector'],
+    },
+  };
+}
+
+// ===========================================================================
+// 13. 1U E1.S JBOF — 32-drive NVMe flash shelf
+// ===========================================================================
+function buildJbof() {
+  const g = new THREE.Group();
+  const W = EIA_EXT, H = U + 0.4, D = 70;
+  trayShell(g, W, H, D);
+  add(g, box(W - 4, 0.2, D - 12), 'pcb', [0, -H / 2 + 0.4, 2]);
+
+  // 32× E1.S drives, vertical, front section
+  for (let i = 0; i < 32; i++) {
+    const x = -W / 2 + 2.6 + i * 1.36;
+    add(g, box(1.0, 3.2, 11.8), 'drive', [x, -H / 2 + 2.1, -D / 2 + 8.5]);
+    add(g, box(1.0, 0.5, 0.4), 'label', [x, -H / 2 + 3.9, -D / 2 + 2.4]); // latch tab
+  }
+  // Backplane
+  add(g, box(W - 5, 3.4, 0.5), 'pcb', [0, -H / 2 + 2.1, -D / 2 + 15]);
+
+  // PCIe Gen5 switch + heatsink, centre
+  add(g, box(5.5, 0.5, 5.5), 'interconnect', [0, -H / 2 + 0.8, -2]);
+  finStack(g, 7, 2.2, 6.5, 14, 'heatsink', [0, -H / 2 + 2.1, -2]);
+  // 2× retimer / DPU cards
+  for (const dx of [-12, 12])
+    add(g, box(7, 0.2, 11), 'nic', [dx, -H / 2 + 1.1, 0]);
+
+  // Rear: uplink cages + fans + PSUs
+  for (let i = 0; i < 8; i++)
+    add(g, box(2.0, 1.4, 4), 'connector', [-W / 2 + 4 + i * 2.5, -H / 2 + 1.4, D / 2 - 2.2]);
+  for (let i = 0; i < 4; i++)
+    fanUnit(g, 1.5, 2.2, 'fan', [-3 + i * 4.2, 0, D / 2 - 8]);
+  for (const px of [-W / 2 + 6, W / 2 - 6])
+    add(g, box(6.5, H - 1, 12), 'power', [px, 0, D / 2 - 7]);
+
+  return {
+    group: center(g),
+    info: {
+      id: 'jbof-1u',
+      name: '1U E1.S JBOF',
+      tagline: '32× E1.S NVMe · PCIe Gen5 switched · 8 uplinks',
+      dims: '44 H × 482.6 W × 700 D mm · 1U',
+      specs: ['32× E1.S 15 mm NVMe, front', 'PCIe Gen5 switch, 144 lanes',
+        '2× retimer/DPU cards', '8× uplink cages, rear',
+        '4× hot-swap fans', '1+1 PSU'],
+      featureTags: ['drive', 'interconnect', 'nic', 'fan'],
+    },
+  };
+}
+
 // ---------------------------------------------------------------------------
-// Registry — rack-scale first, then systems, then boards
+// Registry — rack-scale first, then systems, then boards & components
 // ---------------------------------------------------------------------------
 export const BUILDERS = {
   'gb200-nvl72': buildNvl72Rack,
+  'h100-rack': buildH100Rack,
   'nvl72-compute-tray': buildNvl72ComputeTray,
   'nvl72-switch-tray': buildNvl72SwitchTray,
-  'h100-rack': buildH100Rack,
   'dgx-h100': buildDgxH100,
   'hgx-h100': buildHgxH100,
   'pcie-4u': buildPcieServer,
+  'gb200-superchip': buildGb200Superchip,
+  'sxm5-module': buildSxm5Module,
+  'fabric-switch-1u': buildFabricSwitch,
+  'cdu-4u': buildCdu,
+  'orv3-power-shelf': buildPowerShelf,
+  'jbof-1u': buildJbof,
 };
 
 export const MODELS = Object.keys(BUILDERS).map((id) => BUILDERS[id]().info);

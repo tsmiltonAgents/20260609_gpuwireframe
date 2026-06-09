@@ -8,7 +8,7 @@ import { chromium } from 'playwright';
 const base = process.argv[2] || 'https://tsmiltonagents.github.io/20260609_gpuwireframe/';
 const pages = [
   { name: 'home', url: base, canvases: 1 },
-  { name: 'gallery', url: base + 'gallery/', canvases: 7 },
+  { name: 'gallery', url: base + 'gallery/', canvases: 13 },
 ];
 
 const browser = await chromium.launch();
@@ -22,7 +22,18 @@ for (const p of pages) {
   page.on('pageerror', (e) => errors.push('[pageerror] ' + e.message));
 
   await page.goto(p.url, { waitUntil: 'networkidle', timeout: 60000 });
-  await page.waitForTimeout(3500); // let renderers spin up
+  await page.waitForTimeout(2000);
+  // warm every viewer: step-scroll the page so IntersectionObserver-paused
+  // canvases come on screen and render at least once
+  await page.evaluate(async () => {
+    const h = document.body.scrollHeight;
+    for (let y = 0; y <= h; y += window.innerHeight * 0.8) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 350));
+    }
+    window.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(1200);
 
   const report = await page.evaluate(() => {
     const out = { canvases: [], hints: 0 };

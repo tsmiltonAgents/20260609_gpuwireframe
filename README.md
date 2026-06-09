@@ -12,18 +12,30 @@ fabric, power) section by section.
 - `/gallery/` — model picker: all 6 hardware options side by side, drag to rotate,
   per-card x-ray, subsystem legend, `.glb/.gltf` drop-in import
 
-## Models (all procedural, component-accurate)
+## Models (all procedural, dimensionally accurate)
 
 | id | model |
 |----|-------|
-| `hgx-tray` | HGX 8-GPU SXM baseboard (NVSwitch fabric, HBM, heatsinks) |
-| `pcie-4u` | 4U PCIe GPU server (8 dual-slot cards, fan wall, dual CPU, PSUs) |
-| `coldplate-tray` | Liquid cold-plate tray (manifolds, branch tubes, QDCs) |
-| `compute-1u` | 1U dual-CPU compute sled |
-| `storage-sled` | 24-bay NVMe storage sled |
-| `open-rack` | Populated Open-Rack v3 (busbar, power shelf, trays, switch) |
+| `gb200-nvl72` | GB200 NVL72 rack (18 compute + 9 switch trays, busbar, manifolds, cable cartridge) |
+| `h100-rack` | 42U EIA-310 rack with 4× DGX H100 + ToR switches + PDUs |
+| `nvl72-compute-tray` | 1U MGX tray, 2× Grace-Blackwell superchip, liquid-cooled |
+| `nvl72-switch-tray` | 1U NVLink-5 switch tray |
+| `dgx-h100` | DGX H100 8U system, full internals |
+| `hgx-h100` | HGX H100 8-GPU baseboard |
+| `pcie-4u` | 4U PCIe GPU server |
+| `gb200-superchip` | GB200 superchip board close-up |
+| `sxm5-module` | H100 SXM5 module, exploded heatsink |
+| `fabric-switch-1u` | 1U 32× OSFP fabric switch |
+| `cdu-4u` | 4U in-rack coolant distribution unit |
+| `orv3-power-shelf` | ORv3 power shelf, 6× rectifiers |
+| `jbof-1u` | 1U 32× E1.S NVMe JBOF |
 
 Pick a model in the gallery (or `/?model=<id>`) and the landing page uses it.
+`/debug/?model=<id>&az=30&el=15&xray=1` renders fixed-angle views.
+
+Design language is a dark-mode riff on [Amodo Design](https://amododesign.com/)
+(IBM Plex Serif/Sans/Mono, teal + terracotta on warm dark slate, rounded
+hairline page frame, numbered nav).
 
 ## Dev
 

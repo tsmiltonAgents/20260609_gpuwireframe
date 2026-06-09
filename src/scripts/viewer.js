@@ -55,7 +55,7 @@ export class Viewer {
   }
 
   _addFloor() {
-    const grid = new THREE.GridHelper(400, 40, 0x2c333b, 0x21262c);
+    const grid = new THREE.GridHelper(400, 40, 0x2e332f, 0x232825);
     grid.position.y = -0.01;
     grid.material.transparent = true;
     grid.material.opacity = 0.5;

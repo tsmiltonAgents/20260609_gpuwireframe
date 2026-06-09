@@ -7,14 +7,19 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <title>Side Channel Cloud — Hardware Model Picker</title>
 </head>
 <body data-base={base}>
+  <div class="page-frame"></div>
   <header class="topbar">
     <div class="brand"><span class="glyph"></span> <b>SIDE&nbsp;CHANNEL</b> <span>// CLOUD</span></div>
     <nav class="navlinks">
-      <a href={base + 'gallery/'} class="active">Model picker</a>
-      <a href={base}>Landing prototype</a>
+      <a href={base} data-n="01">Landing</a>
+      <a href={base + 'gallery/'} class="active" data-n="02">Hardware library</a>
+      <a href="https://amododesign.com/" class="ext" data-n="//">Amodo Design</a>
     </nav>
   </header>
 
@@ -33,12 +38,12 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     <button class="btn" id="xray-all">X-ray all</button>
     <label class="btn" for="glb-input">Import .glb / .gltf…</label>
     <input id="glb-input" type="file" accept=".glb,.gltf" multiple hidden />
-    <span style="color:var(--text-dim);font-size:12px;">hover the legend to isolate a subsystem ↓</span>
+    <span class="hint-note">hover the legend to isolate a subsystem ↓</span>
   </div>
   <div class="controls-row"><div class="legend" id="legend" style="flex:1"></div></div>
 
   <div id="chosen-banner" style="display:none;max-width:1180px;margin:18px auto 0;padding:12px 18px;
-       border:1px solid var(--magenta);border-radius:6px;background:rgba(255,79,166,0.08);
+       border:1px solid var(--terra);border-radius:10px;background:rgba(212,101,79,0.07);
        color:var(--text);font-size:14px;"></div>
 
   <main class="grid" id="grid"></main>
