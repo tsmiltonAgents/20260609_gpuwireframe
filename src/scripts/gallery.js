@@ -35,6 +35,7 @@ function makeCard(info, builder) {
   el.innerHTML = `
     <span class="badge tag">${info.format || 'procedural'}</span>
     <span class="fmt">${info.id}</span>
+    <span class="picked-flag">✓ Picked</span>
     <div class="stage"><canvas></canvas></div>
     <div class="meta">
       <h3>${info.name}</h3>
@@ -44,7 +45,7 @@ function makeCard(info, builder) {
       <div class="actions">
         <button class="btn act-xray">X-ray</button>
         <button class="btn act-spin on">Spin</button>
-        <button class="btn act-choose">Use this</button>
+        <button class="btn act-choose">Pick</button>
       </div>
     </div>`;
   grid.appendChild(el);
@@ -74,8 +75,8 @@ function choose(id) {
   for (const c of cards) c.el.classList.toggle('chosen', c.info.id === id);
   const banner = document.getElementById('chosen-banner');
   const m = MODELS.find((x) => x.id === id) || cards.find((c) => c.info.id === id)?.info;
-  banner.innerHTML = `Selected for the landing page: <b>${m ? m.name : id}</b> — ` +
-    `<a href="${BASE}?model=${encodeURIComponent(id)}">preview it in the scroll site →</a>`;
+  banner.innerHTML = `Dev model: <b>${m ? m.name : id}</b> — ` +
+    `<a href="${BASE}?model=${encodeURIComponent(id)}">view it on the landing page →</a>`;
   banner.style.display = 'block';
 }
 

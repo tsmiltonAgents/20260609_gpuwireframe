@@ -67,7 +67,17 @@ for (const p of pages) {
     report.hud = hud;
     await page.screenshot({ path: `verify-${p.name}-scrolled.png` });
     await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(900);
+    // access form: fill, submit, expect success state
+    report.formOk = await page.evaluate(async () => {
+      const f = document.getElementById('access-form');
+      if (!f) return false;
+      f.querySelector('[name=name]').value = 'Verify Bot';
+      f.querySelector('[name=email]').value = 'verify@example.com';
+      f.requestSubmit();
+      await new Promise((r) => setTimeout(r, 400));
+      return document.getElementById('access-card').classList.contains('done');
+    });
   }
 
   // drag-interaction test on the gallery: drag the first canvas and confirm
@@ -86,6 +96,15 @@ for (const p of pages) {
         document.querySelector('.card .drag-hint')?.classList.contains('seen'));
       report.dragDismissesHint = !!dismissed;
     }
+    // Pick flow: click Pick on the second card, expect highlight + flag
+    report.pickOk = await page.evaluate(async () => {
+      const card = document.querySelectorAll('.card')[1];
+      if (!card) return false;
+      card.querySelector('.act-choose').click();
+      await new Promise((r) => setTimeout(r, 200));
+      return card.classList.contains('chosen') &&
+        getComputedStyle(card.querySelector('.picked-flag')).display !== 'none';
+    });
   }
 
   await page.screenshot({ path: `verify-${p.name}.png`, fullPage: p.name === 'gallery' });
@@ -98,6 +117,8 @@ for (const p of pages) {
   console.log(`canvases: ${report.canvases.length} (need ${p.canvases}), sized: ${sizedCount}, drawing-pixels: ${drawingCount}`);
   console.log(`drag-hints visible: ${report.hints}`);
   if (report.dragDismissesHint !== undefined) console.log(`drag dismisses hint: ${report.dragDismissesHint}`);
+  if (report.formOk !== undefined) console.log(`access form submits: ${report.formOk}`);
+  if (report.pickOk !== undefined) console.log(`pick highlights card: ${report.pickOk}`);
   if (report.hud) console.log(`scroll HUD: subsystem="${report.hud.sub}" mode="${report.hud.mode}"`);
   if (errors.length) { console.log('ERRORS:'); errors.slice(0, 8).forEach((e) => console.log('  ' + e)); }
   console.log(ok ? 'PASS' : 'FAIL');

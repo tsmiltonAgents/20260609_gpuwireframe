@@ -10,7 +10,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <title>Side Channel Cloud — Hardware Model Picker</title>
+  <title>Side Channel Cloud — Dev Model Picker</title>
 </head>
 <body data-base={base}>
   <div class="page-frame"></div>
@@ -18,19 +18,20 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     <div class="brand"><span class="glyph"></span> <b>SIDE&nbsp;CHANNEL</b> <span>// CLOUD</span></div>
     <nav class="navlinks">
       <a href={base} data-n="01">Landing</a>
-      <a href={base + 'gallery/'} class="active" data-n="02">Hardware library</a>
+      <a href={base + 'gallery/'} class="active" data-n="02">Dev Model Picker</a>
       <a href="https://amododesign.com/" class="ext" data-n="//">Amodo Design</a>
     </nav>
   </header>
 
   <section class="gallery-head">
-    <span class="tag">Hardware library</span>
-    <h1>Rack &amp; tray models — dimensionally accurate.</h1>
+    <span class="tag">02 — Dev Model Picker</span>
+    <h1>Dev Model Picker</h1>
     <p>Each model below is built to published dimensions (1U = 44.45 mm, EIA-310 /
        MGX widths) with correct tray counts, module placement and power/cooling
        topology — GB200 NVL72 rack and trays, DGX H100, full 42U H100 rack, HGX
        baseboard, PCIe. <b>Drag any model to rotate it in 3D.</b> <b>X-ray</b> removes
-       sheet metal to expose internals; <b>Use this</b> loads it into the landing page.
+       sheet metal to expose internals; <b>Pick</b> sets it as your dev model — it
+       stays highlighted here and drives the wireframe on the landing page.
        Your own <b>.glb / .gltf</b> CAD exports can be imported directly.</p>
   </section>
 

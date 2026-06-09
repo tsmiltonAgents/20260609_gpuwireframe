@@ -20,17 +20,16 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     <div class="brand"><span class="glyph"></span> <b>SIDE&nbsp;CHANNEL</b> <span>// CLOUD</span></div>
     <nav class="navlinks">
       <a href={base} class="active" data-n="01">Landing</a>
-      <a href={base + 'gallery/'} data-n="02">Hardware library</a>
+      <a href={base + 'gallery/'} data-n="02">Dev Model Picker</a>
       <a href="https://amododesign.com/" class="ext" data-n="//">Amodo Design</a>
     </nav>
   </header>
 
-  <!-- pinned wireframe on the right -->
-  <div class="scroll-stage">
+  <!-- pinned right column: wireframe + (during the hero) the access card -->
+  <div class="scroll-stage stage-dim" id="stage">
     <canvas id="stage-canvas"></canvas>
-    <div class="frameline"></div>
     <div class="readout">
-      MODEL ····· <b data-model-name>—</b><br>
+      DEV MODEL · <b data-model-name>—</b> <a id="ro-change" href={base + 'gallery/'}>change ↗</a><br>
       DIMS ······ <b data-model-dims>—</b><br>
       SUBSYSTEM · <b id="ro-sub">all</b><br>
       VIEW ······ <b id="ro-mode">ASSEMBLY</b> · SCROLL <b id="ro-pct">0%</b>
@@ -40,25 +39,85 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
       UNITS mm · SCALE NTS<br>
       THIRD-ANGLE PROJECTION
     </div>
+
+    <aside class="access-card show" id="access-card">
+      <span class="tag">Early access</span>
+      <h3>Register your interest</h3>
+      <p>Hardware lands in waves. Tell us what you need and we'll hold a slot
+         in the next one.</p>
+      <form id="access-form">
+        <label>Name
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+        <label>Work email
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label>Company
+          <input type="text" name="company" autocomplete="organization" />
+        </label>
+        <label>I need
+          <select name="need">
+            <option>A whole NVL72 rack</option>
+            <option>Individual trays</option>
+            <option>Telemetry / side-channel access</option>
+            <option>Not sure yet</option>
+          </select>
+        </label>
+        <button class="cta-btn" type="submit">Get Access Today →</button>
+      </form>
+      <div class="access-success">
+        <h3>You're on the list.</h3>
+        <p>We'll be in touch when the next hardware wave opens. Meanwhile,
+           pick the dev model you want to work against.</p>
+        <a class="btn" href={base + 'gallery/'}>Open the Dev Model Picker →</a>
+      </div>
+    </aside>
   </div>
 
   <!-- scrolling copy on the left -->
   <main class="scroll-content">
 
-    <section class="section hero" data-tags="" data-xray="false">
+    <section class="section hero" data-stage="form" data-tags="" data-xray="false">
       <span class="tag">Bare-metal GPU · physical-layer telemetry</span>
       <h1>Rent the rack.<br><em>Read the side channels.</em></h1>
       <p>Side Channel Cloud provisions whole racks and trays — not virtual slices.
          Every system ships with instrumented access to its power rails, coolant
          loop and interconnect fabric, exposed as first-class telemetry.</p>
       <div class="cta">
-        <a class="btn on" href={base + 'gallery/'}>Browse hardware →</a>
-        <a class="btn" href="#provision">Provision</a>
+        <a class="btn" href={base + 'gallery/'}>Dev Model Picker →</a>
+      </div>
+    </section>
+
+    <section class="section explainer" data-stage="hidden" data-tags="" data-xray="false">
+      <span class="tag">01 — What this is</span>
+      <h2>Cloud GPUs, without the<br>cloud in the way.</h2>
+      <div class="explainer-cols">
+        <p>Every other GPU cloud hands you a VM and keeps the machine. We hand
+           you the machine. You reserve physical hardware — a GB200 NVL72 rack,
+           a DGX H100, a single liquid-cooled tray — and get bare-metal control
+           of it for the length of your booking.</p>
+        <p>What makes it different is the instrumentation. The physical layer
+           of a modern GPU system leaks information everywhere: power rails
+           ripple with the workload, coolant temperature traces the die, NVLink
+           counters expose the traffic pattern. Operators normally keep all of
+           that. We pipe it to you — rail-level power, per-plate thermals,
+           per-link fabric counters — at one-second resolution, on every system
+           you rent.</p>
+        <p>It's built for the people the hyperscalers can't serve: kernel and
+           runtime engineers chasing perf cliffs, cooling and power researchers
+           who need real loads on real plumbing, and security teams studying
+           the side channels themselves on hardware they fully control.</p>
+      </div>
+      <div class="kv">
+        <div><div class="n">13</div><div class="l">hardware configs</div></div>
+        <div><div class="n">0</div><div class="l">hypervisors</div></div>
+        <div><div class="n">1 s</div><div class="l">telemetry resolution</div></div>
+        <div><div class="n">3</div><div class="l">side channels exposed</div></div>
       </div>
     </section>
 
     <section class="section" data-tags="gpu,cpu,memory" data-xray="false">
-      <span class="tag">01 — Compute</span>
+      <span class="tag">02 — Compute</span>
       <h2>One NVLink domain,<br><em>72 GPUs</em>.</h2>
       <p>A GB200 NVL72 rack carries 18 compute trays, each with two Grace-Blackwell
          superchips: 72 Blackwell GPUs and 36 Grace CPUs sharing 13.5 TB of HBM3e
@@ -72,7 +131,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     </section>
 
     <section class="section" data-tags="coldplate,tube,manifold" data-xray="true">
-      <span class="tag">02 — Thermal</span>
+      <span class="tag">03 — Thermal</span>
       <h2>The <em>coolant loop</em>,<br>instrumented.</h2>
       <p>Direct-to-chip cold plates on every superchip, blind-mate quick disconnects
          at the tray rear, and dual vertical manifolds carrying the rack loop.
@@ -86,7 +145,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     </section>
 
     <section class="section" data-tags="nic,interconnect,connector,cable" data-xray="true">
-      <span class="tag">03 — Fabric</span>
+      <span class="tag">04 — Fabric</span>
       <h2>NVLink counters,<br><em>per link</em>.</h2>
       <p>Nine NVLink switch trays sit mid-rack, joined to every compute tray through
          a rear copper cable cartridge. Per-port bandwidth, replay and CRC error
@@ -100,7 +159,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     </section>
 
     <section class="section" data-tags="power,busbar" data-xray="true">
-      <span class="tag">04 — Power</span>
+      <span class="tag">05 — Power</span>
       <h2>Rail-level<br><em>power metering</em>.</h2>
       <p>Six power shelves rectify to a 48 V DC busbar running the height of the
          rack; each tray blind-mates onto it. We meter every shelf, every busbar
@@ -114,13 +173,14 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     </section>
 
     <section class="section" id="provision" data-tags="" data-xray="false">
-      <span class="tag">05 — Provision</span>
+      <span class="tag">06 — Provision</span>
       <h2>Tray or rack.<br><em>Yours in minutes.</em></h2>
-      <p>Pick a configuration from the hardware library — GB200 NVL72, DGX H100,
-         or PCIe — and get bare-metal access plus the full telemetry feed.
-         Tear it down when you're done.</p>
+      <p>Pick your dev model from the picker — GB200 NVL72, DGX H100, or PCIe —
+         register your interest above, and get bare-metal access plus the full
+         telemetry feed when your wave opens.</p>
       <div class="cta">
-        <a class="btn on" href={base + 'gallery/'}>Open the hardware library →</a>
+        <a class="btn" href={base + 'gallery/'}>Open the Dev Model Picker →</a>
+        <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Get Access Today ↑</a>
       </div>
     </section>
 
