@@ -8,13 +8,17 @@ import { wireify } from './wireframe.js';
 import { Viewer } from './viewer.js';
 import { attachDragHint } from './drag-hint.js';
 import { mountThemePicker } from './theme-picker.js';
+import { currentTheme } from './themes.js';
+import { createStageAdapter } from './stage-modes.js';
 
 mountThemePicker();
+const theme = currentTheme();
 
-// Which model? ?model=<id>, else the one picked in the Dev Model Picker.
+// Which model? ?model=<id> wins, then the theme's showcase model, then the
+// model picked in the Dev Model Picker.
 const params = new URLSearchParams(location.search);
 const picked = localStorage.getItem('scc-chosen');
-const chosen = params.get('model') || picked || 'gb200-nvl72';
+const chosen = params.get('model') || theme.model || picked || 'gb200-nvl72';
 const modelId = MODELS.some((m) => m.id === chosen) ? chosen : 'gb200-nvl72';
 
 const stage = document.getElementById('stage');
@@ -23,6 +27,17 @@ const viewer = new Viewer(canvas, { autoRotate: false, bloom: false, floor: true
 let ctrl = wireify(build(modelId).group);
 viewer.setModel(ctrl);
 attachDragHint(stage, canvas);
+
+// Abstract representation mode (per-theme): points / exploded / ascii / ortho / flux
+const activeMode = theme.stageMode || 'wire';
+const adapter = createStageAdapter(activeMode, { viewer, ctrl, stage });
+
+// Mode and showcase-model changes need a fresh scene graph — reload for those.
+window.addEventListener('scc-theme', (e) => {
+  const t = e.detail;
+  const nextModel = params.get('model') || t.model || picked || 'gb200-nvl72';
+  if ((t.stageMode || 'wire') !== activeMode || nextModel !== modelId) location.reload();
+});
 
 // Model name + dims into the readout; flag it when it came from the picker
 const modelInfo = MODELS.find((m) => m.id === modelId) || {};
@@ -90,8 +105,16 @@ function onScroll() {
   const xray = sec.dataset.xray === 'true';
 
   const key = tags.join('|');
-  if (key !== lastTagKey) { ctrl.highlight(tags); lastTagKey = key; }
-  if (xray !== lastXray) { ctrl.setXray(xray); lastXray = xray; }
+  if (key !== lastTagKey || xray !== lastXray) {
+    if (!(adapter && adapter.handlesHighlight)) {
+      if (key !== lastTagKey) ctrl.highlight(tags);
+      if (xray !== lastXray) ctrl.setXray(xray);
+    }
+    if (adapter && adapter.onScroll) adapter.onScroll(p, tags, xray);
+    lastTagKey = key; lastXray = xray;
+  } else if (adapter && adapter.onScroll) {
+    adapter.onScroll(p, tags, xray);
+  }
 
   document.getElementById('ro-sub').textContent = tags.length ? tags.join(' · ') : 'all';
   document.getElementById('ro-mode').textContent = xray ? 'X-RAY' : 'ASSEMBLY';
@@ -101,9 +124,12 @@ function onScroll() {
 // gentle constant drift + scroll-driven target, lerped each frame.
 // While the user is actively dragging, hand full control to OrbitControls.
 viewer.onFrame = () => {
+  if (adapter && adapter.onFrame) adapter.onFrame();
   if (userDragging) return;
-  curRotY += (targetRotY - curRotY) * 0.06;
-  viewer.modelRoot.rotation.y = curRotY + performance.now() * 0.00004;
+  if (!(adapter && adapter.noRotate)) {
+    curRotY += (targetRotY - curRotY) * 0.06;
+    viewer.modelRoot.rotation.y = curRotY + performance.now() * 0.00004;
+  }
 };
 
 window.addEventListener('scroll', onScroll, { passive: true });

@@ -3,6 +3,7 @@
 
 import { THEMES, currentThemeId, applyTheme, bootTheme } from './themes.js';
 import './themes-extra.js'; // registers the agent-designed themes
+import './themes-modes.js'; // representation-mode themes (points/exploded/ascii/ortho/flux)
 
 export function mountThemePicker() {
   bootTheme();

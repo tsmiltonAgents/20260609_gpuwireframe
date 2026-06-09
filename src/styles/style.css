@@ -319,3 +319,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 .ref.substack b{ background: #ff6719; }   /* Substack orange */
 .ref.conf b    { background: #4b5563; }   /* conference grey */
 .ref.cnas b    { background: #1f3a5f; }
+
+/* ascii stage layer obeys stage dimming like the canvas does */
+.scroll-stage .ascii-stage { transition: opacity 0.6s ease; }
+.scroll-stage.stage-dim .ascii-stage { opacity: 0.12; }

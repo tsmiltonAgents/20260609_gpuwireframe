@@ -130,7 +130,8 @@ export class Viewer {
     requestAnimationFrame(this._tick);
     this.controls.update();
     if (this.onFrame) this.onFrame();
-    if (this.composer) this.composer.render();
+    if (this.renderOverride) this.renderOverride();
+    else if (this.composer) this.composer.render();
     else this.renderer.render(this.scene, this.camera);
   }
 

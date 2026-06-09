@@ -28,3 +28,100 @@
 [data-theme="blueprint"] .cta-btn { border-radius: 4px; background: var(--teal); border-color: var(--teal); color: #0c2d5c; }
 [data-theme="blueprint"] .tag { border: 1px dashed var(--border); padding: 4px 9px; }
 [data-theme="blueprint"] .titleblock { border: 1.5px solid var(--border); border-radius: 0; }
+
+/* ---- Stardust: particle cloud, near-black indigo, weightless type ---- */
+[data-theme="stardust"] {
+  --bg: #0b0b14; --bg-2: #0d0d17; --panel: rgba(22, 22, 38, 0.6);
+  --border: rgba(207, 214, 255, 0.2); --border-soft: rgba(207, 214, 255, 0.09);
+  --cream: #eef0ff; --teal: #8fb8ff; --terra: #cfd6ff; --violet: #b9a8e8;
+  --text: #c8cce6; --text-dim: #8a8fb0; --text-faint: #5e6280;
+  --glass: rgba(13, 13, 26, 0.8);
+  --display: "Space Grotesk", sans-serif; --sans: "Inter", sans-serif;
+  --serif: "Source Serif 4", serif; --mono: "JetBrains Mono", monospace;
+}
+[data-theme="stardust"] h1, [data-theme="stardust"] h2 { font-weight: 300; letter-spacing: 0.01em; }
+[data-theme="stardust"] .hero h1 em { color: #8fb8ff; }
+[data-theme="stardust"] body { background: radial-gradient(1100px 700px at 75% 20%, #11111f, #0b0b14 65%); }
+[data-theme="stardust"] .cta-btn { background: transparent; border: 1px solid #8fb8ff; color: #cfd6ff; border-radius: 999px; }
+[data-theme="stardust"] .cta-btn:hover { background: #8fb8ff; color: #0b0b14; }
+[data-theme="stardust"] .card, [data-theme="stardust"] .access-card { border-radius: 20px; backdrop-filter: blur(8px); }
+[data-theme="stardust"] .scroll-stage { border-left: none; background: transparent; }
+
+/* ---- Showroom: porcelain teardown studio ---- */
+[data-theme="showroom"] {
+  --bg: #f2f3f5; --bg-2: #eceef1; --panel: #ffffff;
+  --border: rgba(29, 36, 51, 0.22); --border-soft: rgba(29, 36, 51, 0.1);
+  --cream: #1d2433; --teal: #2563eb; --terra: #1d2433; --violet: #6a55c0;
+  --text: #2c3445; --text-dim: #5b6475; --text-faint: #8b93a3;
+  --glass: rgba(255, 255, 255, 0.88);
+  --display: "Inter", sans-serif; --sans: "Inter", sans-serif;
+  --serif: "Source Serif 4", serif; --mono: "JetBrains Mono", monospace;
+}
+[data-theme="showroom"] h1, [data-theme="showroom"] h2, [data-theme="showroom"] h3 { font-weight: 600; letter-spacing: -0.025em; }
+[data-theme="showroom"] .hero h1 { font-weight: 700; }
+[data-theme="showroom"] .hero h1 em, [data-theme="showroom"] .section h2 em { color: #2563eb; }
+[data-theme="showroom"] .cta-btn { background: #2563eb; border-color: #2563eb; color: #fff; border-radius: 10px; }
+[data-theme="showroom"] .card, [data-theme="showroom"] .access-card { border-radius: 14px; box-shadow: 0 10px 30px rgba(29,36,51,0.08); }
+[data-theme="showroom"] .page-frame { display: none; }
+[data-theme="showroom"] .kv .n { color: #2563eb; }
+
+/* ---- Teletype: ASCII machine output on ivory ---- */
+[data-theme="teletype"] {
+  --bg: #efe9dc; --bg-2: #eae3d4; --panel: #f6f1e6;
+  --border: rgba(35, 32, 25, 0.4); --border-soft: rgba(35, 32, 25, 0.16);
+  --cream: #232019; --teal: #3a5a6a; --terra: #c43c2a; --violet: #6a3a5a;
+  --text: #2e2a21; --text-dim: #5c5648; --text-faint: #8a8270;
+  --glass: rgba(239, 233, 220, 0.92);
+  --display: "JetBrains Mono", monospace; --sans: "JetBrains Mono", monospace;
+  --serif: "JetBrains Mono", monospace; --mono: "JetBrains Mono", monospace;
+}
+[data-theme="teletype"] h1, [data-theme="teletype"] h2, [data-theme="teletype"] h3 { font-weight: 500; letter-spacing: -0.01em; }
+[data-theme="teletype"] .hero h1 { font-size: clamp(2rem, 3.6vw, 3.2rem); }
+[data-theme="teletype"] .hero h1 em { color: #c43c2a; }
+[data-theme="teletype"] * { border-radius: 0 !important; }
+[data-theme="teletype"] .cta-btn { background: #232019; color: #efe9dc; border-color: #232019; }
+[data-theme="teletype"] .cta-btn:hover { background: #c43c2a; border-color: #c43c2a; }
+[data-theme="teletype"] .ascii-stage { font-weight: 500; color: #232019 !important; background: transparent !important; }
+[data-theme="teletype"] .ascii-stage table { color: #232019 !important; }
+[data-theme="teletype"] .scroll-stage { background: #eae3d4; }
+
+/* ---- Drafting: chalk on graphite, snapping elevations ---- */
+[data-theme="drafting"] {
+  --bg: #1c1f22; --bg-2: #191c1f; --panel: #22262a;
+  --border: rgba(232, 228, 216, 0.28); --border-soft: rgba(232, 228, 216, 0.12);
+  --cream: #f0ece0; --teal: #a0c0c8; --terra: #d65a4a; --violet: #c0b0d8;
+  --text: #d4d0c4; --text-dim: #9a968a; --text-faint: #6e6a60;
+  --glass: rgba(25, 28, 31, 0.9);
+  --display: "IBM Plex Mono", monospace; --sans: "IBM Plex Sans", sans-serif;
+  --serif: "IBM Plex Serif", serif; --mono: "IBM Plex Mono", monospace;
+}
+[data-theme="drafting"] body {
+  background-image: linear-gradient(rgba(232,228,216,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,228,216,0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+[data-theme="drafting"] h1, [data-theme="drafting"] h2 { text-transform: uppercase; letter-spacing: 0.05em; font-weight: 400; }
+[data-theme="drafting"] .hero h1 { font-size: clamp(2rem, 3.8vw, 3.4rem); }
+[data-theme="drafting"] .hero h1 em, [data-theme="drafting"] .section h2 em { color: #d65a4a; }
+[data-theme="drafting"] .card, [data-theme="drafting"] .access-card, [data-theme="drafting"] .readout,
+[data-theme="drafting"] .titleblock { border-radius: 0; border-width: 1.5px; }
+[data-theme="drafting"] .cta-btn { border-radius: 0; background: #d65a4a; border-color: #d65a4a; }
+[data-theme="drafting"] .titleblock { border-color: var(--border); }
+
+/* ---- Flux: telemetry streams in the dark ---- */
+[data-theme="flux"] {
+  --bg: #06100f; --bg-2: #081311; --panel: rgba(14, 30, 28, 0.7);
+  --border: rgba(95, 212, 232, 0.22); --border-soft: rgba(95, 212, 232, 0.1);
+  --cream: #e6f4f2; --teal: #5fd4e8; --terra: #ffb45e; --violet: #c99cf0;
+  --text: #b8d0cc; --text-dim: #7e9a96; --text-faint: #54706c;
+  --glass: rgba(8, 19, 17, 0.85);
+  --display: "Space Grotesk", sans-serif; --sans: "IBM Plex Sans", sans-serif;
+  --serif: "IBM Plex Serif", serif; --mono: "IBM Plex Mono", monospace;
+}
+[data-theme="flux"] h1, [data-theme="flux"] h2 { font-weight: 500; letter-spacing: -0.01em; }
+[data-theme="flux"] .hero h1 em { color: #5fd4e8; }
+[data-theme="flux"] .section h2 em { color: #ffb45e; }
+[data-theme="flux"] .kv .n { color: #5fd4e8; }
+[data-theme="flux"] .cta-btn { background: transparent; border: 1px solid #ffb45e; color: #ffb45e; border-radius: 999px; }
+[data-theme="flux"] .cta-btn:hover { background: #ffb45e; color: #06100f; }
+[data-theme="flux"] .scroll-stage { border-left: 1px solid rgba(95, 212, 232, 0.12); }
