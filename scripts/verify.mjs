@@ -59,6 +59,24 @@ for (const p of pages) {
     await page.waitForTimeout(600);
   }
 
+  // drag-interaction test on the gallery: drag the first canvas and confirm
+  // the hint dismisses (proves pointer events reach OrbitControls' canvas)
+  if (p.name === 'gallery') {
+    const stage = page.locator('.card .stage').first();
+    const box = await stage.boundingBox();
+    if (box) {
+      const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
+      await page.mouse.move(cx, cy);
+      await page.mouse.down();
+      await page.mouse.move(cx + 120, cy + 40, { steps: 8 });
+      await page.mouse.up();
+      await page.waitForTimeout(700);
+      const dismissed = await page.evaluate(() =>
+        document.querySelector('.card .drag-hint')?.classList.contains('seen'));
+      report.dragDismissesHint = !!dismissed;
+    }
+  }
+
   await page.screenshot({ path: `verify-${p.name}.png`, fullPage: p.name === 'gallery' });
 
   const drawingCount = report.canvases.filter((c) => c.drawing).length;
@@ -68,6 +86,7 @@ for (const p of pages) {
   console.log(`\n=== ${p.name} (${p.url})`);
   console.log(`canvases: ${report.canvases.length} (need ${p.canvases}), sized: ${sizedCount}, drawing-pixels: ${drawingCount}`);
   console.log(`drag-hints visible: ${report.hints}`);
+  if (report.dragDismissesHint !== undefined) console.log(`drag dismisses hint: ${report.dragDismissesHint}`);
   if (report.hud) console.log(`scroll HUD: subsystem="${report.hud.sub}" mode="${report.hud.mode}"`);
   if (errors.length) { console.log('ERRORS:'); errors.slice(0, 8).forEach((e) => console.log('  ' + e)); }
   console.log(ok ? 'PASS' : 'FAIL');
