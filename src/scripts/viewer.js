@@ -16,7 +16,7 @@ export class Viewer {
     this.scene = new THREE.Scene();
 
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
     this.renderer.setClearColor(0x000000, 0);
 
     this.camera = new THREE.PerspectiveCamera(38, 1, 0.1, 2000);
@@ -27,7 +27,7 @@ export class Viewer {
     this.controls.dampingFactor = 0.08;
     this.controls.enablePan = false;
     this.controls.autoRotate = opts.autoRotate !== false;
-    this.controls.autoRotateSpeed = opts.autoRotateSpeed != null ? opts.autoRotateSpeed : 0.9;
+    this.controls.autoRotateSpeed = opts.autoRotateSpeed != null ? opts.autoRotateSpeed : 0.45;
     this.controls.minDistance = 4;
     this.controls.maxDistance = 200;
 
@@ -55,10 +55,10 @@ export class Viewer {
   }
 
   _addFloor() {
-    const grid = new THREE.GridHelper(80, 40, 0x163349, 0x0d2233);
+    const grid = new THREE.GridHelper(400, 40, 0x2c333b, 0x21262c);
     grid.position.y = -0.01;
     grid.material.transparent = true;
-    grid.material.opacity = 0.35;
+    grid.material.opacity = 0.5;
     this.scene.add(grid);
     this._grid = grid;
   }
@@ -78,7 +78,7 @@ export class Viewer {
     this.frame();
   }
 
-  frame(fit = 1.5) {
+  frame(fit = 1.25) {
     const bb = new THREE.Box3().setFromObject(this.modelRoot);
     if (bb.isEmpty()) return;
     const sphere = bb.getBoundingSphere(new THREE.Sphere());
@@ -89,11 +89,13 @@ export class Viewer {
       this._grid.scale.setScalar(Math.max(1, r / 20));
     }
     const dist = r / Math.sin((this.camera.fov / 2) * Math.PI / 180) * fit;
-    const dir = new THREE.Vector3(0.75, 0.5, 1).normalize();
+    const dir = new THREE.Vector3(0.85, 0.4, -1).normalize();
     this.camera.position.copy(this._center).add(dir.multiplyScalar(dist));
     this.camera.near = dist / 100;
     this.camera.far = dist * 10;
     this.camera.updateProjectionMatrix();
+    this.controls.minDistance = dist * 0.25;
+    this.controls.maxDistance = dist * 4;
     this.controls.target.copy(this._center);
     this.controls.update();
   }

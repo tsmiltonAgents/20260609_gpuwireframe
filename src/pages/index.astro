@@ -16,7 +16,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     <div class="brand"><span class="glyph"></span> <b>SIDE&nbsp;CHANNEL</b> <span>// CLOUD</span></div>
     <nav class="navlinks">
       <a href={base} class="active">Landing prototype</a>
-      <a href={base + 'gallery/'}>Model picker</a>
+      <a href={base + 'gallery/'}>Hardware library</a>
     </nav>
   </header>
 
@@ -24,11 +24,16 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <div class="scroll-stage">
     <canvas id="stage-canvas"></canvas>
     <div class="frameline"></div>
-    <div class="scroll-scan"></div>
     <div class="readout">
       MODEL ····· <b data-model-name>—</b><br>
-      SUBSYSTEM · <b id="ro-sub">all subsystems</b><br>
-      RENDER ···· <b id="ro-mode">SOLID</b> &nbsp; SCROLL <b id="ro-pct">0%</b>
+      DIMS ······ <b data-model-dims>—</b><br>
+      SUBSYSTEM · <b id="ro-sub">all</b><br>
+      VIEW ······ <b id="ro-mode">ASSEMBLY</b> · SCROLL <b id="ro-pct">0%</b>
+    </div>
+    <div class="titleblock">
+      SCC-HW · REV A<br>
+      UNITS mm · SCALE NTS<br>
+      THIRD-ANGLE PROJECTION
     </div>
   </div>
 
@@ -36,71 +41,81 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <main class="scroll-content">
 
     <section class="section hero" data-tags="" data-xray="false">
-      <span class="tag">Bare-metal GPU · side-channel access</span>
-      <h1>Rent the rack.<br><em>Read the side&nbsp;channels.</em></h1>
-      <p>Side Channel Cloud gives you real <span data-model-name>GPU hardware</span> —
-         not a virtualised abstraction — plus direct telemetry into the power, thermal
-         and fabric side channels of every tray and rack you provision.</p>
+      <span class="tag">Bare-metal GPU · physical-layer telemetry</span>
+      <h1>Rent the rack.<br><em>Read the side channels.</em></h1>
+      <p>Side Channel Cloud provisions whole racks and trays — not virtual slices.
+         Every system ships with instrumented access to its power rails, coolant
+         loop and interconnect fabric, exposed as first-class telemetry.</p>
       <div class="cta">
         <a class="btn on" href={base + 'gallery/'}>Browse hardware →</a>
-        <a class="btn" href="#provision">Provision a tray</a>
+        <a class="btn" href="#provision">Provision</a>
       </div>
     </section>
 
-    <section class="section" data-tags="gpu,memory" data-xray="false">
-      <span class="tag">01 — Real silicon</span>
-      <h2>Actual <em>accelerators</em>,<br>down to the die.</h2>
-      <p>Reserve whole trays of SXM or PCIe GPUs with their HBM stacks, baseboards and
-         interconnect intact. What you see in the wireframe is what lands in your slot —
-         same topology, same part numbers.</p>
+    <section class="section" data-tags="gpu,cpu,memory" data-xray="false">
+      <span class="tag">01 — Compute</span>
+      <h2>One NVLink domain,<br><em>72 GPUs</em>.</h2>
+      <p>A GB200 NVL72 rack carries 18 compute trays, each with two Grace-Blackwell
+         superchips: 72 Blackwell GPUs and 36 Grace CPUs sharing 13.5 TB of HBM3e
+         behind a single NVLink-5 domain. You get the whole rack, or individual
+         trays, on bare metal.</p>
       <div class="kv">
-        <div><div class="n">8×</div><div class="l">GPUs / tray</div></div>
-        <div><div class="n">0</div><div class="l">hypervisor hops</div></div>
+        <div><div class="n">72 / 36</div><div class="l">GPU / Grace CPU</div></div>
+        <div><div class="n">13.5 TB</div><div class="l">HBM3e per rack</div></div>
+        <div><div class="n">18× 1U</div><div class="l">compute trays</div></div>
       </div>
     </section>
 
-    <section class="section" data-tags="coldplate,tube,manifold,heatsink" data-xray="true">
-      <span class="tag">02 — Thermal side channel</span>
-      <h2>See inside<br>the <em>cooling loop</em>.</h2>
-      <p>Per-die cold-plate temperatures, coolant flow and pressure are streamed to you
-         in real time. The chassis drops away in x-ray and the loop lights up — the same
-         view your provisioned telemetry feed exposes.</p>
+    <section class="section" data-tags="coldplate,tube,manifold" data-xray="true">
+      <span class="tag">02 — Thermal</span>
+      <h2>The <em>coolant loop</em>,<br>instrumented.</h2>
+      <p>Direct-to-chip cold plates on every superchip, blind-mate quick disconnects
+         at the tray rear, and dual vertical manifolds carrying the rack loop.
+         We expose per-plate inlet/outlet temperature, flow rate and pressure delta
+         at one-second resolution.</p>
       <div class="kv">
-        <div><div class="n">&lt;1s</div><div class="l">thermal sample</div></div>
-        <div><div class="n">D2C</div><div class="l">direct-to-chip</div></div>
+        <div><div class="n">D2C</div><div class="l">cold plate per chip</div></div>
+        <div><div class="n">2×</div><div class="l">rack manifolds</div></div>
+        <div><div class="n">1 s</div><div class="l">sample interval</div></div>
       </div>
     </section>
 
-    <section class="section" data-tags="nic,interconnect,connector" data-xray="true">
-      <span class="tag">03 — Fabric tap</span>
-      <h2>Tap the<br><em>fabric</em>.</h2>
-      <p>NVLink, mezzanine and NIC counters are exposed as a side channel you can scope:
-         per-link bandwidth, error rates and topology — observability that normally stops
-         at the cage door.</p>
+    <section class="section" data-tags="nic,interconnect,connector,cable" data-xray="true">
+      <span class="tag">03 — Fabric</span>
+      <h2>NVLink counters,<br><em>per link</em>.</h2>
+      <p>Nine NVLink switch trays sit mid-rack, joined to every compute tray through
+         a rear copper cable cartridge. Per-port bandwidth, replay and CRC error
+         counters are exported for the full 130 TB/s domain — observability that
+         normally ends at the cage door.</p>
       <div class="kv">
-        <div><div class="n">900 GB/s</div><div class="l">per-link visible</div></div>
-        <div><div class="n">full</div><div class="l">topology map</div></div>
+        <div><div class="n">130 TB/s</div><div class="l">NVLink-5 domain</div></div>
+        <div><div class="n">9× 1U</div><div class="l">switch trays</div></div>
+        <div><div class="n">1.8 TB/s</div><div class="l">per GPU</div></div>
       </div>
     </section>
 
     <section class="section" data-tags="power,busbar" data-xray="true">
-      <span class="tag">04 — Power side channel</span>
-      <h2>Meter <em>every watt</em>.</h2>
-      <p>Rail-level power down to the VRM and busbar. Watch draw move with your workload,
-         attribute energy per job, and catch a hot phase before it throttles you.</p>
+      <span class="tag">04 — Power</span>
+      <h2>Rail-level<br><em>power metering</em>.</h2>
+      <p>Six power shelves rectify to a 48 V DC busbar running the height of the
+         rack; each tray blind-mates onto it. We meter every shelf, every busbar
+         tap and every VRM domain, so you can attribute watts to workloads and
+         catch a degrading phase before it throttles you.</p>
       <div class="kv">
-        <div><div class="n">mV</div><div class="l">rail resolution</div></div>
-        <div><div class="n">48V</div><div class="l">DC busbar</div></div>
+        <div><div class="n">48 V</div><div class="l">DC busbar</div></div>
+        <div><div class="n">≈120 kW</div><div class="l">rack budget</div></div>
+        <div><div class="n">6×</div><div class="l">power shelves</div></div>
       </div>
     </section>
 
     <section class="section" id="provision" data-tags="" data-xray="false">
       <span class="tag">05 — Provision</span>
-      <h2>Spin up a<br><em>tray</em> in minutes.</h2>
-      <p>Choose a tray or rack from the hardware library, get bare-metal access plus the
-         full side-channel feed, and tear it down when you're done.</p>
+      <h2>Tray or rack.<br><em>Yours in minutes.</em></h2>
+      <p>Pick a configuration from the hardware library — GB200 NVL72, DGX H100,
+         or PCIe — and get bare-metal access plus the full telemetry feed.
+         Tear it down when you're done.</p>
       <div class="cta">
-        <a class="btn on" href={base + 'gallery/'}>Open the model picker →</a>
+        <a class="btn on" href={base + 'gallery/'}>Open the hardware library →</a>
       </div>
     </section>
 

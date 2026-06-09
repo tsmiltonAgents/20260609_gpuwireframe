@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import { TAG_COLORS } from './models.js';
 
-const EDGE_ANGLE = 18; // degrees — only keep meaningful edges, not triangulation
+const EDGE_ANGLE = 24; // degrees — only keep meaningful edges, not triangulation
 
 export function tagColor(tag) {
   return TAG_COLORS[tag] != null ? TAG_COLORS[tag] : TAG_COLORS.default;
@@ -16,7 +16,7 @@ export function tagColor(tag) {
 
 // Convert a freshly built model group in place. Returns a controller object.
 export function wireify(root, opts = {}) {
-  const fillColor = opts.fill != null ? opts.fill : 0x05080d;
+  const fillColor = opts.fill != null ? opts.fill : 0x14181d;
   const lines = [];   // { line, tag, baseColor, fill }
   const byTag = {};
 
@@ -28,7 +28,7 @@ export function wireify(root, opts = {}) {
     const fill = new THREE.MeshBasicMaterial({
       color: fillColor,
       transparent: true,
-      opacity: 0.82,
+      opacity: 0.94,
       polygonOffset: true,
       polygonOffsetFactor: 1,
       polygonOffsetUnits: 1,
@@ -37,12 +37,12 @@ export function wireify(root, opts = {}) {
 
     // Edge overlay
     const tag = obj.userData.tag || 'default';
-    const base = new THREE.Color(tagColor(tag));
+    const base = new THREE.Color(tagColor(tag)).offsetHSL(0, 0.02, 0.06);
     const edges = new THREE.EdgesGeometry(obj.geometry, EDGE_ANGLE);
     const lineMat = new THREE.LineBasicMaterial({
       color: base.clone(),
       transparent: true,
-      opacity: 0.95,
+      opacity: 1.0,
     });
     const line = new THREE.LineSegments(edges, lineMat);
     line.userData.tag = tag;
@@ -70,14 +70,13 @@ export function wireify(root, opts = {}) {
       for (const r of lines) {
         const on = set.size === 0 || set.has(r.tag);
         r.mat.color.copy(r.baseColor);
-        r.mat.opacity = on ? 1.0 : 0.07;
-        if (on && set.size) r.mat.color.offsetHSL(0, 0.1, 0.08);
+        r.mat.opacity = on ? 1.0 : 0.15;
       }
     },
 
     // Restore default look
     reset() {
-      for (const r of lines) { r.mat.color.copy(r.baseColor); r.mat.opacity = 0.95; }
+      for (const r of lines) { r.mat.color.copy(r.baseColor); r.mat.opacity = 1.0; }
       this.setXray(false);
     },
 
@@ -100,5 +99,5 @@ export function wireifyLoaded(root, accent = 0x3df0ff) {
     if (!obj.isMesh) return;
     obj.userData.tag = obj.userData.tag || 'default';
   });
-  return wireify(root, { fill: 0x05080d });
+  return wireify(root, { fill: 0x14181d });
 }

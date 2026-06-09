@@ -1,0 +1,48 @@
+---
+import '../styles/style.css';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8" /><title>debug</title>
+<style>body{margin:0}canvas{width:100vw;height:100vh;display:block}</style>
+</head>
+<body data-base="/">
+  <canvas id="c"></canvas>
+  <script>
+    import * as THREE from 'three';
+    import { build } from '../scripts/models.js';
+    import { wireify } from '../scripts/wireframe.js';
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get('model') || 'gb200-nvl72';
+    const az = parseFloat(params.get('az') || '30');   // azimuth degrees, 0 = front
+    const el = parseFloat(params.get('el') || '12');
+    const fit = parseFloat(params.get('fit') || '1.1');
+
+    const canvas = document.getElementById('c');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(2);
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
+    renderer.setClearColor(0x171c22, 1);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 1, 5000);
+
+    const ctrl = wireify(build(id).group);
+    scene.add(ctrl.root);
+    if (params.get('xray') === '1') ctrl.setXray(true);
+
+    const bb = new THREE.Box3().setFromObject(ctrl.root);
+    const s = bb.getBoundingSphere(new THREE.Sphere());
+    const dist = s.radius / Math.sin((camera.fov / 2) * Math.PI / 180) * fit;
+    const a = az * Math.PI / 180, e = el * Math.PI / 180;
+    camera.position.set(
+      s.center.x + dist * Math.cos(e) * Math.sin(a),
+      s.center.y + dist * Math.sin(e),
+      s.center.z - dist * Math.cos(e) * Math.cos(a));
+    camera.lookAt(s.center);
+    renderer.render(scene, camera);
+    window.__done = true;
+  </script>
+</body>
+</html>

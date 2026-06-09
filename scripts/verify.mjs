@@ -8,7 +8,7 @@ import { chromium } from 'playwright';
 const base = process.argv[2] || 'https://tsmiltonagents.github.io/20260609_gpuwireframe/';
 const pages = [
   { name: 'home', url: base, canvases: 1 },
-  { name: 'gallery', url: base + 'gallery/', canvases: 6 },
+  { name: 'gallery', url: base + 'gallery/', canvases: 7 },
 ];
 
 const browser = await chromium.launch();

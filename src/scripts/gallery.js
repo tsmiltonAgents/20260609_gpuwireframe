@@ -17,6 +17,7 @@ const LEGEND = [
   ['coldplate', 'Cold plate'], ['tube', 'Coolant loop'], ['cpu', 'CPU'],
   ['power', 'Power / VRM'], ['nic', 'Fabric / NIC'], ['drive', 'NVMe'],
   ['pcb', 'PCB'], ['frame', 'Chassis'], ['fan', 'Fan'],
+  ['busbar', 'Busbar'], ['cable', 'Cable cartridge'], ['connector', 'Connectors'],
 ];
 
 const cards = []; // { ctrl, viewer, el }
@@ -34,10 +35,11 @@ function makeCard(info, builder) {
   el.innerHTML = `
     <span class="badge tag">${info.format || 'procedural'}</span>
     <span class="fmt">${info.id}</span>
-    <div class="stage"><canvas></canvas><div class="scan"></div></div>
+    <div class="stage"><canvas></canvas></div>
     <div class="meta">
       <h3>${info.name}</h3>
       <div class="tl">${info.tagline}</div>
+      ${info.dims ? `<div class="dims">${info.dims}</div>` : ''}
       <ul class="specs">${specList(info.specs)}</ul>
       <div class="actions">
         <button class="btn act-xray">X-ray</button>
@@ -48,7 +50,7 @@ function makeCard(info, builder) {
   grid.appendChild(el);
 
   const canvas = el.querySelector('canvas');
-  const viewer = new Viewer(canvas, { autoRotate: true, autoRotateSpeed: 1.1, bloom: false });
+  const viewer = new Viewer(canvas, { autoRotate: true, autoRotateSpeed: 0.5, bloom: false });
   const ctrl = builder();
   viewer.setModel(ctrl);
   attachDragHint(el.querySelector('.stage'), canvas);

@@ -11,19 +11,23 @@ import { attachDragHint } from './drag-hint.js';
 
 // Which model? ?model=<id>, else last chosen in the gallery, else default.
 const params = new URLSearchParams(location.search);
-const chosen = params.get('model') || localStorage.getItem('scc-chosen') || 'hgx-tray';
-const modelId = MODELS.some((m) => m.id === chosen) ? chosen : 'hgx-tray';
+const chosen = params.get('model') || localStorage.getItem('scc-chosen') || 'gb200-nvl72';
+const modelId = MODELS.some((m) => m.id === chosen) ? chosen : 'gb200-nvl72';
 
 const canvas = document.getElementById('stage-canvas');
 const stage = document.querySelector('.scroll-stage');
-const viewer = new Viewer(canvas, { autoRotate: false, bloom: true, floor: true, autoPause: false });
+const viewer = new Viewer(canvas, { autoRotate: false, bloom: false, floor: true, autoPause: false });
 let ctrl = wireify(build(modelId).group);
 viewer.setModel(ctrl);
 attachDragHint(stage, canvas);
 
-// Put the model name into the hero + readout
+// Put the model name + dims into the hero + readout
+const modelInfo = MODELS.find((m) => m.id === modelId) || {};
 document.querySelectorAll('[data-model-name]').forEach((el) => {
-  el.textContent = (MODELS.find((m) => m.id === modelId) || {}).name || modelId;
+  el.textContent = modelInfo.name || modelId;
+});
+document.querySelectorAll('[data-model-dims]').forEach((el) => {
+  el.textContent = modelInfo.dims || '—';
 });
 
 // --- scroll-driven state ----------------------------------------------------
@@ -64,8 +68,8 @@ function onScroll() {
   if (xray !== lastXray) { ctrl.setXray(xray); lastXray = xray; }
 
   // readout HUD
-  document.getElementById('ro-sub').textContent = tags.length ? tags.join(' · ') : 'all subsystems';
-  document.getElementById('ro-mode').textContent = xray ? 'X-RAY' : 'SOLID';
+  document.getElementById('ro-sub').textContent = tags.length ? tags.join(' · ') : 'all';
+  document.getElementById('ro-mode').textContent = xray ? 'X-RAY' : 'ASSEMBLY';
   document.getElementById('ro-pct').textContent = Math.round(p * 100) + '%';
 }
 
