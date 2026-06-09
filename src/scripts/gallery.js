@@ -9,6 +9,9 @@ import { MODELS, build, TAG_COLORS } from './models.js';
 import { wireifyLoaded, wireify } from './wireframe.js';
 import { Viewer } from './viewer.js';
 import { attachDragHint } from './drag-hint.js';
+import { mountThemePicker } from './theme-picker.js';
+
+mountThemePicker();
 
 const BASE = ((document.body.dataset.base || '/').replace(/\/+$/, '')) + '/';
 

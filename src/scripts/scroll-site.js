@@ -7,6 +7,9 @@ import { build, MODELS } from './models.js';
 import { wireify } from './wireframe.js';
 import { Viewer } from './viewer.js';
 import { attachDragHint } from './drag-hint.js';
+import { mountThemePicker } from './theme-picker.js';
+
+mountThemePicker();
 
 // Which model? ?model=<id>, else the one picked in the Dev Model Picker.
 const params = new URLSearchParams(location.search);

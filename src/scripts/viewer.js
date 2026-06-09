@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { currentTheme } from './themes.js';
 
 export class Viewer {
   constructor(canvas, opts = {}) {
@@ -55,12 +56,23 @@ export class Viewer {
   }
 
   _addFloor() {
-    const grid = new THREE.GridHelper(400, 40, 0x2e332f, 0x232825);
-    grid.position.y = -0.01;
+    const g = (currentTheme() && currentTheme().grid) || [0x2e332f, 0x232825];
+    const grid = new THREE.GridHelper(400, 40, g[0], g[1]);
+    grid.position.y = this._grid ? this._grid.position.y : -0.01;
     grid.material.transparent = true;
     grid.material.opacity = 0.5;
+    if (this._grid) {
+      grid.scale.copy(this._grid.scale);
+      this.scene.remove(this._grid);
+      this._grid.geometry.dispose();
+      this._grid.material.dispose();
+    }
     this.scene.add(grid);
     this._grid = grid;
+    if (!this._themeListener) {
+      this._themeListener = () => this._addFloor();
+      window.addEventListener('scc-theme', this._themeListener);
+    }
   }
 
   _initBloom() {
@@ -124,6 +136,7 @@ export class Viewer {
 
   dispose() {
     this.stop();
+    if (this._themeListener) window.removeEventListener('scc-theme', this._themeListener);
     window.removeEventListener('resize', this._onResize);
     if (this._io) this._io.disconnect();
     this.renderer.dispose();

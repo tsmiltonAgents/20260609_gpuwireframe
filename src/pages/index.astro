@@ -1,5 +1,7 @@
 ---
 import '../styles/style.css';
+import '../styles/themes.css';
+import '../styles/themes-generated.css';
 const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 ---
 <!DOCTYPE html>
@@ -9,8 +11,11 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300;400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;700;900&family=VT323&family=Playfair+Display:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@300;400&family=Archivo+Black&display=swap" rel="stylesheet" />
   <title>Side Channel Cloud</title>
+  <script is:inline>
+    document.documentElement.dataset.theme = localStorage.getItem('scc-theme') || 'amodo-dark';
+  </script>
 </head>
 <body data-base={base}>
   <div class="page-frame"></div>
@@ -114,6 +119,14 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
         <div><div class="n">1 s</div><div class="l">telemetry resolution</div></div>
         <div><div class="n">3</div><div class="l">side channels exposed</div></div>
       </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref rand" href="https://www.rand.org/pubs/research_reports/RRA2849-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Securing AI Model Weights · RR-A2849</span></a>
+        <a class="ref rand" href="https://www.rand.org/pubs/working_papers/WRA3056-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Hardware-Enabled Governance Mechanisms</span></a>
+        <a class="ref cnas" href="https://www.cnas.org/publications/reports/secure-governable-chips" target="_blank" rel="noopener"><b>CNAS</b><span>Secure, Governable Chips</span></a>
+        <a class="ref substack" href="https://importai.substack.com/" target="_blank" rel="noopener"><b>Substack</b><span>Import AI — Jack Clark</span></a>
+        <a class="ref substack" href="https://www.hyperdimensional.co/" target="_blank" rel="noopener"><b>Substack</b><span>Hyperdimensional — Dean Ball</span></a>
+      </div>
     </section>
 
     <section class="section" data-tags="gpu,cpu,memory" data-xray="false">
@@ -128,10 +141,15 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
         <div><div class="n">13.5 TB</div><div class="l">HBM3e per rack</div></div>
         <div><div class="n">18× 1U</div><div class="l">compute trays</div></div>
       </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref arxiv" href="https://arxiv.org/abs/2303.11341" target="_blank" rel="noopener"><b>arXiv</b><span>2303.11341 · Catching a Chinchilla — compute monitoring</span></a>
+        <a class="ref rand" href="https://www.rand.org/pubs/working_papers/WRA3056-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Hardware-Enabled Governance Mechanisms</span></a>
+      </div>
     </section>
 
     <section class="section" data-tags="coldplate,tube,manifold" data-xray="true">
-      <span class="tag">03 — Thermal</span>
+      <span class="tag">03 — Side channels</span>
       <h2>The <em>coolant loop</em>,<br>instrumented.</h2>
       <p>Direct-to-chip cold plates on every superchip, blind-mate quick disconnects
          at the tray rear, and dual vertical manifolds carrying the rack loop.
@@ -142,10 +160,16 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
         <div><div class="n">2×</div><div class="l">rack manifolds</div></div>
         <div><div class="n">1 s</div><div class="l">sample interval</div></div>
       </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref conf" href="https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/masti" target="_blank" rel="noopener"><b>USENIX</b><span>Thermal covert channels on multi-core (Sec '15)</span></a>
+        <a class="ref conf" href="https://blog.trailofbits.com/2024/01/16/leftoverlocals-listening-to-llm-responses-through-leaked-gpu-local-memory/" target="_blank" rel="noopener"><b>ToB</b><span>LeftoverLocals — leaked GPU local memory</span></a>
+        <a class="ref rand" href="https://www.rand.org/pubs/research_reports/RRA2849-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Securing AI Model Weights · RR-A2849</span></a>
+      </div>
     </section>
 
     <section class="section" data-tags="nic,interconnect,connector,cable" data-xray="true">
-      <span class="tag">04 — Fabric</span>
+      <span class="tag">04 — Network</span>
       <h2>NVLink counters,<br><em>per link</em>.</h2>
       <p>Nine NVLink switch trays sit mid-rack, joined to every compute tray through
          a rear copper cable cartridge. Per-port bandwidth, replay and CRC error
@@ -155,6 +179,11 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
         <div><div class="n">130 TB/s</div><div class="l">NVLink-5 domain</div></div>
         <div><div class="n">9× 1U</div><div class="l">switch trays</div></div>
         <div><div class="n">1.8 TB/s</div><div class="l">per GPU</div></div>
+      </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref conf" href="https://www.vusec.net/projects/netcat/" target="_blank" rel="noopener"><b>S&P</b><span>NetCAT — network cache attacks (S&P '20)</span></a>
+        <a class="ref conf" href="https://www.cs.ucr.edu/~nael/pubs/ccs18.pdf" target="_blank" rel="noopener"><b>CCS</b><span>Rendered Insecure — practical GPU side channels (CCS '18)</span></a>
       </div>
     </section>
 
@@ -170,10 +199,35 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
         <div><div class="n">≈120 kW</div><div class="l">rack budget</div></div>
         <div><div class="n">6×</div><div class="l">power shelves</div></div>
       </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref conf" href="https://www.hertzbleed.com/" target="_blank" rel="noopener"><b>USENIX</b><span>Hertzbleed — power into remote timing (Sec '22)</span></a>
+        <a class="ref conf" href="https://platypusattack.com/" target="_blank" rel="noopener"><b>S&P</b><span>PLATYPUS — software power side channels (S&P '21)</span></a>
+      </div>
+    </section>
+
+    <section class="section" data-tags="connector,busbar,tube" data-xray="true">
+      <span class="tag">06 — Taps</span>
+      <h2>Physical <em>taps</em>,<br>by design.</h2>
+      <p>Every blind-mate interface in the rack is a sanctioned probe point: busbar
+         taps for current waveforms, QD ports for loop sensing, NVLink cartridge
+         connectors for fabric capture, and BMC/debug headers on every tray. Bring
+         a scope, a logic analyser, or our interposers — the access is contractual,
+         not adversarial.</p>
+      <div class="kv">
+        <div><div class="n">3+</div><div class="l">tap classes / tray</div></div>
+        <div><div class="n">BMC</div><div class="l">out-of-band, yours</div></div>
+        <div><div class="n">scope-ready</div><div class="l">probe fixtures</div></div>
+      </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref arxiv" href="https://arxiv.org/abs/2408.16074" target="_blank" rel="noopener"><b>arXiv</b><span>2408.16074 · Verification for international AI agreements</span></a>
+        <a class="ref cnas" href="https://www.cnas.org/publications/reports/secure-governable-chips" target="_blank" rel="noopener"><b>CNAS</b><span>Secure, Governable Chips</span></a>
+      </div>
     </section>
 
     <section class="section" id="provision" data-tags="" data-xray="false">
-      <span class="tag">06 — Provision</span>
+      <span class="tag">07 — Provision</span>
       <h2>Tray or rack.<br><em>Yours in minutes.</em></h2>
       <p>Pick your dev model from the picker — GB200 NVL72, DGX H100, or PCIe —
          register your interest above, and get bare-metal access plus the full
@@ -181,6 +235,12 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
       <div class="cta">
         <a class="btn" href={base + 'gallery/'}>Open the Dev Model Picker →</a>
         <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Get Access Today ↑</a>
+      </div>
+      <div class="refs">
+        <span class="refs-label">Further reading</span>
+        <a class="ref arxiv" href="https://arxiv.org/abs/2303.11341" target="_blank" rel="noopener"><b>arXiv</b><span>2303.11341 · Compute monitoring</span></a>
+        <a class="ref arxiv" href="https://arxiv.org/abs/2408.16074" target="_blank" rel="noopener"><b>arXiv</b><span>2408.16074 · Treaty verification methods</span></a>
+        <a class="ref substack" href="https://importai.substack.com/" target="_blank" rel="noopener"><b>Substack</b><span>Import AI</span></a>
       </div>
     </section>
 

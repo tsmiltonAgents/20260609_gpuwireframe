@@ -37,6 +37,16 @@ Design language is a dark-mode riff on [Amodo Design](https://amododesign.com/)
 (IBM Plex Serif/Sans/Mono, teal + terracotta on warm dark slate, rounded
 hairline page frame, numbered nav).
 
+## Design systems
+
+Ten switchable themes (bottom-right picker, `t` to cycle): Amodo Dark (default),
+Blueprint, Phosphor, Preprint (paper), Brutalist, Swiss, Synthwave, Mission
+Control, Noir, Acid Lab. Eight were designed by parallel agents against a token
+contract (`scripts/build-themes.mjs` regenerates from `themes-design.json`).
+Each theme restyles the full site *and* re-tints the 3D wireframe layer
+palette live. Reference chips (arXiv / RAND / CNAS / Substack / conference)
+link out from every section.
+
 ## Dev
 
 ```sh

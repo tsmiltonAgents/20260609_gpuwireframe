@@ -1,0 +1,30 @@
+/* themes.css — per-theme token blocks. Default (Amodo Dark) lives in
+   style.css :root; each theme overrides tokens + adds scoped effects. */
+
+/* ---- Blueprint: cyanotype drawing office ---- */
+[data-theme="blueprint"] {
+  --bg: #0c2d5c; --bg-2: #0a2750; --panel: #103568;
+  --border: rgba(220, 233, 251, 0.28); --border-soft: rgba(220, 233, 251, 0.14);
+  --cream: #f2f7ff; --teal: #7fd4ff; --terra: #ffd9a3; --violet: #c4c9ff;
+  --text: #dce9fb; --text-dim: #a9c4e8; --text-faint: #7d9cc8;
+  --glass: rgba(10, 39, 80, 0.88);
+  --display: "IBM Plex Mono", monospace; --serif: "IBM Plex Serif", serif;
+  --sans: "IBM Plex Sans", sans-serif; --mono: "IBM Plex Mono", monospace;
+}
+[data-theme="blueprint"] body {
+  background-image:
+    linear-gradient(rgba(220,233,251,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220,233,251,0.045) 1px, transparent 1px),
+    linear-gradient(rgba(220,233,251,0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220,233,251,0.09) 1px, transparent 1px);
+  background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+}
+[data-theme="blueprint"] h1, [data-theme="blueprint"] h2, [data-theme="blueprint"] h3 {
+  text-transform: uppercase; letter-spacing: 0.04em; font-weight: 400;
+}
+[data-theme="blueprint"] .hero h1 { font-size: clamp(2.2rem, 4vw, 3.6rem); }
+[data-theme="blueprint"] .card, [data-theme="blueprint"] .access-card { border-style: dashed; border-radius: 4px; }
+[data-theme="blueprint"] .page-frame { border-style: dashed; border-radius: 4px; border-width: 1.5px; }
+[data-theme="blueprint"] .cta-btn { border-radius: 4px; background: var(--teal); border-color: var(--teal); color: #0c2d5c; }
+[data-theme="blueprint"] .tag { border: 1px dashed var(--border); padding: 4px 9px; }
+[data-theme="blueprint"] .titleblock { border: 1.5px solid var(--border); border-radius: 0; }

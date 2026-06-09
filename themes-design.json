@@ -1,0 +1,498 @@
+[
+  {
+    "blurb": "1980s green-phosphor terminal",
+    "dark": true,
+    "extraCSS": "[data-theme=\"phosphor\"] body{background:#000000;}\n[data-theme=\"phosphor\"] body::after{content:\"\";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.28) 0px,rgba(0,0,0,0.28) 1px,transparent 1px,transparent 3px);opacity:0.4;}\n[data-theme=\"phosphor\"] body::before{content:\"\";position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(ellipse 120% 90% at 50% 35%,rgba(51,255,102,0.045),transparent 70%);}\n[data-theme=\"phosphor\"] h1,[data-theme=\"phosphor\"] h2,[data-theme=\"phosphor\"] h3{text-transform:uppercase;letter-spacing:0.03em;}\n[data-theme=\"phosphor\"] h1{text-shadow:0 0 6px rgba(51,255,102,0.6),0 0 28px rgba(51,255,102,0.28);}\n[data-theme=\"phosphor\"] .hero h1{text-shadow:0 0 8px rgba(51,255,102,0.65),0 0 40px rgba(51,255,102,0.3);}\n[data-theme=\"phosphor\"] .hero h1::after{content:\"\\258C\";color:#33ff66;opacity:0.7;margin-left:0.08em;}\n[data-theme=\"phosphor\"] h2::before{content:\"> \";color:#33ff66;text-shadow:0 0 10px rgba(51,255,102,0.5);}\n[data-theme=\"phosphor\"] .card,[data-theme=\"phosphor\"] .access-card,[data-theme=\"phosphor\"] .cta-btn,[data-theme=\"phosphor\"] .btn,[data-theme=\"phosphor\"] .tp-toggle,[data-theme=\"phosphor\"] .tp-panel,[data-theme=\"phosphor\"] .readout,[data-theme=\"phosphor\"] .titleblock,[data-theme=\"phosphor\"] .tag,[data-theme=\"phosphor\"] .refs .ref,[data-theme=\"phosphor\"] .picked-flag,[data-theme=\"phosphor\"] .page-frame{border-radius:0;}\n[data-theme=\"phosphor\"] .card,[data-theme=\"phosphor\"] .access-card{box-shadow:inset 0 0 0 1px rgba(51,255,102,0.08),0 0 24px rgba(51,255,102,0.04);}\n[data-theme=\"phosphor\"] .cta-btn,[data-theme=\"phosphor\"] .btn{text-transform:uppercase;letter-spacing:0.1em;border:1px solid rgba(51,255,102,0.6);background:rgba(51,255,102,0.06);color:#9dffba;}\n[data-theme=\"phosphor\"] .cta-btn:hover,[data-theme=\"phosphor\"] .btn:hover{background:#33ff66;color:#000000;text-shadow:none;}\n[data-theme=\"phosphor\"] .readout,[data-theme=\"phosphor\"] .titleblock,[data-theme=\"phosphor\"] .kv .n{text-shadow:0 0 5px rgba(51,255,102,0.35);}\n[data-theme=\"phosphor\"] .tag{text-transform:uppercase;letter-spacing:0.08em;border:1px solid rgba(51,255,102,0.3);}\n[data-theme=\"phosphor\"] .refs .ref{border:1px solid rgba(51,255,102,0.25);background:rgba(51,255,102,0.04);}\n[data-theme=\"phosphor\"] .refs .ref:hover{border-color:rgba(51,255,102,0.7);background:rgba(51,255,102,0.1);}\n[data-theme=\"phosphor\"] .picked-flag{background:#33ff66;color:#000000;text-transform:uppercase;letter-spacing:0.08em;}\n[data-theme=\"phosphor\"] .drag-hint{text-transform:uppercase;letter-spacing:0.12em;color:#2aa353;}\n[data-theme=\"phosphor\"] ::selection{background:#33ff66;color:#000000;text-shadow:none;}",
+    "fill": "#04120a",
+    "fonts": {
+      "display": "\"VT323\", \"JetBrains Mono\", monospace",
+      "serif": "\"JetBrains Mono\", \"Courier New\", monospace",
+      "sans": "\"JetBrains Mono\", \"Courier New\", monospace",
+      "mono": "\"JetBrains Mono\", \"Courier New\", monospace"
+    },
+    "grid": [
+      "#0d3d1d",
+      "#06200f"
+    ],
+    "id": "phosphor",
+    "name": "Phosphor",
+    "swatches": [
+      "#000000",
+      "#33ff66",
+      "#ffb000"
+    ],
+    "tags": {
+      "frame": "#167a36",
+      "chassis": "#135f2c",
+      "rail": "#18873c",
+      "pcb": "#29b356",
+      "gpu": "#43ff78",
+      "heatsink": "#23a352",
+      "coldplate": "#2fbf73",
+      "tube": "#27b377",
+      "manifold": "#1f9c66",
+      "memory": "#2ed95e",
+      "cpu": "#36e668",
+      "power": "#ffb000",
+      "busbar": "#d98f00",
+      "fan": "#1f9447",
+      "nic": "#2bcf66",
+      "interconnect": "#30d98a",
+      "cable": "#1d8f5a",
+      "drive": "#26a64f",
+      "connector": "#38d96b",
+      "bezel": "#11512a",
+      "label": "#57f08f",
+      "default": "#1f9447"
+    },
+    "vars": {
+      "bg": "#000000",
+      "bg2": "#010903",
+      "panel": "rgba(0, 22, 8, 0.55)",
+      "border": "rgba(51, 255, 102, 0.35)",
+      "borderSoft": "rgba(51, 255, 102, 0.14)",
+      "cream": "#b3ffcc",
+      "teal": "#1adb8c",
+      "terra": "#33ff66",
+      "violet": "#ffb000",
+      "text": "#43e070",
+      "textDim": "#2aa353",
+      "textFaint": "#176b35",
+      "glass": "rgba(0, 18, 7, 0.72)"
+    }
+  },
+  {
+    "blurb": "arXiv preprint on warm paper",
+    "dark": false,
+    "extraCSS": "[data-theme=\"paper\"] body { background: #f5f1e6; }\n[data-theme=\"paper\"] body::before, [data-theme=\"paper\"] body::after { display: none; }\n[data-theme=\"paper\"] h1, [data-theme=\"paper\"] h2, [data-theme=\"paper\"] h3 { text-transform: none; letter-spacing: 0; font-weight: 600; color: #1a1a1a; }\n[data-theme=\"paper\"] .hero h1 { font-weight: 700; letter-spacing: -0.015em; line-height: 1.08; }\n[data-theme=\"paper\"] .section { border-color: rgba(26,26,26,0.18); }\n[data-theme=\"paper\"] .tag { font-family: \"Source Serif 4\", Georgia, serif; font-variant-caps: small-caps; text-transform: lowercase; letter-spacing: 0.16em; font-weight: 600; color: #b31b1b; background: transparent; border: none; border-radius: 0; padding-left: 0; }\n[data-theme=\"paper\"] .card, [data-theme=\"paper\"] .access-card { background: #fffdf7; border: 1px solid #1a1a1a; border-radius: 2px; box-shadow: 2px 2px 0 rgba(26,26,26,0.12); }\n[data-theme=\"paper\"] .card:hover { box-shadow: 3px 3px 0 rgba(179,27,27,0.22); border-color: #b31b1b; }\n[data-theme=\"paper\"] .cta-btn { background: #b31b1b; color: #fffdf7; border: 1px solid #7e1111; border-radius: 2px; text-transform: none; letter-spacing: 0.02em; font-weight: 600; box-shadow: 2px 2px 0 rgba(26,26,26,0.25); }\n[data-theme=\"paper\"] .cta-btn:hover { background: #911414; color: #ffffff; box-shadow: 1px 1px 0 rgba(26,26,26,0.25); }\n[data-theme=\"paper\"] .btn { border: 1px solid rgba(26,26,26,0.55); border-radius: 2px; color: #1f1d18; background: transparent; }\n[data-theme=\"paper\"] .btn:hover { border-color: #b31b1b; color: #b31b1b; background: rgba(179,27,27,0.05); }\n[data-theme=\"paper\"] .page-frame { border: 1px solid #1a1a1a; border-radius: 0; box-shadow: none; }\n[data-theme=\"paper\"] .readout { font-family: \"JetBrains Mono\", monospace; background: rgba(245,241,230,0.92); border: 1px solid rgba(26,26,26,0.35); border-radius: 2px; color: #1f1d18; }\n[data-theme=\"paper\"] .titleblock { border-top: 2px solid #1a1a1a; border-bottom: 1px solid rgba(26,26,26,0.35); background: transparent; }\n[data-theme=\"paper\"] .kv .n { color: #b31b1b; font-family: \"JetBrains Mono\", monospace; font-weight: 600; }\n[data-theme=\"paper\"] .refs .ref { border: 1px solid rgba(26,26,26,0.4); border-radius: 2px; background: #fffdf7; color: #1f3a5f; font-family: \"JetBrains Mono\", monospace; font-size: 0.85em; }\n[data-theme=\"paper\"] .refs .ref:hover { border-color: #b31b1b; color: #b31b1b; background: rgba(179,27,27,0.05); }\n[data-theme=\"paper\"] .picked-flag { background: #b31b1b; color: #fffdf7; border-radius: 2px; font-variant-caps: small-caps; text-transform: lowercase; letter-spacing: 0.1em; }\n[data-theme=\"paper\"] .tp-toggle { background: rgba(245,241,230,0.92); border: 1px solid rgba(26,26,26,0.45); border-radius: 2px; color: #1f1d18; }\n[data-theme=\"paper\"] .tp-panel { background: rgba(255,253,247,0.96); border: 1px solid #1a1a1a; border-radius: 2px; box-shadow: 3px 3px 0 rgba(26,26,26,0.12); }\n[data-theme=\"paper\"] .drag-hint { font-style: italic; font-family: \"Source Serif 4\", Georgia, serif; color: #8a8474; }\n[data-theme=\"paper\"] ::selection { background: rgba(179,27,27,0.18); color: #1a1a1a; }",
+    "fill": "#f0ece0",
+    "fonts": {
+      "display": "\"Source Serif 4\", Georgia, serif",
+      "serif": "\"Source Serif 4\", Georgia, serif",
+      "sans": "\"Source Serif 4\", Georgia, serif",
+      "mono": "\"JetBrains Mono\", \"Courier New\", monospace"
+    },
+    "grid": [
+      "#d6d0bf",
+      "#e7e2d3"
+    ],
+    "id": "paper",
+    "name": "Preprint",
+    "swatches": [
+      "#f5f1e6",
+      "#b31b1b",
+      "#1f3a5f"
+    ],
+    "tags": {
+      "frame": "#33302a",
+      "chassis": "#555044",
+      "rail": "#6e6859",
+      "pcb": "#56604f",
+      "gpu": "#b31b1b",
+      "heatsink": "#7d776a",
+      "coldplate": "#4e6e7e",
+      "tube": "#3f7373",
+      "manifold": "#356060",
+      "memory": "#8a2a2a",
+      "cpu": "#703550",
+      "power": "#1f3a5f",
+      "busbar": "#2c4a73",
+      "fan": "#847d6c",
+      "nic": "#8a6a30",
+      "interconnect": "#6a5a8a",
+      "cable": "#7a4a3a",
+      "drive": "#5f594c",
+      "connector": "#8a6535",
+      "bezel": "#46423a",
+      "label": "#9a9484",
+      "default": "#5c574b"
+    },
+    "vars": {
+      "bg": "#f5f1e6",
+      "bg2": "#f5f1e6",
+      "panel": "rgba(255, 253, 247, 0.96)",
+      "border": "rgba(26, 26, 26, 0.55)",
+      "borderSoft": "rgba(26, 26, 26, 0.16)",
+      "cream": "#1a1a1a",
+      "teal": "#1f3a5f",
+      "terra": "#b31b1b",
+      "violet": "#5c5470",
+      "text": "#1f1d18",
+      "textDim": "#4a463c",
+      "textFaint": "#8a8474",
+      "glass": "rgba(245, 241, 230, 0.92)"
+    }
+  },
+  {
+    "blurb": "Black, white, safety yellow",
+    "dark": false,
+    "extraCSS": "[data-theme=\"brutalist\"] *, [data-theme=\"brutalist\"] *::before, [data-theme=\"brutalist\"] *::after { border-radius: 0 !important; }\n[data-theme=\"brutalist\"] body { background: #ffffff; }\n[data-theme=\"brutalist\"] h1, [data-theme=\"brutalist\"] h2, [data-theme=\"brutalist\"] h3 { text-transform: uppercase; letter-spacing: -0.03em; color: #000000; }\n[data-theme=\"brutalist\"] .hero h1 { font-size: clamp(3rem, 9vw, 6rem); line-height: 0.92; letter-spacing: -0.03em; }\n[data-theme=\"brutalist\"] .section h2 { font-size: clamp(1.8rem, 4vw, 3rem); }\n[data-theme=\"brutalist\"] ::selection { background: #ffe600; color: #000000; }\n[data-theme=\"brutalist\"] .page-frame { border: 2px solid #000000; }\n[data-theme=\"brutalist\"] .card, [data-theme=\"brutalist\"] .access-card { background: #ffffff; border: 2px solid #000000; box-shadow: 6px 6px 0 #000000; }\n[data-theme=\"brutalist\"] .card { transition: transform 120ms ease, box-shadow 120ms ease; }\n[data-theme=\"brutalist\"] .card:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 #000000; }\n[data-theme=\"brutalist\"] .card.picked { box-shadow: 6px 6px 0 #ffe600, 6px 6px 0 2px #000000; }\n[data-theme=\"brutalist\"] .cta-btn { background: #000000; color: #ffe600; border: 2px solid #000000; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; box-shadow: 6px 6px 0 rgba(0,0,0,0.2); transition: background 120ms ease, color 120ms ease, transform 120ms ease; }\n[data-theme=\"brutalist\"] .cta-btn:hover { background: #ffe600; color: #000000; transform: translate(-1px, -1px); }\n[data-theme=\"brutalist\"] .btn { background: #ffffff; color: #000000; border: 2px solid #000000; text-transform: uppercase; letter-spacing: 0.05em; }\n[data-theme=\"brutalist\"] .btn:hover { background: #000000; color: #ffffff; }\n[data-theme=\"brutalist\"] .tp-toggle, [data-theme=\"brutalist\"] .tp-panel { background: #ffffff; border: 2px solid #000000; box-shadow: 4px 4px 0 #000000; }\n[data-theme=\"brutalist\"] .tag { background: #ffffff; color: #000000; border: 1px solid #000000; text-transform: uppercase; letter-spacing: 0.08em; font-family: \"JetBrains Mono\", monospace; }\n[data-theme=\"brutalist\"] .picked-flag { background: #ffe600; color: #000000; border: 2px solid #000000; text-transform: uppercase; font-weight: 700; letter-spacing: 0.06em; }\n[data-theme=\"brutalist\"] .refs .ref { background: #ffffff; color: #000000; border: 2px solid #000000; box-shadow: 3px 3px 0 #000000; transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease; }\n[data-theme=\"brutalist\"] .refs .ref:hover { background: #ffe600; transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #000000; }\n[data-theme=\"brutalist\"] .readout { background: rgba(255,255,255,0.92); border: 1px solid #000000; color: #000000; font-family: \"JetBrains Mono\", monospace; }\n[data-theme=\"brutalist\"] .titleblock { border: 2px solid #000000; background: #ffffff; font-family: \"JetBrains Mono\", monospace; text-transform: uppercase; }\n[data-theme=\"brutalist\"] .kv .n { color: #000000; font-family: \"JetBrains Mono\", monospace; font-weight: 700; }\n[data-theme=\"brutalist\"] .drag-hint { color: #000000; border: 1px dashed rgba(0,0,0,0.45); background: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.1em; font-family: \"JetBrains Mono\", monospace; }",
+    "fill": "#f4f4f4",
+    "fonts": {
+      "display": "\"Archivo Black\", \"Inter\", sans-serif",
+      "serif": "\"Source Serif 4\", Georgia, serif",
+      "sans": "\"Inter\", \"IBM Plex Sans\", sans-serif",
+      "mono": "\"JetBrains Mono\", \"IBM Plex Mono\", monospace"
+    },
+    "grid": [
+      "#dcdcdc",
+      "#eeeeee"
+    ],
+    "id": "brutalist",
+    "name": "Brutalist",
+    "swatches": [
+      "#ffffff",
+      "#000000",
+      "#ffe600"
+    ],
+    "tags": {
+      "frame": "#1a1a1a",
+      "chassis": "#383838",
+      "rail": "#5c5c5c",
+      "pcb": "#4a4a4a",
+      "gpu": "#d4a900",
+      "heatsink": "#8c8c8c",
+      "coldplate": "#767676",
+      "tube": "#9a9a9a",
+      "manifold": "#6e6e6e",
+      "memory": "#3d3d3d",
+      "cpu": "#111111",
+      "power": "#525252",
+      "busbar": "#a88700",
+      "fan": "#828282",
+      "nic": "#454545",
+      "interconnect": "#2b2b2b",
+      "cable": "#707070",
+      "drive": "#5e5e5e",
+      "connector": "#494949",
+      "bezel": "#333333",
+      "label": "#969696",
+      "default": "#444444"
+    },
+    "vars": {
+      "bg": "#ffffff",
+      "bg2": "#ffffff",
+      "panel": "#ffffff",
+      "border": "#000000",
+      "borderSoft": "rgba(0,0,0,0.25)",
+      "cream": "#000000",
+      "teal": "#ffe600",
+      "terra": "#000000",
+      "violet": "#555555",
+      "text": "#000000",
+      "textDim": "#2e2e2e",
+      "textFaint": "#6b6b6b",
+      "glass": "rgba(255,255,255,0.92)"
+    }
+  },
+  {
+    "blurb": "Grid, Helvetica spirit, functional red",
+    "dark": false,
+    "extraCSS": "[data-theme=\"swiss\"] h1, [data-theme=\"swiss\"] h2, [data-theme=\"swiss\"] h3 { font-weight: 700; letter-spacing: -0.02em; text-transform: none; }\n[data-theme=\"swiss\"] .hero h1 { font-weight: 700; letter-spacing: -0.035em; line-height: 0.98; }\n[data-theme=\"swiss\"] .section { border-top: 1px solid #d8d4ca; }\n[data-theme=\"swiss\"] .card, [data-theme=\"swiss\"] .access-card { border-top: 4px solid #d92b2b; border-radius: 0; box-shadow: none; }\n[data-theme=\"swiss\"] .card:hover { box-shadow: 0 1px 0 rgba(17,17,17,0.18); }\n[data-theme=\"swiss\"] .tag { border-bottom: none; text-transform: uppercase; letter-spacing: 0.08em; }\n[data-theme=\"swiss\"] .tag::before { content: \"\"; display: inline-block; width: 0.55em; height: 0.55em; background: #d92b2b; margin-right: 0.55em; transform: translateY(-0.04em); }\n[data-theme=\"swiss\"] .cta-btn { background: #d92b2b; color: #ffffff; border: none; border-radius: 0; font-weight: 700; letter-spacing: 0.02em; }\n[data-theme=\"swiss\"] .cta-btn:hover { background: #b81f1f; color: #ffffff; }\n[data-theme=\"swiss\"] .btn { border-radius: 0; border: 1px solid rgba(17,17,17,0.35); color: #111111; }\n[data-theme=\"swiss\"] .btn:hover { border-color: #111111; }\n[data-theme=\"swiss\"] .page-frame { display: none; }\n[data-theme=\"swiss\"] .refs .ref { border-radius: 0; border: 1px solid rgba(17,17,17,0.22); background: #fcfbf7; }\n[data-theme=\"swiss\"] .refs .ref:hover { border-color: #d92b2b; color: #d92b2b; }\n[data-theme=\"swiss\"] .readout { border-radius: 0; border: 1px solid rgba(17,17,17,0.16); border-left: 3px solid #1f4fd8; }\n[data-theme=\"swiss\"] .titleblock { border-radius: 0; border: 1px solid rgba(17,17,17,0.16); text-transform: uppercase; letter-spacing: 0.06em; }\n[data-theme=\"swiss\"] .kv .n { color: #d92b2b; font-weight: 700; }\n[data-theme=\"swiss\"] .picked-flag { background: #d92b2b; color: #ffffff; border-radius: 0; text-transform: uppercase; letter-spacing: 0.1em; }\n[data-theme=\"swiss\"] .tp-toggle, [data-theme=\"swiss\"] .tp-panel { border-radius: 0; border: 1px solid rgba(17,17,17,0.22); }\n[data-theme=\"swiss\"] .drag-hint { border-radius: 0; text-transform: uppercase; letter-spacing: 0.12em; color: #4a4a45; }\n[data-theme=\"swiss\"] ::selection { background: #d92b2b; color: #ffffff; }\n[data-theme=\"swiss\"] a { text-decoration-thickness: 1px; text-underline-offset: 0.18em; }",
+    "fill": "#ece9e1",
+    "fonts": {
+      "display": "\"Inter\", \"Helvetica Neue\", Arial, sans-serif",
+      "serif": "\"Source Serif 4\", Georgia, serif",
+      "sans": "\"Inter\", \"Helvetica Neue\", Arial, sans-serif",
+      "mono": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace"
+    },
+    "grid": [
+      "#d8d4ca",
+      "#e4e0d6"
+    ],
+    "id": "swiss",
+    "name": "Swiss",
+    "swatches": [
+      "#f4f2ed",
+      "#d92b2b",
+      "#1f4fd8"
+    ],
+    "tags": {
+      "frame": "#2a2a27",
+      "chassis": "#4a4a45",
+      "rail": "#6b6960",
+      "pcb": "#5f5d55",
+      "gpu": "#d92b2b",
+      "heatsink": "#8a887f",
+      "coldplate": "#3a63d6",
+      "tube": "#1f4fd8",
+      "manifold": "#2f4db0",
+      "memory": "#9c2f2f",
+      "cpu": "#262624",
+      "power": "#d39c04",
+      "busbar": "#a87d05",
+      "fan": "#74726a",
+      "nic": "#55534c",
+      "interconnect": "#383631",
+      "cable": "#94917f",
+      "drive": "#7d7b72",
+      "connector": "#86837a",
+      "bezel": "#35332e",
+      "label": "#1a1a1a",
+      "default": "#5a5850"
+    },
+    "vars": {
+      "bg": "#f4f2ed",
+      "bg2": "#f0ede5",
+      "panel": "#fcfbf7",
+      "border": "rgba(17,17,17,0.18)",
+      "borderSoft": "rgba(17,17,17,0.09)",
+      "cream": "#111111",
+      "teal": "#1f4fd8",
+      "terra": "#d92b2b",
+      "violet": "#f2b705",
+      "text": "#1a1a1a",
+      "textDim": "#4a4a45",
+      "textFaint": "#8a877e",
+      "glass": "rgba(244,242,237,0.84)"
+    }
+  },
+  {
+    "blurb": "Neon grid, outrun horizon",
+    "dark": true,
+    "extraCSS": "[data-theme=\"synthwave\"] body::before {\n  content: \"\"; position: fixed; inset: 0; pointer-events: none; z-index: 0;\n  background: radial-gradient(120% 55% at 50% 110%, rgba(255,62,200,0.18), rgba(255,62,200,0.05) 45%, rgba(255,62,200,0) 72%), linear-gradient(to top, rgba(46,230,255,0.04), rgba(46,230,255,0) 28%);\n}\n[data-theme=\"synthwave\"] h1, [data-theme=\"synthwave\"] h2 {\n  text-transform: uppercase; letter-spacing: 0.05em;\n}\n[data-theme=\"synthwave\"] h1 em, [data-theme=\"synthwave\"] h2 em {\n  font-style: normal; color: #ff7adb;\n  text-shadow: 0 0 10px rgba(255,62,200,0.85), 0 0 34px rgba(255,62,200,0.4);\n}\n[data-theme=\"synthwave\"] .hero h1 em {\n  background: linear-gradient(100deg, #ff3ec8 8%, #ff8a3d 48%, #2ee6ff 95%);\n  -webkit-background-clip: text; background-clip: text;\n  -webkit-text-fill-color: transparent; color: transparent;\n  text-shadow: none; filter: drop-shadow(0 0 16px rgba(255,62,200,0.45));\n}\n[data-theme=\"synthwave\"] .btn, [data-theme=\"synthwave\"] .cta-btn { border-radius: 999px; }\n[data-theme=\"synthwave\"] .cta-btn {\n  background: linear-gradient(135deg, #ff3ec8, #d81fff);\n  color: #fff5fc; border: 1px solid rgba(255,150,222,0.7);\n  text-shadow: 0 0 8px rgba(255,255,255,0.45);\n  box-shadow: 0 0 18px rgba(255,62,200,0.55), 0 0 52px rgba(255,62,200,0.22), inset 0 0 12px rgba(255,255,255,0.14);\n  transition: box-shadow 0.25s ease;\n}\n[data-theme=\"synthwave\"] .cta-btn:hover {\n  box-shadow: 0 0 28px rgba(255,62,200,0.85), 0 0 80px rgba(255,62,200,0.35), inset 0 0 16px rgba(255,255,255,0.22);\n}\n[data-theme=\"synthwave\"] .page-frame {\n  border: 1px solid rgba(46,230,255,0.42);\n  box-shadow: 0 0 22px rgba(46,230,255,0.16), inset 0 0 26px rgba(46,230,255,0.05);\n}\n[data-theme=\"synthwave\"] .card {\n  background: linear-gradient(165deg, rgba(40,9,76,0.55), rgba(14,0,29,0.75));\n  transition: border-color 0.25s ease, box-shadow 0.25s ease;\n}\n[data-theme=\"synthwave\"] .card:hover {\n  border-color: rgba(46,230,255,0.55);\n  box-shadow: 0 0 20px rgba(46,230,255,0.18), inset 0 0 18px rgba(46,230,255,0.05);\n}\n[data-theme=\"synthwave\"] .access-card {\n  background: linear-gradient(180deg, rgba(42,10,80,0.82), rgba(18,0,36,0.92));\n  border: 1px solid rgba(255,62,200,0.38);\n  box-shadow: 0 0 34px rgba(255,62,200,0.14), inset 0 0 24px rgba(255,62,200,0.05);\n}\n[data-theme=\"synthwave\"] .refs .ref { border-radius: 999px; border: 1px solid rgba(46,230,255,0.32); }\n[data-theme=\"synthwave\"] .refs .ref:hover {\n  border-color: rgba(255,62,200,0.65); box-shadow: 0 0 14px rgba(255,62,200,0.3);\n}\n[data-theme=\"synthwave\"] .tag {\n  border-radius: 999px; border: 1px solid rgba(46,230,255,0.3);\n  color: #6ee7ff; text-shadow: 0 0 6px rgba(46,230,255,0.45);\n}\n[data-theme=\"synthwave\"] .picked-flag { color: #ff3ec8; text-shadow: 0 0 10px rgba(255,62,200,0.7); }\n[data-theme=\"synthwave\"] .kv .n { color: #2ee6ff; text-shadow: 0 0 8px rgba(46,230,255,0.5); }\n[data-theme=\"synthwave\"] .readout { border: 1px solid rgba(46,230,255,0.26); box-shadow: inset 0 0 14px rgba(46,230,255,0.05); }\n[data-theme=\"synthwave\"] .drag-hint { color: #b07ff5; text-shadow: 0 0 8px rgba(157,107,255,0.5); }\n[data-theme=\"synthwave\"] ::selection { background: rgba(255,62,200,0.45); color: #fff8fd; }",
+    "fill": "#0e001d",
+    "fonts": {
+      "display": "\"Orbitron\", \"Space Grotesk\", sans-serif",
+      "serif": "\"Space Grotesk\", \"IBM Plex Serif\", serif",
+      "sans": "\"Space Grotesk\", \"Inter\", sans-serif",
+      "mono": "\"JetBrains Mono\", \"IBM Plex Mono\", monospace"
+    },
+    "grid": [
+      "#2a1150",
+      "#1b0a36"
+    ],
+    "id": "synthwave",
+    "name": "Synthwave",
+    "swatches": [
+      "#120024",
+      "#ff3ec8",
+      "#2ee6ff"
+    ],
+    "tags": {
+      "frame": "#35dff2",
+      "chassis": "#56b8d8",
+      "rail": "#2f93bd",
+      "pcb": "#8e5cf0",
+      "gpu": "#ff3ec8",
+      "heatsink": "#4fa9cc",
+      "coldplate": "#5fe0d6",
+      "tube": "#3ac9bc",
+      "manifold": "#2c9aae",
+      "memory": "#ff7adb",
+      "cpu": "#ff5fb0",
+      "power": "#ff8a3d",
+      "busbar": "#ffb066",
+      "fan": "#6f86c8",
+      "nic": "#c95ff0",
+      "interconnect": "#a87cf2",
+      "cable": "#d65a9d",
+      "drive": "#7e95c9",
+      "connector": "#e89a55",
+      "bezel": "#7d6bb0",
+      "label": "#cdb8e8",
+      "default": "#69589a"
+    },
+    "vars": {
+      "bg": "#120024",
+      "bg2": "#0b0018",
+      "panel": "rgba(34, 8, 64, 0.62)",
+      "border": "rgba(46, 230, 255, 0.24)",
+      "borderSoft": "rgba(157, 107, 255, 0.13)",
+      "cream": "#f8eeff",
+      "teal": "#2ee6ff",
+      "terra": "#ff3ec8",
+      "violet": "#9d6bff",
+      "text": "#e6d8f7",
+      "textDim": "#b09bd4",
+      "textFaint": "#7a64a6",
+      "glass": "rgba(18, 0, 36, 0.66)"
+    }
+  },
+  {
+    "blurb": "Apollo console amber on navy",
+    "dark": true,
+    "extraCSS": "[data-theme=\"mission\"] h1, [data-theme=\"mission\"] h2, [data-theme=\"mission\"] h3 { font-family: \"IBM Plex Mono\", monospace; text-transform: uppercase; letter-spacing: 0.06em; }\n[data-theme=\"mission\"] .hero h1 { text-shadow: 0 0 24px rgba(234,242,255,0.18); }\n[data-theme=\"mission\"] .hero h1::after { content: \"▌\"; color: #ffb000; margin-left: 0.1em; animation: mission-blink 1.1s steps(2, start) infinite; }\n@keyframes mission-blink { to { visibility: hidden; } }\n[data-theme=\"mission\"] body::after { content: \"\"; position: fixed; inset: 0; pointer-events: none; z-index: 4; background: repeating-linear-gradient(0deg, rgba(234,242,255,0.022) 0 1px, transparent 1px 3px); }\n[data-theme=\"mission\"] .kv .n { color: #ffb000; font-family: \"IBM Plex Mono\", monospace; }\n[data-theme=\"mission\"] .card, [data-theme=\"mission\"] .access-card { position: relative; border: 1px solid rgba(255,176,0,0.22); border-radius: 2px; background: rgba(10,16,30,0.66); }\n[data-theme=\"mission\"] .card::before, [data-theme=\"mission\"] .access-card::before { content: \"\"; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; border-top: 2px solid rgba(255,176,0,0.85); border-left: 2px solid rgba(255,176,0,0.85); pointer-events: none; }\n[data-theme=\"mission\"] .card::after, [data-theme=\"mission\"] .access-card::after { content: \"\"; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-bottom: 2px solid rgba(255,176,0,0.85); border-right: 2px solid rgba(255,176,0,0.85); pointer-events: none; }\n[data-theme=\"mission\"] .card:hover { border-color: rgba(255,176,0,0.55); box-shadow: 0 0 0 1px rgba(255,176,0,0.12), 0 0 22px rgba(255,176,0,0.07); }\n[data-theme=\"mission\"] .readout, [data-theme=\"mission\"] .titleblock { border: 1px solid rgba(255,176,0,0.42); border-radius: 0; background: rgba(8,13,24,0.78); }\n[data-theme=\"mission\"] .page-frame { border-color: rgba(255,176,0,0.18); }\n[data-theme=\"mission\"] .cta-btn { background: #ffb000; color: #080d18; border: 1px solid #ffb000; border-radius: 3px; font-family: \"IBM Plex Mono\", monospace; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }\n[data-theme=\"mission\"] .cta-btn:hover { background: #ffc94d; border-color: #ffc94d; box-shadow: 0 0 18px rgba(255,176,0,0.35); }\n[data-theme=\"mission\"] .btn { border-radius: 3px; font-family: \"IBM Plex Mono\", monospace; text-transform: uppercase; letter-spacing: 0.08em; }\n[data-theme=\"mission\"] .tag { font-family: \"IBM Plex Mono\", monospace; text-transform: uppercase; letter-spacing: 0.07em; color: #ffb000; border: 1px solid rgba(255,176,0,0.32); border-radius: 2px; background: rgba(255,176,0,0.06); }\n[data-theme=\"mission\"] .refs .ref { font-family: \"IBM Plex Mono\", monospace; border: 1px solid rgba(143,163,196,0.25); border-radius: 2px; background: rgba(10,16,30,0.55); }\n[data-theme=\"mission\"] .refs .ref:hover { border-color: rgba(255,176,0,0.6); color: #ffb000; }\n[data-theme=\"mission\"] .picked-flag { color: #3adb76; font-family: \"IBM Plex Mono\", monospace; text-transform: uppercase; letter-spacing: 0.08em; text-shadow: 0 0 10px rgba(58,219,118,0.45); }\n[data-theme=\"mission\"] .tp-toggle, [data-theme=\"mission\"] .tp-panel { border: 1px solid rgba(255,176,0,0.3); border-radius: 2px; background: rgba(8,13,24,0.82); font-family: \"IBM Plex Mono\", monospace; }\n[data-theme=\"mission\"] .drag-hint { font-family: \"IBM Plex Mono\", monospace; text-transform: uppercase; letter-spacing: 0.1em; color: #5a6c8c; }\n[data-theme=\"mission\"] ::selection { background: rgba(255,176,0,0.9); color: #080d18; }",
+    "fill": "#060a13",
+    "fonts": {
+      "display": "\"IBM Plex Mono\", \"JetBrains Mono\", monospace",
+      "serif": "\"IBM Plex Serif\", Georgia, serif",
+      "sans": "\"IBM Plex Sans\", \"Inter\", system-ui, sans-serif",
+      "mono": "\"IBM Plex Mono\", \"JetBrains Mono\", monospace"
+    },
+    "grid": [
+      "#14203a",
+      "#0c1426"
+    ],
+    "id": "mission",
+    "name": "Mission Control",
+    "swatches": [
+      "#080d18",
+      "#ffb000",
+      "#3adb76"
+    ],
+    "tags": {
+      "frame": "#9fb6dc",
+      "chassis": "#7690b8",
+      "rail": "#5b7099",
+      "pcb": "#44707c",
+      "gpu": "#d9f4ff",
+      "heatsink": "#8aa2c6",
+      "coldplate": "#6cc6dd",
+      "tube": "#34c96e",
+      "manifold": "#2aa75b",
+      "memory": "#b6cef0",
+      "cpu": "#f3d488",
+      "power": "#ffb000",
+      "busbar": "#ffc94d",
+      "fan": "#6f8db2",
+      "nic": "#7fd4ff",
+      "interconnect": "#54b4d6",
+      "cable": "#b87f33",
+      "drive": "#66799a",
+      "connector": "#d9a04a",
+      "bezel": "#46587a",
+      "label": "#97abce",
+      "default": "#6e83a6"
+    },
+    "vars": {
+      "bg": "#080d18",
+      "bg2": "#050810",
+      "panel": "rgba(12,20,38,0.72)",
+      "border": "rgba(255,176,0,0.30)",
+      "borderSoft": "rgba(143,163,196,0.14)",
+      "cream": "#eaf2ff",
+      "teal": "#3adb76",
+      "terra": "#ffb000",
+      "violet": "#7fd4ff",
+      "text": "#c8d6ee",
+      "textDim": "#8fa3c4",
+      "textFaint": "#5a6c8c",
+      "glass": "rgba(8,13,24,0.78)"
+    }
+  },
+  {
+    "blurb": "Champagne gold on midnight black",
+    "dark": true,
+    "extraCSS": "[data-theme=\"noir\"] body { background: radial-gradient(120% 90% at 50% -10%, #181613 0%, #101010 52%, #0a0a09 100%); font-weight: 300; }\n[data-theme=\"noir\"] h1, [data-theme=\"noir\"] h2, [data-theme=\"noir\"] h3 { font-family: \"Playfair Display\", Georgia, serif; font-weight: 700; letter-spacing: 0.005em; }\n[data-theme=\"noir\"] h1 em, [data-theme=\"noir\"] h2 em, [data-theme=\"noir\"] h3 em { font-family: \"Playfair Display\", Georgia, serif; font-style: italic; font-weight: 700; color: #c9a96a; }\n[data-theme=\"noir\"] .hero h1 { font-family: \"Cormorant Garamond\", \"Playfair Display\", Georgia, serif; font-size: clamp(3.2rem, 8vw, 5.5rem); font-weight: 600; line-height: 1.04; text-transform: none; }\n[data-theme=\"noir\"] .hero h1 em { font-family: \"Playfair Display\", Georgia, serif; font-style: italic; font-weight: 700; color: #c9a96a; }\n[data-theme=\"noir\"] .section { padding: clamp(96px, 14vh, 170px) 0; }\n[data-theme=\"noir\"] .tag { font-family: \"Inter\", system-ui, sans-serif; font-weight: 400; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.34em; color: #c9a96a; border: 1px solid rgba(201, 169, 106, 0.25); border-radius: 0; padding: 0.42em 1.1em 0.38em 1.34em; background: transparent; }\n[data-theme=\"noir\"] .card { background: linear-gradient(180deg, rgba(24, 22, 17, 0.88), rgba(14, 13, 11, 0.92)); border: 1px solid rgba(201, 169, 106, 0.18); border-radius: 0; transition: border-color 240ms ease, transform 240ms ease; }\n[data-theme=\"noir\"] .card:hover { border-color: rgba(201, 169, 106, 0.55); transform: translateY(-2px); }\n[data-theme=\"noir\"] .access-card { background: linear-gradient(180deg, rgba(22, 20, 16, 0.94), rgba(13, 12, 10, 0.96)); border: 1px solid rgba(201, 169, 106, 0.3); border-radius: 0; box-shadow: 0 48px 96px rgba(0, 0, 0, 0.55); }\n[data-theme=\"noir\"] .cta-btn, [data-theme=\"noir\"] .btn { background: transparent; border: 1px solid #c9a96a; color: #c9a96a; border-radius: 0; font-family: \"Inter\", system-ui, sans-serif; font-weight: 400; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.24em; padding: 0.95em 2.2em 0.9em 2.44em; transition: background-color 220ms ease, color 220ms ease; }\n[data-theme=\"noir\"] .cta-btn:hover, [data-theme=\"noir\"] .btn:hover { background: #c9a96a; color: #101010; }\n[data-theme=\"noir\"] .page-frame { border: 1px solid rgba(201, 169, 106, 0.2); }\n[data-theme=\"noir\"] .readout, [data-theme=\"noir\"] .titleblock, [data-theme=\"noir\"] .drag-hint { font-family: \"JetBrains Mono\", ui-monospace, monospace; font-weight: 300; letter-spacing: 0.08em; color: #b3ab99; }\n[data-theme=\"noir\"] .kv .n { font-family: \"JetBrains Mono\", ui-monospace, monospace; color: #c9a96a; }\n[data-theme=\"noir\"] .refs .ref { background: transparent; border: 1px solid rgba(201, 169, 106, 0.16); border-radius: 0; font-family: \"JetBrains Mono\", ui-monospace, monospace; letter-spacing: 0.05em; transition: border-color 200ms ease, color 200ms ease; }\n[data-theme=\"noir\"] .refs .ref:hover { border-color: rgba(201, 169, 106, 0.6); color: #f5efe2; }\n[data-theme=\"noir\"] .picked-flag { color: #101010; background: #c9a96a; border-radius: 0; font-family: \"JetBrains Mono\", ui-monospace, monospace; letter-spacing: 0.14em; text-transform: uppercase; }\n[data-theme=\"noir\"] .tp-toggle, [data-theme=\"noir\"] .tp-panel { background: rgba(12, 11, 9, 0.82); border: 1px solid rgba(201, 169, 106, 0.25); border-radius: 0; }\n[data-theme=\"noir\"] ::selection { background: #c9a96a; color: #101010; }",
+    "fill": "#0c0c0c",
+    "fonts": {
+      "display": "\"Playfair Display\", Georgia, serif",
+      "serif": "\"Cormorant Garamond\", \"Playfair Display\", Georgia, serif",
+      "sans": "\"Inter\", system-ui, -apple-system, sans-serif",
+      "mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, monospace"
+    },
+    "grid": [
+      "#1e1b15",
+      "#14120e"
+    ],
+    "id": "noir",
+    "name": "Noir",
+    "swatches": [
+      "#101010",
+      "#c9a96a",
+      "#f5efe2"
+    ],
+    "tags": {
+      "frame": "#534d42",
+      "chassis": "#5e584c",
+      "rail": "#6e6757",
+      "pcb": "#655944",
+      "gpu": "#e2bd7a",
+      "heatsink": "#8b8375",
+      "coldplate": "#9d9583",
+      "tube": "#7e7565",
+      "manifold": "#6f6759",
+      "memory": "#c3a872",
+      "cpu": "#d6c8a6",
+      "power": "#b08d52",
+      "busbar": "#c9a96a",
+      "fan": "#7a7160",
+      "nic": "#a49378",
+      "interconnect": "#c0ae8d",
+      "cable": "#5d574a",
+      "drive": "#8e8270",
+      "connector": "#cfa75e",
+      "bezel": "#716b5f",
+      "label": "#ece4d0",
+      "default": "#857d6b"
+    },
+    "vars": {
+      "bg": "#101010",
+      "bg2": "#090909",
+      "panel": "rgba(20, 18, 14, 0.82)",
+      "border": "rgba(201, 169, 106, 0.25)",
+      "borderSoft": "rgba(201, 169, 106, 0.12)",
+      "cream": "#f5efe2",
+      "terra": "#c9a96a",
+      "teal": "#b8ae98",
+      "violet": "#9b8da6",
+      "text": "#e9e2d2",
+      "textDim": "#b3ab99",
+      "textFaint": "#74705f",
+      "glass": "rgba(12, 11, 9, 0.74)"
+    }
+  },
+  {
+    "blurb": "Zine-press ultraviolet on lab grey",
+    "dark": false,
+    "extraCSS": "[data-theme=\"acid\"] ::selection{background:#9dff00;color:#14171a}\n[data-theme=\"acid\"] body{background-image:radial-gradient(rgba(20,23,26,0.055) 1px,transparent 1px);background-size:22px 22px}\n[data-theme=\"acid\"] h1,[data-theme=\"acid\"] h2,[data-theme=\"acid\"] h3{font-weight:600;letter-spacing:-0.03em}\n[data-theme=\"acid\"] .hero h1{font-weight:600;letter-spacing:-0.045em;line-height:0.96}\n[data-theme=\"acid\"] .tag{background:#9dff00;color:#14171a;border:1.5px solid #14171a;border-radius:999px;padding:0.22em 0.85em;font-weight:600;letter-spacing:0.01em}\n[data-theme=\"acid\"] .card{background:#f5f7f2;border:2px solid #14171a;border-radius:18px;box-shadow:4px 4px 0 rgba(20,23,26,0.14);transition:transform .15s ease,box-shadow .15s ease}\n[data-theme=\"acid\"] .card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #14171a}\n[data-theme=\"acid\"] .access-card{background:#f5f7f2;border:2px solid #14171a;border-radius:18px;box-shadow:6px 6px 0 #6a00ff}\n[data-theme=\"acid\"] .cta-btn{background:#6a00ff;color:#ffffff;border:2px solid #14171a;border-radius:999px;font-weight:600;box-shadow:3px 3px 0 #14171a;transition:transform .12s ease,box-shadow .12s ease}\n[data-theme=\"acid\"] .cta-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #14171a;background:#5a00da}\n[data-theme=\"acid\"] .cta-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #14171a}\n[data-theme=\"acid\"] .btn{border:2px solid #14171a;border-radius:999px;font-weight:600;background:#f5f7f2;color:#14171a}\n[data-theme=\"acid\"] .btn:hover{background:#9dff00}\n[data-theme=\"acid\"] .picked-flag{transform:rotate(-3deg);background:#9dff00;color:#14171a;border:2px solid #14171a;border-radius:7px;box-shadow:2px 2px 0 #14171a;font-weight:700;letter-spacing:0.02em}\n[data-theme=\"acid\"] .refs .ref{border:1.5px solid #14171a;border-radius:999px;background:#f5f7f2;color:#14171a;transition:background .12s ease,transform .12s ease}\n[data-theme=\"acid\"] .refs .ref:hover{background:#9dff00;transform:translateY(-1px)}\n[data-theme=\"acid\"] .readout{border:1.5px solid rgba(20,23,26,0.65);border-radius:10px;background:rgba(233,235,231,0.78)}\n[data-theme=\"acid\"] .kv .n{color:#6a00ff;font-weight:700}\n[data-theme=\"acid\"] .titleblock{border:2px solid #14171a;border-radius:12px;background:rgba(245,247,242,0.85)}\n[data-theme=\"acid\"] .tp-toggle{border:2px solid #14171a;border-radius:999px;background:#f5f7f2;box-shadow:2px 2px 0 #14171a;font-weight:600}\n[data-theme=\"acid\"] .tp-panel{border:2px solid #14171a;border-radius:14px;background:rgba(245,247,242,0.94);box-shadow:5px 5px 0 rgba(20,23,26,0.16)}\n[data-theme=\"acid\"] .page-frame{border-color:rgba(20,23,26,0.8)}\n[data-theme=\"acid\"] .drag-hint{color:#43494f;border:1.5px dashed rgba(20,23,26,0.45);border-radius:999px;background:rgba(233,235,231,0.78)}",
+    "fill": "#dfe2dd",
+    "fonts": {
+      "display": "\"Space Grotesk\", \"Inter\", sans-serif",
+      "serif": "\"Source Serif 4\", Georgia, serif",
+      "sans": "\"Space Grotesk\", \"Inter\", sans-serif",
+      "mono": "\"JetBrains Mono\", \"IBM Plex Mono\", monospace"
+    },
+    "grid": [
+      "#c9cec5",
+      "#d7dbd2"
+    ],
+    "id": "acid",
+    "name": "Acid Lab",
+    "swatches": [
+      "#e9ebe7",
+      "#6a00ff",
+      "#9dff00"
+    ],
+    "tags": {
+      "frame": "#14171a",
+      "chassis": "#353b41",
+      "rail": "#595f66",
+      "pcb": "#524a6b",
+      "gpu": "#6a00ff",
+      "heatsink": "#7c828a",
+      "coldplate": "#4a5158",
+      "tube": "#4c9e00",
+      "manifold": "#3a7e00",
+      "memory": "#8a4dff",
+      "cpu": "#5a17d6",
+      "power": "#e86f00",
+      "busbar": "#c25400",
+      "fan": "#6e747b",
+      "nic": "#7d56c9",
+      "interconnect": "#65ae00",
+      "cable": "#8d939a",
+      "drive": "#58a800",
+      "connector": "#9a55f0",
+      "bezel": "#272c31",
+      "label": "#70767d",
+      "default": "#5a6067"
+    },
+    "vars": {
+      "bg": "#e9ebe7",
+      "bg2": "#e4e7e1",
+      "panel": "#f5f7f2",
+      "border": "rgba(20,23,26,0.35)",
+      "borderSoft": "rgba(20,23,26,0.14)",
+      "cream": "#14171a",
+      "teal": "#4f9e00",
+      "terra": "#6a00ff",
+      "violet": "#8a4dff",
+      "text": "#14171a",
+      "textDim": "#43494f",
+      "textFaint": "#80878d",
+      "glass": "rgba(233,235,231,0.78)"
+    }
+  }
+]

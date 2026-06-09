@@ -7,16 +7,26 @@
 
 import * as THREE from 'three';
 import { TAG_COLORS } from './models.js';
+import { currentTheme } from './themes.js';
+
+// Every live wireframe controller, so theme switches can re-tint in place.
+const ALL_CTRLS = new Set();
+window.addEventListener('scc-theme', (e) => {
+  const t = e.detail;
+  for (const c of ALL_CTRLS) c.retint(t);
+});
 
 const EDGE_ANGLE = 24; // degrees — only keep meaningful edges, not triangulation
 
 export function tagColor(tag) {
-  return TAG_COLORS[tag] != null ? TAG_COLORS[tag] : TAG_COLORS.default;
+  const pal = (currentTheme() && currentTheme().tags) || TAG_COLORS;
+  return pal[tag] != null ? pal[tag] : (pal.default != null ? pal.default : TAG_COLORS.default);
 }
 
 // Convert a freshly built model group in place. Returns a controller object.
 export function wireify(root, opts = {}) {
-  const fillColor = opts.fill != null ? opts.fill : 0x171b19;
+  const themeFill = currentTheme() && currentTheme().fill;
+  const fillColor = opts.fill != null ? opts.fill : (themeFill != null ? themeFill : 0x171b19);
   const lines = [];   // { line, tag, baseColor, fill }
   const byTag = {};
 
@@ -85,10 +95,23 @@ export function wireify(root, opts = {}) {
       for (const r of lines) r.mat.opacity = o;
     },
 
+    // Re-map every line + fill to a new theme palette, in place.
+    retint(theme) {
+      for (const r of lines) {
+        const pal = theme.tags || {};
+        const hex = pal[r.tag] != null ? pal[r.tag] : (pal.default != null ? pal.default : 0x939a94);
+        r.baseColor = new THREE.Color(hex).offsetHSL(0, 0.02, 0.06);
+        r.mat.color.copy(r.baseColor);
+        if (theme.fill != null) r.fill.color.set(theme.fill);
+      }
+    },
+
     dispose() {
+      ALL_CTRLS.delete(this);
       for (const r of lines) { r.line.geometry.dispose(); r.mat.dispose(); r.fill.dispose(); }
     },
   };
+  ALL_CTRLS.add(ctrl);
   return ctrl;
 }
 
