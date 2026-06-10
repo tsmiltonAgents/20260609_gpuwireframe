@@ -519,3 +519,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 .hero-copy-full { display: none; }
 .hero-copy-full p { margin-top: 0; }
+
+/* highlighted FREE in the access-card headings */
+.access-card h3 em { color: var(--terra); font-style: normal; }

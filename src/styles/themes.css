@@ -400,3 +400,7 @@
 [data-theme="brutal-multi4"] #access-card .cta-btn { padding: 9px 16px; font-size: 12px; margin-top: 2px; }
 [data-theme="brutal-multi4"] .hero-copy-short { display: none; }
 [data-theme="brutal-multi4"] .hero-copy-full { display: block; }
+
+/* brutalist families: FREE gets the highlight-block treatment */
+[data-theme^="brutal-"] .access-card h3 em { background: #ffe600; color: #0a0a0a; padding: 0 0.1em; font-style: normal; }
+:is([data-theme="brutal-multi2"],[data-theme="brutal-multi3"],[data-theme="brutal-multi4"]) .access-card h3 em { background: #ca4f3e; color: #ffffff; }
