@@ -29,6 +29,20 @@ viewer.setModel(ctrl);
 viewer.frame(4.0); // start zoomed out — the rack sits small in the stage
 attachDragHint(stage, canvas);
 
+// Hero tray wireframe (left column, below the title)
+const trayCanvas = document.getElementById('hero-tray-canvas');
+if (trayCanvas) {
+  const trayViewer = new Viewer(trayCanvas, {
+    autoRotate: true, autoRotateSpeed: 0.7, bloom: false, floor: false, autoPause: true,
+  });
+  trayViewer.setModel(wireify(build('nvl72-compute-tray').group));
+  trayViewer.frame(1.05);
+}
+// Scroll cue jumps to the About section
+document.getElementById('scroll-cue')?.addEventListener('click', () => {
+  document.querySelector('.section.explainer')?.scrollIntoView({ behavior: 'smooth' });
+});
+
 // Abstract representation mode (per-theme): points / exploded / ascii / ortho / flux
 const activeMode = theme.stageMode || 'wire';
 const adapter = createStageAdapter(activeMode, { viewer, ctrl, stage });
