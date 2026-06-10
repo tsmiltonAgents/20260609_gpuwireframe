@@ -391,7 +391,7 @@
 [data-theme="brutal-multi4"] .stage-tray { display: none !important; }
 [data-theme="brutal-multi4"] #access-card,
 [data-theme="brutal-multi4"] #access-card.show {
-  top: auto; bottom: 5%; left: 50%; transform: translateX(-50%);
+  top: auto; bottom: 13%; left: 50%; transform: translateX(-50%);
   width: min(380px, 72%); padding: 18px 22px 20px;
 }
 [data-theme="brutal-multi4"] #access-card h3 { font-size: 15px; margin: 0 0 10px; }
