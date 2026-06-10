@@ -467,3 +467,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 /* Channels: gate the drag-to-rotate hint to the reconfigurable section */
 .scroll-stage.ch-hide-hint .drag-hint { opacity: 0 !important; }
+
+/* Channels (brutal-multi): strip the top nav down to just // Amodo Design */
+[data-theme="brutal-multi"] .navlinks a:not(.ext) { display: none; }

@@ -26,6 +26,7 @@ const canvas = document.getElementById('stage-canvas');
 const viewer = new Viewer(canvas, { autoRotate: false, bloom: false, floor: true, autoPause: false });
 let ctrl = wireify(build(modelId).group);
 viewer.setModel(ctrl);
+viewer.frame(4.0); // start zoomed out — the rack sits small in the stage
 attachDragHint(stage, canvas);
 
 // Abstract representation mode (per-theme): points / exploded / ascii / ortho / flux
