@@ -984,7 +984,50 @@ function orbitalMode({ viewer, ctrl, stage }) {
   };
 }
 
-const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode, scope: scopeMode, heatfield: heatfieldMode, logstream: logstreamMode, topo: topoMode, orbital: orbitalMode };
+
+// ---------------------------------------------------------------------------
+// multi — the stage itself changes representation per section: a plan maps
+// section tag-sets to sub-modes, built/torn down as you scroll between them
+// ---------------------------------------------------------------------------
+function multiMode(env) {
+  const theme = currentTheme();
+  const plan = theme.multi || { default: 'wire', map: [] };
+  let cur = null, curId = null;
+  let lastP = 0, lastTags = [], lastXray = false;
+
+  function pick(tags) {
+    const set = new Set(tags);
+    for (const entry of plan.map || []) {
+      if (entry.tags.some((t) => set.has(t))) return entry.mode;
+    }
+    return plan.default || 'wire';
+  }
+  function ensure(id) {
+    if (id === curId) return;
+    if (cur && cur.dispose) cur.dispose();
+    curId = id;
+    cur = id === 'wire' ? null : createStageAdapter(id, env);
+    if (!cur) {
+      env.ctrl.highlight(lastTags);
+      env.ctrl.setXray(lastXray);
+    }
+  }
+
+  return {
+    handlesHighlight: true,
+    get noRotate() { return cur ? !!cur.noRotate : false; },
+    onScroll(p, tags, xray) {
+      lastP = p; lastTags = tags; lastXray = xray;
+      ensure(pick(tags));
+      if (cur && cur.onScroll) cur.onScroll(p, tags, xray);
+      else if (!cur) { env.ctrl.highlight(tags); env.ctrl.setXray(xray); }
+    },
+    onFrame() { if (cur && cur.onFrame) cur.onFrame(); },
+    dispose() { if (cur && cur.dispose) cur.dispose(); },
+  };
+}
+
+const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode, scope: scopeMode, heatfield: heatfieldMode, logstream: logstreamMode, topo: topoMode, orbital: orbitalMode, multi: multiMode };
 
 export function createStageAdapter(modeId, env) {
   const fn = MODES[modeId];

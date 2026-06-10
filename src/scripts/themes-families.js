@@ -65,6 +65,27 @@ registerThemes([
     stageMode: 'ortho', model: 'nvl72-compute-tray',
   },
 
+  {
+    ...BRUTAL_BASE, id: 'brutal-multi', name: 'Channels', blurb: 'FLIR, terminal, contours — per section',
+    swatches: ['#ffffff', '#0a0a0a', '#e3342f'],
+    stageMode: 'multi', model: 'gb200-nvl72',
+    multi: {
+      default: 'topo',
+      map: [
+        // order matters: first match wins, and section tag-sets overlap
+        { tags: ['gpu', 'cpu', 'memory'], mode: 'voxel' },
+        { tags: ['nic', 'interconnect', 'cable'], mode: 'logstream' },
+        { tags: ['connector'], mode: 'scope' },
+        { tags: ['coldplate', 'tube', 'manifold'], mode: 'heatfield' },
+        { tags: ['power', 'busbar'], mode: 'flux' },
+      ],
+    },
+    topo: { ink: 0x0a0a0a, paper: 0xffffff, mark: 0xe3342f },
+    scope: { trace: 0x0a0a0a, trace2: 0xe3342f, grid: 0xd6d6d6 },
+    flux: { power: 0xb88a00, coolant: 0x00657a, fabric: 0x5a00b8 },
+    voxel: { div: 50 },
+  },
+
   // ---- Acid Lab family -----------------------------------------------------
   {
     ...ACID_BASE, id: 'acid-reagent', name: 'Reagent', blurb: 'UV particle suspension, condensing',

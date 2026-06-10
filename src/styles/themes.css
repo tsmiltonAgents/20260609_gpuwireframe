@@ -324,3 +324,11 @@
 [data-theme="observatory"] .cta-btn:hover { background: #d8b36a; color: #070b16; }
 [data-theme="observatory"] .card, [data-theme="observatory"] .access-card, [data-theme="observatory"] .card, [data-theme="observatory"] .explainer-card { border-radius: 2px; }
 [data-theme="observatory"] .kv .n { font-family: "Cormorant Garamond", serif; font-size: 28px; color: #d8b36a; }
+
+/* Channels (brutal-multi): light-ground overrides for the terminal feed */
+[data-theme="brutal-multi"] .log-stage { color: #2a2a2a; font-weight: 500; }
+[data-theme="brutal-multi"] .log-stage .log-line .t { color: #8a8a8a; }
+[data-theme="brutal-multi"] .log-stage .log-line i { color: #0a0a0a; font-weight: 700; }
+[data-theme="brutal-multi"] .log-stage .log-line .warn { color: #b86a00; }
+[data-theme="brutal-multi"] .log-stage .log-line .err { color: #e3342f; }
+[data-theme="brutal-multi"] .log-stage .log-line.head { color: #0a0a0a; border-bottom: 2px solid #0a0a0a; }
