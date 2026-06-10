@@ -248,9 +248,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 /* ====================================================================== */
 /* EXPLAINER — one large bordered card, visual twin of the access card    */
 /* ====================================================================== */
-.section.explainer { width: 92vw; max-width: 1272px; padding-right: 40px; align-items: center; }
+.section.explainer { width: 96vw; max-width: 1500px; padding-right: 40px; align-items: flex-start; }
 .explainer-card {
-  width: 100%; max-width: 980px;
+  width: 100%; max-width: 1240px;
   background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
   padding: 48px 54px 44px;
 }
@@ -464,3 +464,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 /* a Channels nav link, lightly distinguished */
 .navlinks a.chan::before { content: "◆ "; color: var(--terra); }
+
+/* Channels: gate the drag-to-rotate hint to the reconfigurable section */
+.scroll-stage.ch-hide-hint .drag-hint { opacity: 0 !important; }

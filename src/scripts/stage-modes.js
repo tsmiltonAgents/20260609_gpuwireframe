@@ -1150,6 +1150,7 @@ function emanateMode({ viewer, ctrl }) {
 // ---------------------------------------------------------------------------
 function channelsMode({ viewer, ctrl, stage }) {
   ctrl.setOpacity(0.5);
+  stage.classList.add('ch-hide-hint'); // drag-to-rotate stays hidden until the reconfigurable section
   const css = getComputedStyle(document.documentElement);
   const ACC = (css.getPropertyValue('--terra').trim()) || '#e3342f';
   const INK = (css.getPropertyValue('--cream').trim()) || '#111111';
@@ -1271,7 +1272,7 @@ function channelsMode({ viewer, ctrl, stage }) {
     if (set.has('nic') || set.has('interconnect')) return 'packets';
     if (set.has('memory') || set.has('gpu')) return 'em';
     if (set.has('cpu') || set.has('pcb') || set.has('drive')) return 'counters';
-    if (set.has('connector') || set.has('cable')) return 'dataflow';
+    if (set.has('connector') || set.has('cable')) return 'rotate';
     return 'none';
   }
   let channel = 'init', emAdapter = null;
@@ -1280,6 +1281,13 @@ function channelsMode({ viewer, ctrl, stage }) {
     if (channel === 'em' && emAdapter) { emAdapter.dispose(); emAdapter = null; ctrl.setOpacity(0.5); }
     if (channel === 'packets') stopTerm();
     channel = c;
+    if (c === 'rotate') {
+      // bare spinning rack — invite interaction
+      stage.classList.remove('ch-hide-hint');
+      const h = stage.querySelector('.drag-hint'); if (h) h.classList.remove('seen');
+      return;
+    }
+    stage.classList.add('ch-hide-hint');
     if (c === 'em') { emAdapter = createStageAdapter('emanate', { viewer, ctrl, stage }); return; }
     if (c === 'none') return;
     title.textContent = LABELS[c] || '';
@@ -1305,7 +1313,7 @@ function channelsMode({ viewer, ctrl, stage }) {
     onFrame() {
       t += 1 / 60;
       if (emAdapter && emAdapter.onFrame) emAdapter.onFrame();
-      const boxed = channel === 'scope' || channel === 'packets' || channel === 'counters' || channel === 'dataflow';
+      const boxed = channel === 'scope' || channel === 'packets' || channel === 'counters';
       const f = boxed ? sectionFocus() : 0;
       box.style.opacity = f.toFixed(3);
       box.style.transform = 'translateY(' + ((1 - f) * 26).toFixed(1) + 'px)';
@@ -1313,13 +1321,12 @@ function channelsMode({ viewer, ctrl, stage }) {
       if (boxed && f > 0.03) {
         if (channel === 'scope') drawScope();
         else if (channel === 'counters') drawCounters();
-        else if (channel === 'dataflow') drawDataflow();
       }
     },
     dispose() {
       window.removeEventListener('resize', sizeCanvas);
       if (emAdapter) emAdapter.dispose();
-      stopTerm(); overlay.remove(); ctrl.setOpacity(1);
+      stopTerm(); overlay.remove(); ctrl.setOpacity(1); stage.classList.remove('ch-hide-hint');
     },
   };
 }
