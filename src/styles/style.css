@@ -439,8 +439,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 .ch-box {
   width: min(74%, 560px); height: 56%;
   display: flex; flex-direction: column; overflow: hidden;
-  background: var(--glass); border: 1px solid var(--border); border-radius: 12px;
-  opacity: 0; will-change: opacity, transform; backdrop-filter: blur(3px);
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  opacity: 0; will-change: opacity, transform;
 }
 .ch-head { display: flex; align-items: center; justify-content: space-between;
   padding: 10px 14px; border-bottom: 1px solid var(--border-soft);
@@ -458,7 +458,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 .ch-term .ch-line.head { color: var(--cream); border-bottom: 1px solid var(--border-soft); padding-bottom: 6px; margin-bottom: 6px; }
 
 /* brutalist hard-edge treatment for the instrument box */
-[data-theme^="brutal-"] .ch-box { border: 2px solid #000; border-radius: 0; box-shadow: 7px 7px 0 #000; background: rgba(255,255,255,0.9); }
+[data-theme^="brutal-"] .ch-box { border: 2px solid #000; border-radius: 0; box-shadow: 7px 7px 0 #000; background: #ffffff; }
 [data-theme^="brutal-"] .ch-dot { background: #e3342f; }
 [data-theme^="brutal-"] .ch-head { color: #0a0a0a; font-weight: 700; }
 

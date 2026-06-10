@@ -1293,7 +1293,10 @@ function channelsMode({ viewer, ctrl, stage }) {
     const secs = document.querySelectorAll('.section');
     const mid = window.innerHeight / 2; let best = Infinity;
     for (const s of secs) { const r = s.getBoundingClientRect(); const d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < best) best = d; }
-    return Math.max(0, Math.min(1, 1 - best / (window.innerHeight * 0.42)));
+    // Flat-topped: fully opaque across the section, ramping to 0 only in the
+    // last stretch near a transition (plateau 0..0.62, fade 0.62..0.92 of half-vh).
+    const x = best / (window.innerHeight * 0.5);
+    return Math.max(0, Math.min(1, 1 - (x - 0.62) / 0.30));
   }
 
   return {
