@@ -29,7 +29,7 @@ export function mountThemePicker() {
 
   // #channels (and #<themeId> / ?theme=) deep-links
   window.addEventListener('hashchange', () => {
-    const alias = { channels: 'brutal-multi' };
+    const alias = { channels: 'brutal-multi', channels2: 'brutal-multi2' };
     const h = location.hash.replace('#', '');
     const id = alias[h] || h;
     if (id && THEMES.some((t) => t.id === id) && id !== currentThemeId()) {

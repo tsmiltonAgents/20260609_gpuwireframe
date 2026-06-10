@@ -332,3 +332,41 @@
 [data-theme="brutal-multi"] .log-stage .log-line .warn { color: #b86a00; }
 [data-theme="brutal-multi"] .log-stage .log-line .err { color: #e3342f; }
 [data-theme="brutal-multi"] .log-stage .log-line.head { color: #0a0a0a; border-bottom: 2px solid #0a0a0a; }
+
+/* ====================================================================== */
+/* Channels 2 (brutal-multi2): brutalist DNA, Amodo extended palette      */
+/* ====================================================================== */
+[data-theme="brutal-multi2"] {
+  --cream: #4d4d4d; --teal: #4d9fb1; --terra: #ca4f3e; --violet: #6a3866;
+  --text: #4d4d4d; --text-dim: #6a6a6a; --text-faint: #8e8e8e;
+  --border: #4d4d4d; --border-soft: rgba(77, 77, 77, 0.35);
+}
+[data-theme="brutal-multi2"] .hero h1 em, [data-theme="brutal-multi2"] .section h2 em {
+  background: #ca4f3e; color: #ffffff; }
+[data-theme="brutal-multi2"] h1, [data-theme="brutal-multi2"] h2, [data-theme="brutal-multi2"] h3 { color: #4d4d4d; }
+[data-theme="brutal-multi2"] .card, [data-theme="brutal-multi2"] .access-card, [data-theme="brutal-multi2"] .explainer-card {
+  border-color: #4d4d4d; box-shadow: 7px 7px 0 #4d4d4d; }
+[data-theme="brutal-multi2"] .page-frame { border-color: #4d4d4d; }
+[data-theme="brutal-multi2"] .cta-btn { background: #ca4f3e; border-color: #4d4d4d; color: #fff; }
+[data-theme="brutal-multi2"] .cta-btn:hover { background: #314492; color: #fff; border-color: #314492; }
+[data-theme="brutal-multi2"] .btn { color: #314492; border-bottom-color: #314492; }
+[data-theme="brutal-multi2"] .btn:hover, [data-theme="brutal-multi2"] .btn.on { background: #79bcba; color: #2a2a2a; border-bottom-color: #4d4d4d; }
+[data-theme="brutal-multi2"] .tag { border-color: #4d4d4d; color: #4d4d4d; }
+[data-theme="brutal-multi2"] .picked-flag { background: #ca4f3e; color: #fff; }
+[data-theme="brutal-multi2"] .progress { background: linear-gradient(90deg, #ca4f3e, #314492); }
+[data-theme="brutal-multi2"] .kv .n { color: #314492; }
+[data-theme="brutal-multi2"] ::selection { background: #79bcba; color: #2a2a2a; }
+[data-theme="brutal-multi2"] .ch-box { border-color: #4d4d4d; box-shadow: 7px 7px 0 #4d4d4d; background: #ffffff; }
+[data-theme="brutal-multi2"] .ch-dot { background: #ca4f3e; }
+[data-theme="brutal-multi2"] .ch-head { color: #4d4d4d; font-weight: 700; }
+[data-theme="brutal-multi2"] .log-stage { color: #4d4d4d; font-weight: 500; }
+[data-theme="brutal-multi2"] .log-stage .log-line .t { color: #8e8e8e; }
+[data-theme="brutal-multi2"] .log-stage .log-line i { color: #314492; font-weight: 700; }
+[data-theme="brutal-multi2"] .log-stage .log-line .warn { color: #924157; }
+[data-theme="brutal-multi2"] .log-stage .log-line .err { color: #ca4f3e; }
+[data-theme="brutal-multi2"] .log-stage .log-line.head { color: #4d4d4d; border-bottom: 2px solid #4d4d4d; }
+[data-theme="brutal-multi2"] .ch-term .ch-line .t { color: #8e8e8e; }
+[data-theme="brutal-multi2"] .ch-term .ch-line .warn { color: #924157; }
+[data-theme="brutal-multi2"] .navlinks a:not(.ext) { display: none; }
+[data-theme="brutal-multi2"] .theme-arrow { display: none; }
+[data-theme="brutal-multi2"] .scroll-cue { font-weight: 700; color: #4d4d4d; }

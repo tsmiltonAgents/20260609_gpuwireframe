@@ -87,6 +87,36 @@ registerThemes([
     voxel: { div: 50 },
   },
 
+  {
+    id: 'brutal-multi2', name: 'Channels 2', blurb: 'Channels in the Amodo extended palette',
+    dark: false, swatches: ['#ffffff', '#CA4F3E', '#314492'],
+    stageMode: 'channels', model: 'gb200-nvl72',
+    fill: 0xf6f6f6, grid: [0xdedede, 0xececec],
+    tags: {
+      frame: 0x4d4d4d, chassis: 0x4d4d4d, rail: 0x6a6a6a, pcb: 0x79bcba,
+      gpu: 0xca4f3e, heatsink: 0x79bcba, coldplate: 0x4d9fb1, tube: 0x4d9fb1,
+      manifold: 0x4d9fb1, memory: 0x6a3866, cpu: 0x924157, power: 0x924157,
+      busbar: 0xca4f3e, fan: 0x6a6a6a, nic: 0x314492, interconnect: 0x314492,
+      cable: 0x403577, drive: 0x3984c2, connector: 0x3984c2, bezel: 0x5a5a5a,
+      label: 0x7a7a7a, default: 0x5a5a5a,
+    },
+    multi: {
+      default: 'topo',
+      map: [
+        { tags: ['power', 'busbar'], mode: 'scope' },
+        { tags: ['nic', 'interconnect'], mode: 'logstream' },
+        { tags: ['memory', 'gpu'], mode: 'emanate' },
+        { tags: ['cpu', 'pcb', 'drive'], mode: 'voxel' },
+        { tags: ['connector', 'cable'], mode: 'rotate' },
+      ],
+    },
+    topo: { ink: 0x4d4d4d, paper: 0xffffff, mark: 0xca4f3e },
+    scope: { trace: 0x314492, trace2: 0xca4f3e, grid: 0xdcdcdc },
+    flux: { power: 0x924157, coolant: 0x4d9fb1, fabric: 0x6a3866 },
+    emanate: { color: 0x3984c2, rackOpacity: 0.42 },
+    voxel: { div: 50 },
+  },
+
   // ---- Acid Lab family -----------------------------------------------------
   {
     ...ACID_BASE, id: 'acid-reagent', name: 'Reagent', blurb: 'UV particle suspension, condensing',
