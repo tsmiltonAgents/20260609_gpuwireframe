@@ -95,38 +95,30 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     </section>
 
     <section class="section explainer" data-stage="hidden" data-tags="" data-xray="false">
-      <span class="tag">01 — What this is</span>
-      <h2>Cloud GPUs, without the<br>cloud in the way.</h2>
-      <div class="explainer-cols">
-        <p>Every other GPU cloud hands you a VM and keeps the machine. We hand
-           you the machine. You reserve physical hardware — a GB200 NVL72 rack,
-           a DGX H100, a single liquid-cooled tray — and get bare-metal control
-           of it for the length of your booking.</p>
-        <p>What makes it different is the instrumentation. The physical layer
-           of a modern GPU system leaks information everywhere: power rails
-           ripple with the workload, coolant temperature traces the die, NVLink
-           counters expose the traffic pattern. Operators normally keep all of
-           that. We pipe it to you — rail-level power, per-plate thermals,
-           per-link fabric counters — at one-second resolution, on every system
-           you rent.</p>
-        <p>It's built for the people the hyperscalers can't serve: kernel and
-           runtime engineers chasing perf cliffs, cooling and power researchers
-           who need real loads on real plumbing, and security teams studying
-           the side channels themselves on hardware they fully control.</p>
-      </div>
-      <div class="kv">
-        <div><div class="n">13</div><div class="l">hardware configs</div></div>
-        <div><div class="n">0</div><div class="l">hypervisors</div></div>
-        <div><div class="n">1 s</div><div class="l">telemetry resolution</div></div>
-        <div><div class="n">3</div><div class="l">side channels exposed</div></div>
-      </div>
-      <div class="refs">
-        <span class="refs-label">Further reading</span>
-        <a class="ref rand" href="https://www.rand.org/pubs/research_reports/RRA2849-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Securing AI Model Weights · RR-A2849</span></a>
-        <a class="ref rand" href="https://www.rand.org/pubs/working_papers/WRA3056-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Hardware-Enabled Governance Mechanisms</span></a>
-        <a class="ref cnas" href="https://www.cnas.org/publications/reports/secure-governable-chips" target="_blank" rel="noopener"><b>CNAS</b><span>Secure, Governable Chips</span></a>
-        <a class="ref substack" href="https://importai.substack.com/" target="_blank" rel="noopener"><b>Substack</b><span>Import AI — Jack Clark</span></a>
-        <a class="ref substack" href="https://www.hyperdimensional.co/" target="_blank" rel="noopener"><b>Substack</b><span>Hyperdimensional — Dean Ball</span></a>
+      <div class="explainer-card">
+        <span class="tag">01 — Why we exist</span>
+        <h2>We make infrastructure<br>to enable science.</h2>
+        <p>There is a gap between the people thinking about AI security and the
+           hardware it all runs on. We want more people working on AI security
+           and verification — on real machines, with the side channels exposed,
+           not behind a hypervisor. Side Channel Cloud is that bench: bare-metal
+           racks and trays with rail-level power, coolant-loop and fabric
+           telemetry as first-class outputs.</p>
+        <div class="kv">
+          <div><div class="n">13</div><div class="l">hardware configs</div></div>
+          <div><div class="n">0</div><div class="l">hypervisors</div></div>
+          <div><div class="n">1 s</div><div class="l">telemetry resolution</div></div>
+          <div><div class="n">3</div><div class="l">side channels exposed</div></div>
+        </div>
+        <div class="refs">
+          <span class="refs-label">The reading that motivates this — RAND papers &amp; substacks</span>
+          <a class="ref rand" href="https://www.rand.org/pubs/research_reports/RRA2849-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Securing AI Model Weights · RR-A2849</span></a>
+          <a class="ref rand" href="https://www.rand.org/pubs/working_papers/WRA3056-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Hardware-Enabled Governance Mechanisms · WR-A3056</span></a>
+          <a class="ref cnas" href="https://www.cnas.org/publications/reports/secure-governable-chips" target="_blank" rel="noopener"><b>CNAS</b><span>Secure, Governable Chips</span></a>
+          <a class="ref arxiv" href="https://arxiv.org/abs/2408.16074" target="_blank" rel="noopener"><b>arXiv</b><span>2408.16074 · Verification for international AI agreements</span></a>
+          <a class="ref substack" href="https://importai.substack.com/" target="_blank" rel="noopener"><b>Substack</b><span>Import AI — Jack Clark</span></a>
+          <a class="ref substack" href="https://www.hyperdimensional.co/" target="_blank" rel="noopener"><b>Substack</b><span>Hyperdimensional — Dean Ball</span></a>
+        </div>
       </div>
     </section>
 
