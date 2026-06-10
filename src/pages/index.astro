@@ -39,28 +39,17 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     <aside class="access-card show" id="access-card">
       <h3>Get access to the side-channel cloud</h3>
       <form class="access-form" id="access-form">
-        <label>Name
-          <input type="text" name="name" autocomplete="name" required />
-        </label>
         <label>Email
           <input type="email" name="email" autocomplete="email" required />
         </label>
-        <label>Company <span class="opt">(optional)</span>
-          <input type="text" name="company" autocomplete="organization" />
-        </label>
-        <div class="check-row">
-          <label class="check"><input type="checkbox" name="access" value="free" /> Free access</label>
-          <label class="check"><input type="checkbox" name="access" value="paid" /> Paid access</label>
-        </div>
         <button class="cta-btn" type="submit">Get Access Today →</button>
       </form>
       <div class="access-success">
         <h3>You're on the list.</h3>
-        <p>We'll be in touch when the next hardware wave opens. Meanwhile,
-           pick the dev model you want to work against.</p>
-        <a class="btn" href={base + 'gallery/'}>Open the Dev Model Picker →</a>
+        <p>We'll be in touch when the next hardware wave opens.</p>
       </div>
     </aside>
+    <div class="stage-tray show" id="stage-tray"><canvas id="stage-tray-canvas"></canvas></div>
   </div>
 
   <!-- scrolling copy on the left -->
@@ -68,7 +57,12 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 
     <section class="section hero" data-stage="form" data-tags="" data-xray="false">
       <h1>Side Channel <em>Cloud</em></h1>
-      <div class="hero-tray"><canvas id="hero-tray-canvas"></canvas></div>
+      <p>AI infrastructure for your AI security and verification work. If bare
+         metal isn't enough access for your research, then the side channel
+         cloud is for you. Our AI cluster is instrumented with scopes, SDRs, TAPs,
+         and more to enable your most ambitious hardware R&amp;D.</p>
+      <p>And if you're working on open-source or non-profit work, you can get
+         completely free access — already paid up for by research funders.</p>
       <button class="scroll-cue" type="button" id="scroll-cue">Scroll to explore <span>↓</span></button>
     </section>
 

@@ -29,11 +29,12 @@ viewer.setModel(ctrl);
 viewer.frame(4.0); // start zoomed out — the rack sits small in the stage
 attachDragHint(stage, canvas);
 
-// Hero tray wireframe (left column, below the title)
-const trayCanvas = document.getElementById('hero-tray-canvas');
+// Hero tray wireframe (right column, below the access card)
+const trayCanvas = document.getElementById('stage-tray-canvas');
+const stageTray = document.getElementById('stage-tray');
 if (trayCanvas) {
   const trayViewer = new Viewer(trayCanvas, {
-    autoRotate: true, autoRotateSpeed: 0.7, bloom: false, floor: false, autoPause: true,
+    autoRotate: true, autoRotateSpeed: 0.8, bloom: false, floor: false, autoPause: false,
   });
   trayViewer.setModel(wireify(build('nvl72-compute-tray').group));
   trayViewer.frame(1.05);
@@ -117,6 +118,7 @@ function onScroll() {
   if (mode !== lastMode) {
     stage.classList.toggle('stage-dim', mode !== 'model');
     if (accessCard) accessCard.classList.toggle('show', mode === 'form');
+    if (stageTray) stageTray.classList.toggle('show', mode === 'form');
     lastMode = mode;
   }
 

@@ -73,7 +73,8 @@ for (const p of pages) {
     report.formOk = await page.evaluate(async () => {
       const f = document.getElementById('access-form');
       if (!f) return false;
-      f.querySelector('[name=name]').value = 'Verify Bot';
+      const nameEl = f.querySelector('[name=name]');
+      if (nameEl) nameEl.value = 'Verify Bot';
       f.querySelector('[name=email]').value = 'verify@example.com';
       f.requestSubmit();
       await new Promise((r) => setTimeout(r, 400));
