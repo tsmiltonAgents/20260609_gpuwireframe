@@ -27,6 +27,7 @@ export class Viewer {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
     this.controls.enablePan = false;
+    this.controls.enableZoom = false; // wheel/pinch scrolls the page, never zooms
     this.controls.autoRotate = opts.autoRotate !== false;
     this.controls.autoRotateSpeed = opts.autoRotateSpeed != null ? opts.autoRotateSpeed : 0.45;
     this.controls.minDistance = 4;

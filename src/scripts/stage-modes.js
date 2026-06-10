@@ -166,6 +166,7 @@ function asciiMode({ viewer, stage }) {
   // rebind controls to the ascii element
   const old = viewer.controls;
   viewer.controls = new OrbitControls(viewer.camera, el);
+  viewer.controls.enableZoom = false;
   viewer.controls.enableDamping = true;
   viewer.controls.dampingFactor = 0.08;
   viewer.controls.enablePan = false;
@@ -604,7 +605,6 @@ function takeStage(viewer, ctrl, stage, { drag = true } = {}) {
       viewer.modelRoot.add(ctrl.root);
       if (viewer._grid) viewer._grid.visible = true;
       viewer.controls.enableRotate = true;
-      viewer.controls.enableZoom = true;
       stage.classList.remove('no-drag');
       viewer.frame();
     },
