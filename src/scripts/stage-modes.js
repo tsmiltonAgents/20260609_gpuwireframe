@@ -11,6 +11,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
+import { RGBShiftShader } from 'three/addons/shaders/RGBShiftShader.js';
 import { currentTheme } from './themes.js';
 
 const ease = (t) => t * t * (3 - 2 * t);
@@ -59,9 +64,11 @@ function pointsMode({ viewer, ctrl }) {
   geo.setAttribute('position', posAttr);
   const colAttr = new THREE.BufferAttribute(new Float32Array(colors), 3);
   geo.setAttribute('color', colAttr);
+  const dark = theme.dark !== false;
   const mat = new THREE.PointsMaterial({
-    size: radius / 110, vertexColors: true, transparent: true, opacity: 0.9,
-    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+    size: radius / 110, vertexColors: true, transparent: true, opacity: dark ? 0.9 : 0.95,
+    depthWrite: false, blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending,
+    sizeAttenuation: true,
   });
   const cloud = new THREE.Points(geo, mat);
   root.visible = false;
@@ -140,7 +147,9 @@ function explodedMode({ viewer, ctrl }) {
 // ascii — render the scene as live ASCII art
 // ---------------------------------------------------------------------------
 function asciiMode({ viewer, stage }) {
-  const effect = new AsciiEffect(viewer.renderer, ' .:-=+*#%@', { invert: true, resolution: 0.205 });
+  const a = (currentTheme() && currentTheme().ascii) || {};
+  const effect = new AsciiEffect(viewer.renderer, a.charset || ' .:-=+*#%@',
+    { invert: true, resolution: a.resolution || 0.205 });
   const el = effect.domElement;
   el.className = 'ascii-stage';
   el.style.cssText = 'position:absolute;inset:0;z-index:1;cursor:grab;';
@@ -220,6 +229,9 @@ function orthoMode({ viewer }) {
 // flux — ghost model + telemetry particle streams (power / coolant / fabric)
 // ---------------------------------------------------------------------------
 function fluxMode({ viewer, ctrl }) {
+  const theme = currentTheme();
+  const fl = theme.flux || {};
+  const dark = theme.dark !== false;
   ctrl.setOpacity(0.22);
   const bb = new THREE.Box3().setFromObject(ctrl.root);
   const size = bb.getSize(new THREE.Vector3());
@@ -234,13 +246,13 @@ function fluxMode({ viewer, ctrl }) {
     { // power — straight climb up the busbar, amber
       key: 'power',
       tags: ['power', 'busbar'],
-      color: 0xffb45e, n: 260, speed: 0.085,
+      color: fl.power != null ? fl.power : 0xffb45e, n: 260, speed: 0.085,
       curve: curveFromPoints([[c.x, yLo, zBus], [c.x, (yLo + yHi) / 2, zBus], [c.x, yHi, zBus]]),
     },
     { // coolant — closed loop down one manifold, across, up the other
       key: 'coolant',
       tags: ['coldplate', 'tube', 'manifold'],
-      color: 0x5fd4e8, n: 340, speed: 0.05,
+      color: fl.coolant != null ? fl.coolant : 0x5fd4e8, n: 340, speed: 0.05,
       curve: curveFromPoints([
         [c.x - size.x * 0.27, yHi, zMan], [c.x - size.x * 0.27, yLo, zMan],
         [c.x, yLo - size.y * 0.015, zMan],
@@ -251,7 +263,7 @@ function fluxMode({ viewer, ctrl }) {
     { // fabric — lacing zig-zag through the switch/cartridge belt, violet
       key: 'fabric',
       tags: ['nic', 'interconnect', 'cable', 'connector'],
-      color: 0xc99cf0, n: 300, speed: 0.12,
+      color: fl.fabric != null ? fl.fabric : 0xc99cf0, n: 300, speed: 0.12,
       curve: curveFromPoints((() => {
         const pts = []; const y0 = c.y - size.y * 0.10, y1 = c.y + size.y * 0.10;
         for (let i = 0; i <= 8; i++) {
@@ -267,8 +279,8 @@ function fluxMode({ viewer, ctrl }) {
     const arr = new Float32Array(s.n * 3);
     geo.setAttribute('position', new THREE.BufferAttribute(arr, 3));
     s.mat = new THREE.PointsMaterial({
-      color: s.color, size: size.y / 90, transparent: true, opacity: 0.85,
-      depthWrite: false, blending: THREE.AdditiveBlending,
+      color: s.color, size: size.y / 90, transparent: true, opacity: dark ? 0.85 : 0.95,
+      depthWrite: false, blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending,
     });
     s.pts = new THREE.Points(geo, s.mat);
     s.attr = geo.attributes.position;
@@ -317,7 +329,260 @@ function fluxMode({ viewer, ctrl }) {
   };
 }
 
-const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode };
+// ---------------------------------------------------------------------------
+// voxel — the model quantised into chunky cubes that stack in as you scroll
+// ---------------------------------------------------------------------------
+function voxelMode({ viewer, ctrl }) {
+  const theme = currentTheme();
+  const pal = theme.tags || {};
+  const root = ctrl.root;
+  root.updateMatrixWorld(true);
+  const invRoot = new THREE.Matrix4().copy(root.matrixWorld).invert();
+  const bb = new THREE.Box3().setFromObject(root);
+  const size = bb.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const div = (theme.voxel && theme.voxel.div) || 52;
+  const cell = maxDim / div;
+
+  const cells = new Map();
+  const v = new THREE.Vector3();
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    const pos = o.geometry.attributes.position;
+    const rel = new THREE.Matrix4().multiplyMatrices(invRoot, o.matrixWorld);
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i).applyMatrix4(rel);
+      const k = Math.floor((v.x - bb.min.x) / cell) + ',' +
+                Math.floor((v.y - bb.min.y) / cell) + ',' +
+                Math.floor((v.z - bb.min.z) / cell);
+      if (!cells.has(k)) cells.set(k, o.userData.tag);
+    }
+  });
+
+  const n = cells.size;
+  const geo = new THREE.BoxGeometry(cell * 0.92, cell * 0.92, cell * 0.92);
+  const mat = new THREE.MeshBasicMaterial();
+  const inst = new THREE.InstancedMesh(geo, mat, n);
+  const targets = new Float32Array(n * 3);
+  const normY = new Float32Array(n);
+  const tagsArr = [];
+  const baseCol = [];
+  let i = 0;
+  const col = new THREE.Color();
+  for (const [k, tag] of cells) {
+    const [qx, qy, qz] = k.split(',').map(Number);
+    targets[i * 3] = bb.min.x + (qx + 0.5) * cell;
+    targets[i * 3 + 1] = bb.min.y + (qy + 0.5) * cell;
+    targets[i * 3 + 2] = bb.min.z + (qz + 0.5) * cell;
+    normY[i] = (targets[i * 3 + 1] - bb.min.y) / size.y;
+    tagsArr.push(tag);
+    col.set(pal[tag] != null ? pal[tag] : 0x333333);
+    baseCol.push(col.r, col.g, col.b);
+    inst.setColorAt(i, col);
+    i++;
+  }
+  root.visible = false;
+  viewer.modelRoot.add(inst);
+
+  const dimTarget = new THREE.Color(theme.dark === false ? 0xeaeaea : 0x161616);
+  const m4 = new THREE.Matrix4();
+  let conv = 0, target = 0, lastApplied = -1;
+
+  return {
+    handlesHighlight: true,
+    onScroll(p, tags) {
+      target = ease(clamp01((p - 0.03) / 0.34));
+      const set = new Set(tags);
+      for (let j = 0; j < n; j++) {
+        const on = set.size === 0 || set.has(tagsArr[j]);
+        col.setRGB(baseCol[j * 3], baseCol[j * 3 + 1], baseCol[j * 3 + 2]);
+        if (!on) col.lerp(dimTarget, 0.68);
+        inst.setColorAt(j, col);
+      }
+      inst.instanceColor.needsUpdate = true;
+    },
+    onFrame() {
+      conv += (target - conv) * 0.06;
+      if (Math.abs(conv - lastApplied) < 0.0005) return;
+      lastApplied = conv;
+      for (let j = 0; j < n; j++) {
+        const s = ease(clamp01((conv - normY[j] * 0.82) / 0.18));
+        m4.makeScale(s, s, s);
+        m4.setPosition(targets[j * 3], targets[j * 3 + 1], targets[j * 3 + 2]);
+        inst.setMatrixAt(j, m4);
+      }
+      inst.instanceMatrix.needsUpdate = true;
+    },
+    dispose() { viewer.modelRoot.remove(inst); geo.dispose(); mat.dispose(); root.visible = true; },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// stamp — flat screen-print poster: solid fills, no linework; the active
+// section gets the accent ink
+// ---------------------------------------------------------------------------
+function stampMode({ ctrl }) {
+  const theme = currentTheme();
+  const st = theme.stamp || {};
+  const accent = new THREE.Color(st.accent != null ? st.accent : 0xffe600);
+  const dark = new THREE.Color(st.dark != null ? st.dark : 0x0a0a0a);
+  const mid = new THREE.Color(st.mid != null ? st.mid : 0x8e8e8e);
+  const accentTags = new Set(st.accentTags || ['gpu', 'power', 'busbar']);
+  const midTags = new Set(st.midTags || ['heatsink', 'fan', 'drive', 'label']);
+  const ghostTags = new Set(st.ghostTags || ['chassis', 'frame', 'bezel', 'rail']);
+
+  const saved = ctrl.lines.map((r) => ({
+    r, fillColor: r.fill.color.clone(), fillOpacity: r.fill.opacity,
+    fillTransparent: r.fill.transparent, lineOpacity: r.mat.opacity,
+  }));
+  for (const r of ctrl.lines) {
+    r.mat.opacity = 0;
+    if (ghostTags.has(r.tag)) {
+      r.fill.transparent = true;
+      r.fill.opacity = 0.1;
+    } else {
+      r.fill.transparent = false;
+      r.fill.opacity = 1;
+    }
+  }
+  function paint(activeTags) {
+    const set = new Set(activeTags || []);
+    for (const r of ctrl.lines) {
+      if (ghostTags.has(r.tag)) {
+        r.fill.color.copy(mid);
+        // bring the shell back when it is the spotlit subsystem
+        r.fill.opacity = set.has(r.tag) ? 0.85 : 0.1;
+        if (set.has(r.tag)) r.fill.color.copy(accent);
+        continue;
+      }
+      if (set.size ? set.has(r.tag) : accentTags.has(r.tag)) r.fill.color.copy(accent);
+      else if (midTags.has(r.tag)) r.fill.color.copy(mid);
+      else r.fill.color.copy(dark);
+    }
+  }
+  paint([]);
+
+  return {
+    handlesHighlight: true,
+    onScroll(p, tags) { paint(tags); },
+    dispose() {
+      for (const s of saved) {
+        s.r.fill.color.copy(s.fillColor); s.r.fill.opacity = s.fillOpacity;
+        s.r.fill.transparent = s.fillTransparent; s.r.mat.opacity = s.lineOpacity;
+      }
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// glitch — wireframe through an RGB-split + digital glitch post chain
+// ---------------------------------------------------------------------------
+function glitchMode({ viewer }) {
+  const composer = new EffectComposer(viewer.renderer);
+  composer.addPass(new RenderPass(viewer.scene, viewer.camera));
+  const rgb = new ShaderPass(RGBShiftShader);
+  rgb.uniforms.amount.value = 0.0018;
+  composer.addPass(rgb);
+  const glitch = new GlitchPass();
+  glitch.goWild = false;
+  composer.addPass(glitch);
+
+  const size = () => {
+    const r = viewer.canvas.getBoundingClientRect();
+    composer.setSize(Math.max(1, r.width), Math.max(1, r.height));
+  };
+  size();
+  window.addEventListener('resize', size);
+  viewer.renderOverride = () => composer.render();
+
+  let lastP = 0, surge = 0;
+  return {
+    onScroll(p) { surge = Math.min(0.006, surge + Math.abs(p - lastP) * 0.12); lastP = p; },
+    onFrame() {
+      surge *= 0.94;
+      rgb.uniforms.amount.value = 0.0018 + surge;
+    },
+    dispose() {
+      window.removeEventListener('resize', size);
+      viewer.renderOverride = null;
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// slices — tomography: vertices snapped to horizontal scan planes; scroll
+// sweeps the scan upward, frontier slice glows
+// ---------------------------------------------------------------------------
+function slicesMode({ viewer, ctrl }) {
+  const theme = currentTheme();
+  const pal = theme.tags || {};
+  const darkTheme = theme.dark !== false;
+  const scanColor = new THREE.Color((theme.slices && theme.slices.scan) != null ? theme.slices.scan : 0xc8ff4d);
+  const root = ctrl.root;
+  root.updateMatrixWorld(true);
+  const invRoot = new THREE.Matrix4().copy(root.matrixWorld).invert();
+  const bb = new THREE.Box3().setFromObject(root);
+  const size = bb.getSize(new THREE.Vector3());
+  const SL = (theme.slices && theme.slices.count) || 46;
+
+  const positions = [], base = [], sliceN = [];
+  const v = new THREE.Vector3();
+  const c = new THREE.Color();
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    const pos = o.geometry.attributes.position;
+    const rel = new THREE.Matrix4().multiplyMatrices(invRoot, o.matrixWorld);
+    c.set(pal[o.userData.tag] != null ? pal[o.userData.tag] : 0x888888);
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i).applyMatrix4(rel);
+      const sn = Math.round(((v.y - bb.min.y) / size.y) * (SL - 1)) / (SL - 1);
+      positions.push(v.x, bb.min.y + sn * size.y, v.z);
+      base.push(c.r, c.g, c.b);
+      sliceN.push(sn);
+    }
+  });
+  const n = sliceN.length;
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+  const colAttr = new THREE.BufferAttribute(new Float32Array(base), 3);
+  geo.setAttribute('color', colAttr);
+  const mat = new THREE.PointsMaterial({
+    size: Math.max(size.x, size.y, size.z) / 230, vertexColors: true, transparent: true,
+    opacity: darkTheme ? 0.95 : 1.0, depthWrite: false,
+    blending: darkTheme ? THREE.AdditiveBlending : THREE.NormalBlending,
+  });
+  const cloud = new THREE.Points(geo, mat);
+  root.visible = false;
+  viewer.modelRoot.add(cloud);
+
+  const hidden = darkTheme ? 0.04 : 0.92; // factor toward invisible
+  const bg = new THREE.Color(theme.fill != null ? theme.fill : (darkTheme ? 0x000000 : 0xffffff));
+
+  return {
+    handlesHighlight: true,
+    onScroll(p) {
+      const scan = clamp01(p * 1.22);
+      const arr = colAttr.array;
+      for (let i = 0; i < n; i++) {
+        const visible = sliceN[i] <= scan;
+        const frontier = Math.abs(sliceN[i] - scan) < 1.6 / SL;
+        if (frontier) {
+          arr[i * 3] = scanColor.r; arr[i * 3 + 1] = scanColor.g; arr[i * 3 + 2] = scanColor.b;
+        } else if (visible) {
+          arr[i * 3] = base[i * 3]; arr[i * 3 + 1] = base[i * 3 + 1]; arr[i * 3 + 2] = base[i * 3 + 2];
+        } else {
+          arr[i * 3] = base[i * 3] + (bg.r - base[i * 3]) * (darkTheme ? 1 - hidden : hidden);
+          arr[i * 3 + 1] = base[i * 3 + 1] + (bg.g - base[i * 3 + 1]) * (darkTheme ? 1 - hidden : hidden);
+          arr[i * 3 + 2] = base[i * 3 + 2] + (bg.b - base[i * 3 + 2]) * (darkTheme ? 1 - hidden : hidden);
+        }
+      }
+      colAttr.needsUpdate = true;
+    },
+    dispose() { viewer.modelRoot.remove(cloud); geo.dispose(); mat.dispose(); root.visible = true; },
+  };
+}
+
+const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode };
 
 export function createStageAdapter(modeId, env) {
   const fn = MODES[modeId];

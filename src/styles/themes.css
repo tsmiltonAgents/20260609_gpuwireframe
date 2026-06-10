@@ -125,3 +125,94 @@
 [data-theme="flux"] .cta-btn { background: transparent; border: 1px solid #ffb45e; color: #ffb45e; border-radius: 999px; }
 [data-theme="flux"] .cta-btn:hover { background: #ffb45e; color: #06100f; }
 [data-theme="flux"] .scroll-stage { border-left: 1px solid rgba(95, 212, 232, 0.12); }
+
+/* ====================================================================== */
+/* BRUTALIST FAMILY — shared DNA via prefix selector                      */
+/* ====================================================================== */
+[data-theme^="brutal-"] {
+  --bg: #ffffff; --bg-2: #f7f7f7; --panel: #ffffff;
+  --border: #000000; --border-soft: rgba(0, 0, 0, 0.35);
+  --cream: #0a0a0a; --teal: #0a0a0a; --terra: #0a0a0a; --violet: #444444;
+  --text: #161616; --text-dim: #3c3c3c; --text-faint: #7c7c7c;
+  --glass: rgba(255, 255, 255, 0.94);
+  --display: "Archivo Black", "Inter", sans-serif; --sans: "Inter", sans-serif;
+  --serif: "Source Serif 4", serif; --mono: "JetBrains Mono", monospace;
+}
+[data-theme^="brutal-"] h1, [data-theme^="brutal-"] h2, [data-theme^="brutal-"] h3 {
+  text-transform: uppercase; letter-spacing: -0.02em; font-weight: 400;
+}
+[data-theme^="brutal-"] .hero h1 { font-size: clamp(2.6rem, 5.6vw, 5.4rem); line-height: 0.95; }
+[data-theme^="brutal-"] .hero h1 em { color: #0a0a0a; background: #ffe600; padding: 0 0.08em; }
+[data-theme^="brutal-"] .section h2 em { color: #0a0a0a; background: #ffe600; padding: 0 0.08em; }
+[data-theme^="brutal-"] .card, [data-theme^="brutal-"] .access-card, [data-theme^="brutal-"] .tp-panel,
+[data-theme^="brutal-"] .readout, [data-theme^="brutal-"] .titleblock, [data-theme^="brutal-"] .tp-toggle,
+[data-theme^="brutal-"] .cta-btn, [data-theme^="brutal-"] .refs .ref, [data-theme^="brutal-"] .drag-hint,
+[data-theme^="brutal-"] .page-frame, [data-theme^="brutal-"] .picked-flag {
+  border-radius: 0; border-color: #000;
+}
+[data-theme^="brutal-"] .card, [data-theme^="brutal-"] .access-card {
+  border: 2px solid #000; box-shadow: 7px 7px 0 #000;
+}
+[data-theme^="brutal-"] .page-frame { border: 2px solid #000; }
+[data-theme^="brutal-"] .cta-btn { background: #0a0a0a; border: 2px solid #0a0a0a; color: #ffe600; font-weight: 700; text-transform: uppercase; }
+[data-theme^="brutal-"] .cta-btn:hover { background: #ffe600; color: #0a0a0a; border-color: #0a0a0a; }
+[data-theme^="brutal-"] .btn { color: #0a0a0a; border-bottom: 2px solid #0a0a0a; font-weight: 700; text-transform: uppercase; }
+[data-theme^="brutal-"] .btn:hover, [data-theme^="brutal-"] .btn.on { color: #0a0a0a; border-bottom-color: #ffe600; background: #ffe600; }
+[data-theme^="brutal-"] .tag { border: 1.5px solid #000; color: #0a0a0a; font-weight: 700; }
+[data-theme^="brutal-"] .picked-flag { background: #ffe600; color: #000; font-weight: 700; }
+[data-theme^="brutal-"] .kv .n { font-family: "Archivo Black", sans-serif; font-size: 30px; }
+[data-theme^="brutal-"] .navlinks a::before { color: #0a0a0a; font-weight: 700; }
+[data-theme^="brutal-"] .progress { background: #0a0a0a; height: 4px; }
+[data-theme^="brutal-"] ::selection { background: #ffe600; color: #000; }
+
+/* variant twists */
+[data-theme="brutal-type"] .ascii-stage { color: #0a0a0a !important; font-weight: 700; }
+[data-theme="brutal-spec"] .hero h1 em, [data-theme="brutal-spec"] .section h2 em { background: #e3342f; color: #fff; }
+[data-theme="brutal-spec"] .kv .n { color: #e3342f; }
+[data-theme="brutal-spec"] .progress { background: #e3342f; }
+[data-theme="brutal-stamp"] .scroll-stage { background: #ffffff; }
+
+/* ====================================================================== */
+/* ACID LAB FAMILY                                                        */
+/* ====================================================================== */
+[data-theme^="acid-"] {
+  --bg: #e9ebe7; --bg-2: #e2e5e0; --panel: #f2f4f0;
+  --border: rgba(20, 23, 26, 0.5); --border-soft: rgba(20, 23, 26, 0.18);
+  --cream: #14171a; --teal: #00a890; --terra: #6a00ff; --violet: #b800c8;
+  --text: #232629; --text-dim: #4c5054; --text-faint: #80868c;
+  --glass: rgba(233, 235, 231, 0.92);
+  --display: "Space Grotesk", sans-serif; --sans: "Space Grotesk", sans-serif;
+  --serif: "Source Serif 4", serif; --mono: "JetBrains Mono", monospace;
+}
+[data-theme^="acid-"] h1, [data-theme^="acid-"] h2, [data-theme^="acid-"] h3 { font-weight: 600; letter-spacing: -0.02em; }
+[data-theme^="acid-"] .hero h1 em { color: #6a00ff; }
+[data-theme^="acid-"] .section h2 em { color: #6a00ff; }
+[data-theme^="acid-"] .tag { background: #9dff00; color: #14171a; border: none; border-radius: 999px; padding: 5px 12px; font-weight: 700; }
+[data-theme^="acid-"] .card, [data-theme^="acid-"] .access-card { border: 2px solid #14171a; border-radius: 18px; }
+[data-theme^="acid-"] .cta-btn { background: #6a00ff; border: 2px solid #14171a; color: #fff; border-radius: 999px; font-weight: 700; box-shadow: 4px 4px 0 #14171a; }
+[data-theme^="acid-"] .cta-btn:hover { background: #9dff00; color: #14171a; box-shadow: 2px 2px 0 #14171a; }
+[data-theme^="acid-"] .btn { color: #6a00ff; border-bottom: 2px solid #6a00ff; font-weight: 600; }
+[data-theme^="acid-"] .btn:hover, [data-theme^="acid-"] .btn.on { color: #14171a; background: #9dff00; border-bottom-color: #14171a; }
+[data-theme^="acid-"] .picked-flag { background: #9dff00; color: #14171a; transform: rotate(-3deg); font-weight: 700; }
+[data-theme^="acid-"] .kv .n { color: #6a00ff; }
+[data-theme^="acid-"] .page-frame { border: 2px solid rgba(20, 23, 26, 0.6); border-radius: 26px; }
+[data-theme^="acid-"] .progress { background: linear-gradient(90deg, #6a00ff, #9dff00); height: 3px; }
+[data-theme^="acid-"] ::selection { background: #9dff00; color: #14171a; }
+
+/* Tomograph: gel-imaging negative — flip the family to dark */
+[data-theme="acid-tomo"] {
+  --bg: #101413; --bg-2: #121615; --panel: #182019;
+  --border: rgba(200, 255, 77, 0.4); --border-soft: rgba(200, 255, 77, 0.16);
+  --cream: #eef4e6; --teal: #4de8c0; --terra: #c8ff4d; --violet: #b48cff;
+  --text: #cfd8c8; --text-dim: #93a08c; --text-faint: #647060;
+  --glass: rgba(16, 20, 19, 0.88);
+}
+[data-theme="acid-tomo"] .tag { background: #c8ff4d; }
+[data-theme="acid-tomo"] .hero h1 em, [data-theme="acid-tomo"] .section h2 em { color: #c8ff4d; }
+[data-theme="acid-tomo"] .cta-btn { background: transparent; border-color: #c8ff4d; color: #c8ff4d; box-shadow: none; }
+[data-theme="acid-tomo"] .cta-btn:hover { background: #c8ff4d; color: #101413; }
+[data-theme="acid-tomo"] .btn { color: #c8ff4d; border-bottom-color: #c8ff4d; }
+[data-theme="acid-tomo"] .btn:hover, [data-theme="acid-tomo"] .btn.on { background: rgba(200,255,77,0.15); color: #c8ff4d; }
+[data-theme="acid-tomo"] .card, [data-theme="acid-tomo"] .access-card { border-color: rgba(200,255,77,0.5); }
+[data-theme="acid-tomo"] .kv .n { color: #4de8c0; }
+[data-theme="acid-tomo"] .page-frame { border-color: rgba(200,255,77,0.3); }

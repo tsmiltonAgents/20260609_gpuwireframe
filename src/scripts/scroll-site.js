@@ -36,7 +36,9 @@ const adapter = createStageAdapter(activeMode, { viewer, ctrl, stage });
 window.addEventListener('scc-theme', (e) => {
   const t = e.detail;
   const nextModel = params.get('model') || t.model || picked || 'gb200-nvl72';
-  if ((t.stageMode || 'wire') !== activeMode || nextModel !== modelId) location.reload();
+  const modeChanged = (t.stageMode || 'wire') !== activeMode;
+  const repThemeChanged = (t.stageMode || 'wire') !== 'wire' && t.id !== theme.id;
+  if (modeChanged || repThemeChanged || nextModel !== modelId) location.reload();
 });
 
 // Model name + dims into the readout; flag it when it came from the picker
