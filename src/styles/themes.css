@@ -389,14 +389,14 @@
 /* Channels 4: compact email card floating over the rack's bottom third */
 [data-theme="brutal-multi4"] .scroll-stage[data-mode="form"] canvas { opacity: 1; }
 [data-theme="brutal-multi4"] .stage-tray { display: none !important; }
-[data-theme="brutal-multi4"] .access-card,
-[data-theme="brutal-multi4"] .access-card.show {
+[data-theme="brutal-multi4"] #access-card,
+[data-theme="brutal-multi4"] #access-card.show {
   top: auto; bottom: 5%; left: 50%; transform: translateX(-50%);
   width: min(380px, 72%); padding: 18px 22px 20px;
 }
-[data-theme="brutal-multi4"] .access-card h3 { font-size: 15px; margin: 0 0 10px; }
-[data-theme="brutal-multi4"] .access-card form { gap: 10px; }
-[data-theme="brutal-multi4"] .access-card input { padding: 8px 10px; font-size: 12.5px; }
-[data-theme="brutal-multi4"] .access-card .cta-btn { padding: 9px 16px; font-size: 12px; margin-top: 2px; }
+[data-theme="brutal-multi4"] #access-card h3 { font-size: 15px; margin: 0 0 10px; }
+[data-theme="brutal-multi4"] #access-card form { gap: 10px; }
+[data-theme="brutal-multi4"] #access-card input { padding: 8px 10px; font-size: 12.5px; }
+[data-theme="brutal-multi4"] #access-card .cta-btn { padding: 9px 16px; font-size: 12px; margin-top: 2px; }
 [data-theme="brutal-multi4"] .hero-copy-short { display: none; }
 [data-theme="brutal-multi4"] .hero-copy-full { display: block; }
