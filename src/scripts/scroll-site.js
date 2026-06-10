@@ -26,7 +26,7 @@ const canvas = document.getElementById('stage-canvas');
 const viewer = new Viewer(canvas, { autoRotate: false, bloom: false, floor: true, autoPause: false });
 let ctrl = wireify(build(modelId).group);
 viewer.setModel(ctrl);
-viewer.frame(4.0); // start zoomed out — the rack sits small in the stage
+viewer.frame(theme.heroFrame || 4.0); // per-theme hero zoom (default: small in the stage)
 attachDragHint(stage, canvas);
 
 // Hero tray wireframe (right column, below the access card)
@@ -117,6 +117,7 @@ function onScroll() {
   const mode = sec.dataset.stage || 'model';        // 'form' | 'hidden' | 'model'
   if (mode !== lastMode) {
     stage.classList.toggle('stage-dim', mode !== 'model');
+    stage.dataset.mode = mode;
     if (accessCard) accessCard.classList.toggle('show', mode === 'form');
     if (stageTray) stageTray.classList.toggle('show', mode === 'form');
     lastMode = mode;
@@ -147,12 +148,13 @@ function onScroll() {
 
 // gentle constant drift + scroll-driven target, lerped each frame.
 // While the user is actively dragging, hand full control to OrbitControls.
+const heroBaseRot = theme.heroRotY || 0;
 viewer.onFrame = () => {
   if (adapter && adapter.onFrame) adapter.onFrame();
   if (userDragging) return;
   if (!(adapter && adapter.noRotate)) {
     curRotY += (targetRotY - curRotY) * 0.06;
-    viewer.modelRoot.rotation.y = curRotY + performance.now() * 0.00004;
+    viewer.modelRoot.rotation.y = heroBaseRot + curRotY + performance.now() * 0.00004;
   }
 };
 
