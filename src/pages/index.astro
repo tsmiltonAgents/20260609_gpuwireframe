@@ -38,7 +38,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 
     <aside class="access-card show" id="access-card">
       <h3>Get access to the side-channel cloud</h3>
-      <form id="access-form">
+      <form class="access-form" id="access-form">
         <label>Name
           <input type="text" name="name" autocomplete="name" required />
         </label>
@@ -172,15 +172,30 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
       </div>
     </section>
 
-    <section class="section" id="provision" data-tags="" data-xray="false">
-      <span class="tag">07 — Get started</span>
-      <h2>Ready when <em>you are</em>.</h2>
-      <p>Register your interest at the top of the page — free for open-source and
-         non-profit research — or browse the standard tray and rack setups first.</p>
-      <div class="cta">
-        <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Get access ↑</a>
-        <a class="btn" href={base + 'gallery/'}>Dev Model Picker →</a>
-      </div>
+    <section class="section contact" id="provision" data-tags="" data-xray="false">
+      <aside class="access-card inline" id="access-card-bottom">
+        <h3>Get access to the side-channel cloud</h3>
+        <form class="access-form" id="access-form-bottom">
+          <label>Name
+            <input type="text" name="name" autocomplete="name" required />
+          </label>
+          <label>Email
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label>Company <span class="opt">(optional)</span>
+            <input type="text" name="company" autocomplete="organization" />
+          </label>
+          <div class="check-row">
+            <label class="check"><input type="checkbox" name="access" value="free" /> Free access</label>
+            <label class="check"><input type="checkbox" name="access" value="paid" /> Paid access</label>
+          </div>
+          <button class="cta-btn" type="submit">Get Access Today →</button>
+        </form>
+        <div class="access-success">
+          <h3>You're on the list.</h3>
+          <p>We'll be in touch when the next hardware wave opens.</p>
+        </div>
+      </aside>
     </section>
 
   </main>

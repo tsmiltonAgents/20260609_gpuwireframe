@@ -470,3 +470,10 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 /* Channels (brutal-multi): strip the top nav down to just // Amodo Design */
 [data-theme="brutal-multi"] .navlinks a:not(.ext) { display: none; }
+
+/* Bottom contact section: the access form lives inline in the left column */
+.section.contact { justify-content: center; }
+.access-card.inline {
+  position: static; transform: none; opacity: 1 !important; pointer-events: auto;
+  width: 100%; max-width: 500px; align-self: flex-start;
+}

@@ -51,23 +51,23 @@ document.querySelectorAll('[data-model-dims]').forEach((el) => {
   el.textContent = modelInfo.dims || '—';
 });
 
-// --- access form ------------------------------------------------------------
+// --- access forms (hero + bottom) -------------------------------------------
 const accessCard = document.getElementById('access-card');
-const accessForm = document.getElementById('access-form');
-if (accessForm) {
-  accessForm.addEventListener('submit', (e) => {
+const accessCards = Array.from(document.querySelectorAll('.access-card'));
+const already = !!localStorage.getItem('scc-access-request');
+document.querySelectorAll('.access-form').forEach((form) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const fd = new FormData(accessForm);
+    const fd = new FormData(form);
     const data = Object.fromEntries(fd);
     data.access = fd.getAll('access').join(', ') || 'unspecified';
     data.model = modelId;
     data.at = new Date().toISOString();
     localStorage.setItem('scc-access-request', JSON.stringify(data));
-    accessCard.classList.add('done');
+    accessCards.forEach((c) => c.classList.add('done'));
   });
-  // returning visitor who already registered
-  if (localStorage.getItem('scc-access-request')) accessCard.classList.add('done');
-}
+});
+if (already) accessCards.forEach((c) => c.classList.add('done'));
 
 // --- scroll-driven state ----------------------------------------------------
 const sections = Array.from(document.querySelectorAll('.section'));
