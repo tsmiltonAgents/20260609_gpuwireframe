@@ -196,7 +196,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
   /* no pinned stage on mobile: title first, then the inline email card */
   .scroll-stage { display: none; }
-  .mobile-only { display: block; width: 100%; max-width: 480px; margin-top: 8px; }
+  .section.hero .mobile-only.access-card { display: block; width: 100%; max-width: 480px; margin-top: 8px; }
 
   .scroll-content { width: 100vw; }
   .section { min-height: auto; padding: 56px 22px; }
