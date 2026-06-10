@@ -56,7 +56,9 @@ const accessForm = document.getElementById('access-form');
 if (accessForm) {
   accessForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(accessForm));
+    const fd = new FormData(accessForm);
+    const data = Object.fromEntries(fd);
+    data.access = fd.getAll('access').join(', ') || 'unspecified';
     data.model = modelId;
     data.at = new Date().toISOString();
     localStorage.setItem('scc-access-request', JSON.stringify(data));

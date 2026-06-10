@@ -37,27 +37,21 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 
     <aside class="access-card show" id="access-card">
       <span class="tag">Early access</span>
-      <h3>Register your interest</h3>
-      <p>Hardware lands in waves. Tell us what you need and we'll hold a slot
-         in the next one.</p>
+      <h3>Get access to the side-channel cloud</h3>
       <form id="access-form">
         <label>Name
           <input type="text" name="name" autocomplete="name" required />
         </label>
-        <label>Work email
+        <label>Email
           <input type="email" name="email" autocomplete="email" required />
         </label>
-        <label>Company
+        <label>Company <span class="opt">(optional)</span>
           <input type="text" name="company" autocomplete="organization" />
         </label>
-        <label>I need
-          <select name="need">
-            <option>A whole NVL72 rack</option>
-            <option>Individual trays</option>
-            <option>Telemetry / side-channel access</option>
-            <option>Not sure yet</option>
-          </select>
-        </label>
+        <div class="check-row">
+          <label class="check"><input type="checkbox" name="access" value="free" /> Free access</label>
+          <label class="check"><input type="checkbox" name="access" value="paid" /> Paid access</label>
+        </div>
         <button class="cta-btn" type="submit">Get Access Today →</button>
       </form>
       <div class="access-success">
@@ -73,11 +67,14 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <main class="scroll-content">
 
     <section class="section hero" data-stage="form" data-tags="" data-xray="false">
-      <span class="tag">Bare-metal GPU · physical-layer telemetry</span>
-      <h1>Rent the rack.<br><em>Read the side channels.</em></h1>
-      <p>Side Channel Cloud provisions whole racks and trays — not virtual slices.
-         Every system ships with instrumented access to its power rails, coolant
-         loop and interconnect fabric, exposed as first-class telemetry.</p>
+      <span class="tag">Bare-metal GPU · scopes · SDRs · TAPs</span>
+      <h1>Side Channel <em>Cloud</em></h1>
+      <p>AI infrastructure for your AI security and verification work. If bare
+         metal is enough access for your research, then the side channel cloud
+         is for you. Our AI cluster is instrumented with scopes, SDRs, TAPs,
+         and more to enable your most ambitious hardware R&amp;D.</p>
+      <p>And if you're working on open-source or non-profit work, you can get
+         completely free access — already paid up for by research funders.</p>
       <div class="cta">
         <a class="btn" href={base + 'gallery/'}>Dev Model Picker →</a>
       </div>
@@ -85,14 +82,23 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 
     <section class="section explainer" data-stage="hidden" data-tags="" data-xray="false">
       <div class="explainer-card">
-        <span class="tag">01 — Why we exist</span>
-        <h2>We make infrastructure<br>to enable science.</h2>
-        <p>There is a gap between the people thinking about AI security and the
-           hardware it all runs on. We want more people working on AI security
-           and verification — on real machines, with the side channels exposed,
-           not behind a hypervisor. Side Channel Cloud is that bench: bare-metal
-           racks and trays with rail-level power, coolant-loop and fabric
-           telemetry as first-class outputs.</p>
+        <span class="tag">01 — Mission</span>
+        <h2>Why we exist</h2>
+        <p class="lead">AI security and verification need <b>100×</b> more technical
+           R&amp;D — but hardware access makes this infeasible for most academic,
+           non-profit, or independent research groups.</p>
+        <p>We're a hardware R&amp;D lab working on the 21st century's most important
+           technologies. Whilst running our AI security and verification programmes,
+           we were repeatedly bottlenecked by a lack of hands-on access to frontier
+           AI accelerators (H100s, H200s, +). We've partnered with research funders
+           to end this bottleneck. The side channel cloud is a research cluster
+           instrumented to the gills with side-channel monitoring instruments —
+           the perfect setup for researchers who need in-depth hardware access but
+           can't host millions of dollars of compute with building-scale power
+           requirements.</p>
+        <p>We have standard tray and rack setups, plus we can adapt setups to suit
+           you. Need an FPGA added? Want an SDR in a different place? We can
+           reconfigure the setup to meet your needs.</p>
         <div class="refs">
           <span class="refs-label">The reading that motivates this — RAND papers &amp; substacks</span>
           <a class="ref rand" href="https://www.rand.org/pubs/research_reports/RRA2849-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Securing AI Model Weights · RR-A2849</span></a>

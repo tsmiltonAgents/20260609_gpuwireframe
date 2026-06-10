@@ -414,3 +414,17 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
   text-transform: uppercase; color: var(--text-dim); border: 1px solid var(--border-soft);
   border-radius: 999px; padding: 3px 9px;
 }
+
+/* access form extras: optional marker + access checkboxes */
+.access-card label .opt { text-transform: none; letter-spacing: 0.02em; color: var(--text-faint); }
+.check-row { display: flex; gap: 22px; margin-top: 2px; }
+.check {
+  flex-direction: row !important; align-items: center; gap: 8px !important;
+  cursor: pointer; font-size: 12px !important; letter-spacing: 0.06em !important;
+  color: var(--text-dim) !important;
+}
+.check input { accent-color: var(--terra); width: 15px; height: 15px; margin: 0; }
+
+/* mission card lead line */
+.explainer-card .lead { color: var(--text); font-size: 17.5px; line-height: 1.85; }
+.explainer-card .lead b { color: var(--terra); font-weight: 600; }
