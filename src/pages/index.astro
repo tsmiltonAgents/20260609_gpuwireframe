@@ -14,7 +14,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300;400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;700;900&family=VT323&family=Playfair+Display:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@300;400&family=Archivo+Black&display=swap" rel="stylesheet" />
   <title>Side Channel Cloud</title>
   <script is:inline>
-    (function(){var A={channels:'brutal-multi',channels2:'brutal-multi2','3':'brutal-multi3',channels3:'brutal-multi3'};var h=location.hash.replace('#','');var q=new URLSearchParams(location.search).get('theme');var w=A[h]||h||q||localStorage.getItem('scc-theme')||'amodo-dark';document.documentElement.dataset.theme=w;try{localStorage.setItem('scc-theme',w);}catch(e){}})();
+    (function(){var A={channels:'brutal-multi',channels2:'brutal-multi2','3':'brutal-multi3',channels3:'brutal-multi3','4':'brutal-multi4',channels4:'brutal-multi4'};var h=location.hash.replace('#','');var q=new URLSearchParams(location.search).get('theme');var w=A[h]||h||q||localStorage.getItem('scc-theme')||'amodo-dark';document.documentElement.dataset.theme=w;try{localStorage.setItem('scc-theme',w);}catch(e){}})();
   </script>
 </head>
 <body data-base={base}>
@@ -57,10 +57,18 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
 
     <section class="section hero" data-stage="form" data-tags="" data-xray="false">
       <h1>Side Channel <em>Cloud</em></h1>
-      <p>AI infrastructure for your AI security and verification work. If bare
+      <p class="hero-copy-short">AI infrastructure for your AI security and verification work. If bare
          metal isn't enough access for your research, then the side channel
          cloud is for you. And if you're working on open-source or non-profit
          projects your access is totally free.</p>
+      <div class="hero-copy-full">
+        <p>AI infrastructure for your AI security and verification work. If bare
+           metal isn't enough access for your research, then the side channel
+           cloud is for you. Our AI cluster is instrumented with scopes, SDRs, TAPs,
+           and more to enable your most ambitious hardware R&amp;D.</p>
+        <p>And if you're working on open-source or non-profit work, you can get
+           completely free access — already paid up for by research funders.</p>
+      </div>
       <aside class="access-card inline mobile-only">
         <h3>Get access to the side-channel cloud</h3>
         <form class="access-form" id="access-form-m">

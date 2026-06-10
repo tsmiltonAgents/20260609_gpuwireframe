@@ -516,3 +516,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 /* Channels (brutal-multi): hide the design browse arrows */
 [data-theme="brutal-multi"] .theme-arrow { display: none; }
+
+.hero-copy-full { display: none; }
+.hero-copy-full p { margin-top: 0; }
