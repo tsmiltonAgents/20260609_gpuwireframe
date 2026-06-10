@@ -12,7 +12,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300;400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;700;900&family=VT323&family=Playfair+Display:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@300;400&family=Archivo+Black&display=swap" rel="stylesheet" />
-  <title>Side Channel Cloud — Dev Model Picker</title>
+  <title>Side Channel Cloud — Design Explorer</title>
   <script is:inline>
     document.documentElement.dataset.theme = localStorage.getItem('scc-theme') || 'amodo-dark';
   </script>
@@ -23,40 +23,29 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
     <div class="brand"><span class="glyph"></span> <b>SIDE&nbsp;CHANNEL</b> <span>// CLOUD</span></div>
     <nav class="navlinks">
       <a href={base} data-n="01">Landing</a>
-      <a href={base + 'gallery/'} class="active" data-n="02">Dev Model Picker</a>
-      <a href={base + 'explorer/'} data-n="03">Explorer</a>
+      <a href={base + 'gallery/'} data-n="02">Dev Model Picker</a>
+      <a href={base + 'explorer/'} class="active" data-n="03">Explorer</a>
       <a href="https://amododesign.com/" class="ext" data-n="//">Amodo Design</a>
     </nav>
   </header>
 
   <section class="gallery-head">
-    <span class="tag">02 — Dev Model Picker</span>
-    <h1>Dev Model Picker</h1>
-    <p>Each model below is built to published dimensions (1U = 44.45 mm, EIA-310 /
-       MGX widths) with correct tray counts, module placement and power/cooling
-       topology — GB200 NVL72 rack and trays, DGX H100, full 42U H100 rack, HGX
-       baseboard, PCIe. <b>Drag any model to rotate it in 3D.</b> <b>X-ray</b> removes
-       sheet metal to expose internals; <b>Pick</b> sets it as your dev model — it
-       stays highlighted here and drives the wireframe on the landing page.
-       Your own <b>.glb / .gltf</b> CAD exports can be imported directly.</p>
+    <span class="tag">03 — Design Explorer</span>
+    <h1>Every design, at a glance.</h1>
+    <p>All <b id="ex-count">—</b> design systems as live thumbnails. <b>Click a card</b> to
+       apply it and open the landing page, <b>☆</b> to shortlist. Cards re-skin with
+       whatever design is currently active.</p>
   </section>
 
   <div class="controls-row">
-    <button class="btn" id="xray-all">X-ray all</button>
-    <label class="btn" for="glb-input">Import .glb / .gltf…</label>
-    <input id="glb-input" type="file" accept=".glb,.gltf" multiple hidden />
-    <span class="hint-note">hover the legend to isolate a subsystem ↓</span>
+    <button class="btn" id="ex-filter">★ Shortlist only</button>
+    <span class="hint-note" id="ex-sl-count"></span>
   </div>
-  <div class="controls-row"><div class="legend" id="legend" style="flex:1"></div></div>
 
-  <div id="chosen-banner" style="display:none;max-width:1180px;margin:18px auto 0;padding:12px 18px;
-       border:1px solid var(--terra);border-radius:10px;background:rgba(212,101,79,0.07);
-       color:var(--text);font-size:14px;"></div>
-
-  <main class="grid" id="grid"></main>
+  <main class="ex-grid" id="ex-grid"></main>
 
   <script>
-    import '../scripts/gallery.js';
+    import '../scripts/explorer.js';
   </script>
 </body>
 </html>

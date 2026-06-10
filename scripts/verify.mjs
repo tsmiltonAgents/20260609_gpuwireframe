@@ -9,6 +9,7 @@ const base = process.argv[2] || 'https://tsmiltonagents.github.io/20260609_gpuwi
 const pages = [
   { name: 'home', url: base, canvases: 1 },
   { name: 'gallery', url: base + 'gallery/', canvases: 13 },
+  { name: 'explorer', url: base + 'explorer/', canvases: 0 },
 ];
 
 const browser = await chromium.launch();
@@ -109,6 +110,12 @@ for (const p of pages) {
 
   await page.screenshot({ path: `verify-${p.name}.png`, fullPage: p.name === 'gallery' });
 
+  if (p.name === 'explorer') {
+    report.thumbs = await page.evaluate(() => ({
+      cards: document.querySelectorAll('.ex-card').length,
+      loaded: Array.from(document.querySelectorAll('.ex-thumb img')).filter((i) => i.complete && i.naturalWidth > 0).length,
+    }));
+  }
   const drawingCount = report.canvases.filter((c) => c.drawing).length;
   const sizedCount = report.canvases.filter((c) => c.w > 50 && c.h > 50).length;
   const ok = errors.length === 0 && report.canvases.length >= p.canvases && sizedCount >= p.canvases;
@@ -120,6 +127,7 @@ for (const p of pages) {
   if (report.formOk !== undefined) console.log(`access form submits: ${report.formOk}`);
   if (report.pickOk !== undefined) console.log(`pick highlights card: ${report.pickOk}`);
   if (report.hud) console.log(`scroll HUD: subsystem="${report.hud.sub}" mode="${report.hud.mode}"`);
+  if (report.thumbs) console.log(`explorer cards: ${report.thumbs.cards}, thumbs loaded: ${report.thumbs.loaded}`);
   if (errors.length) { console.log('ERRORS:'); errors.slice(0, 8).forEach((e) => console.log('  ' + e)); }
   console.log(ok ? 'PASS' : 'FAIL');
   if (!ok) failures++;

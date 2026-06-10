@@ -369,3 +369,43 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 .scroll-stage.no-drag canvas { cursor: default; }
 
 @media (max-width: 860px) { .theme-arrow { display: none; } }
+
+/* ---- design explorer ---- */
+.ex-grid {
+  max-width: 1272px; margin: 26px auto 90px; padding: 0 40px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px;
+}
+.ex-card {
+  position: relative; border: 1px solid var(--border-soft); border-radius: 12px;
+  background: var(--panel); overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+}
+.ex-card:hover { border-color: var(--border); transform: translateY(-2px); }
+.ex-card.cur { border-color: var(--terra); }
+.ex-thumb { display: block; position: relative; aspect-ratio: 16 / 10; background: var(--bg-2); }
+.ex-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ex-current {
+  position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--bg);
+  background: var(--terra); border-radius: 999px; padding: 3px 10px;
+}
+.ex-star {
+  position: absolute; top: 8px; right: 8px; z-index: 3; cursor: pointer;
+  width: 34px; height: 30px; font-size: 15px; border-radius: 8px;
+  color: var(--text-dim); background: var(--glass); border: 1px solid var(--border-soft);
+  transition: all 0.15s ease;
+}
+.ex-star:hover, .ex-star.on { color: var(--terra); border-color: var(--terra); }
+.ex-meta {
+  display: flex; align-items: center; gap: 10px; padding: 11px 13px;
+  border-top: 1px solid var(--border-soft);
+}
+.ex-sw { display: flex; gap: 3px; flex: none; }
+.ex-sw i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(127,127,127,0.35); }
+.ex-meta > div { min-width: 0; flex: 1; }
+.ex-name { font-size: 14px; color: var(--cream); font-weight: 500; }
+.ex-blurb { font-size: 11px; color: var(--text-faint); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ex-mode {
+  flex: none; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-dim); border: 1px solid var(--border-soft);
+  border-radius: 999px; padding: 3px 9px;
+}
