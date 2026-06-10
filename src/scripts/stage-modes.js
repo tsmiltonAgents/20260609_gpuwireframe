@@ -649,7 +649,8 @@ function scopeMode({ viewer, ctrl, stage }) {
     compute: (x, t) => Math.sin(x * 6 + t * 3) * 0.5 + Math.sin(x * 17 + t * 7) * 0.18,
     thermal: (x, t) => Math.sin(x * 2 + t * 0.6) * 0.65 + Math.sin(x * 5 + t * 0.23) * 0.2,
     network: (x, t) => { const burst = Math.sin(x * 3 - t * 5); return (burst > 0.55 ? Math.sin(x * 60 + t * 30) * 0.8 : 0.04 * Math.sin(x * 30 + t * 9)); },
-    power:   (x, t) => (Math.sin(x * 5 + t * 2.4) > 0 ? 0.62 : -0.62) + Math.sin(x * 40 + t * 18) * 0.06,
+    power:   (x, t) => { const ph = x * 3 + t * 1.6; const e = Math.pow(1 - Math.abs(Math.sin(ph)), 6);
+      return Math.tanh(Math.sin(ph) * 6) * 0.6 + Math.sin(ph * 14) * 0.06 * e; },
     taps:    (x, t) => (Math.sin(x * 93.7 + t * 41) + Math.sin(x * 57.3 - t * 23)) * 0.22,
   };
   function sigFor(tags) {
@@ -1215,16 +1216,26 @@ function channelsMode({ viewer, ctrl, stage }) {
     for (let i = 0; i <= 10; i++) { const x = i / 10 * w; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
     for (let i = 0; i <= 6; i++) { const y = i / 6 * h; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
     ctx.globalAlpha = 1;
-    const N = 260;
-    ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath();
-    for (let i = 0; i <= N; i++) { const x = i / N * w; const xn = i / N * Math.PI * 2;
-      const sq = (Math.sin(xn * 5 + t * 2.4) > 0 ? 0.55 : -0.55) + Math.sin(xn * 40 + t * 18) * 0.06;
-      const y = h / 2 - sq * h * 0.36; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    const N = 420;
+    // band-limited square wave: smooth edges, ringing only near transitions
+    ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const x = i / N * w; const xn = i / N * Math.PI * 2;
+      const ph = xn * 3 + t * 1.6;
+      const base = Math.tanh(Math.sin(ph) * 6) * 0.52;
+      const edge = Math.pow(1 - Math.abs(Math.sin(ph)), 6);          // 1 at transitions
+      const ring = Math.sin(ph * 14) * 0.05 * edge;
+      const y = h / 2 - (base + ring) * h * 0.38;
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
     ctx.stroke();
+    // secondary: calm sine, lower amplitude
     ctx.strokeStyle = ACC; ctx.lineWidth = 1.5; ctx.beginPath();
-    for (let i = 0; i <= N; i++) { const x = i / N * w; const xn = i / N * Math.PI * 2;
-      const y = h / 2 - Math.sin(xn * 3 + t * 1.1) * Math.cos(xn + t * 0.4) * h * 0.18;
-      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    for (let i = 0; i <= N; i++) {
+      const x = i / N * w; const xn = i / N * Math.PI * 2;
+      const y = h / 2 - Math.sin(xn * 2 + t * 0.9) * h * 0.16;
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
     ctx.stroke();
   }
   const COUNTERS = ['SM ACTIVE', 'TENSOR', 'HBM BW', 'NVLINK', 'PCIe', 'POWER'];

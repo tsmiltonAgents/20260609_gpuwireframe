@@ -194,17 +194,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
   .navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 12px; }
   .navlinks a { margin-left: 0; }
 
-  /* stage becomes a stacked block: form card, then tray; canvas stays behind */
-  .scroll-stage { position: relative; width: 100vw; height: auto; min-height: 72vh;
-    border-left: none; display: flex; flex-direction: column; align-items: center;
-    gap: 14px; padding: 22px 18px 26px; }
-  .scroll-stage > canvas { position: absolute; inset: 0; height: 100%; }
-  .access-card { position: static; top: auto; left: auto; transform: none;
-    width: 100%; max-width: 480px; opacity: 1 !important; pointer-events: auto !important; }
-  .stage-tray { position: static; transform: none; width: 100%; max-width: 480px;
-    height: 240px; opacity: 1 !important; pointer-events: auto !important; }
-  .scroll-stage .drag-hint { display: none; }
-  .ch-box { width: 92%; height: 60%; }
+  /* no pinned stage on mobile: title first, then the inline email card */
+  .scroll-stage { display: none; }
+  .mobile-only { display: block; width: 100%; max-width: 480px; margin-top: 8px; }
 
   .scroll-content { width: 100vw; }
   .section { min-height: auto; padding: 56px 22px; }
@@ -494,6 +486,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 /* Bottom contact section: the access form lives inline in the left column */
 .section.contact { justify-content: center; }
+.mobile-only { display: none; }
 .access-card.inline {
   position: static; transform: none; opacity: 1 !important; pointer-events: auto;
   width: 100%; max-width: 500px; align-self: flex-start;
