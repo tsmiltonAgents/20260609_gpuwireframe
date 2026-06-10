@@ -522,3 +522,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 
 /* highlighted FREE in the access-card headings */
 .access-card h3 em { color: var(--terra); font-style: normal; }
+
+/* live-tap feed details */
+.ch-term .ch-line i { font-style: normal; color: var(--terra); margin-right: 6px; }
+.ch-term .ch-line .sz { font-weight: 600; font-style: normal; }

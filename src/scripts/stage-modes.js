@@ -1178,34 +1178,63 @@ function channelsMode({ viewer, ctrl, stage }) {
   }
   window.addEventListener('resize', sizeCanvas);
 
-  const LABELS = { scope: 'OSCILLOSCOPE · DC BUS', packets: 'NETWORK TAP · PACKET FEED',
+  const LABELS = { scope: 'OSCILLOSCOPE · DC BUS', packets: 'LIVE TAP · THIS PAGE\u2019S HTTP TRAFFIC',
     counters: 'HOST · GPU HARDWARE COUNTERS', dataflow: 'DATA PATH · RECONFIGURABLE HW' };
 
-  // ---- terminal (packets) ----
-  let termTimer = null;
-  const r2 = () => Math.random();
+  // ---- terminal (packets): a REAL tap on this page's own HTTP traffic ----
+  // Browsers expose no raw packets; the Resource Timing API exposes every
+  // request this page makes (url, bytes, protocol, timing). A periodic
+  // cache-busted probe keeps the feed live — itself real traffic.
+  let perfObs = null, hbTimer = null;
+  const seen = new Set();
   const pad = (v, n) => String(v).padStart(n, '0');
   function ts() { const d = new Date(); return pad(d.getHours(),2)+':'+pad(d.getMinutes(),2)+':'+pad(d.getSeconds(),2)+'.'+pad(d.getMilliseconds(),3); }
-  function packetLine() {
-    const lines = [
-      'tap0/p'+(r2()*72|0)+'  '+(40+r2()*360|0)+'B  '+(r2()>0.5?'RoCEv2':'TCP')+'  seq '+(r2()*1e6|0)+'  ok',
-      'nvsw'+(1+(r2()*9|0))+'/p'+(r2()*72|0)+'  tx '+(1.0+r2()*0.8).toFixed(2)+'TB/s  crc 0  replay '+(r2()>0.94?1:0),
-      'verifier  digest '+(r2().toString(16).slice(2,10))+'  attest ok',
-      r2()>0.9 ? '<b class="warn">flag</b>  unexpected egress '+(r2()*72|0)+' -> ext' : 'fabric  bisection '+(118+r2()*11).toFixed(0)+'TB/s  stable',
-    ];
-    return lines[(r2()*lines.length)|0];
+  function fmtBytes(b) { return b >= 1024 ? (b / 1024).toFixed(1) + 'kB' : b + 'B'; }
+  function tapLine(e) {
+    let path;
+    try { const u = new URL(e.name); path = (u.origin === location.origin ? '' : u.host) + u.pathname; }
+    catch (_) { path = e.name; }
+    if (path.length > 44) path = '\u2026' + path.slice(-42);
+    const size = e.transferSize ? fmtBytes(e.transferSize)
+      : (e.decodedBodySize ? 'cache' : 'opaque');
+    const proto = e.nextHopProtocol || '\u2014';
+    return '<i>' + (e.initiatorType || 'fetch') + '</i> ' + path +
+      '  <b class="sz">' + size + '</b> ' + proto + ' ' + Math.max(1, e.duration | 0) + 'ms';
+  }
+  function pushLine(html) {
+    const d = document.createElement('div'); d.className = 'ch-line';
+    d.innerHTML = '<span class="t">' + ts() + '</span> ' + html;
+    term.appendChild(d);
+    while (term.children.length > 80) term.removeChild(term.firstChild);
+    term.scrollTop = term.scrollHeight;
   }
   function startTerm() {
-    term.innerHTML = '<div class="ch-line head">network tap · rack mgx-07 · mirrored span</div>';
-    termTimer = setInterval(() => {
-      const d = document.createElement('div'); d.className = 'ch-line';
-      d.innerHTML = '<span class="t">' + ts() + '</span> ' + packetLine();
-      term.appendChild(d);
-      while (term.children.length > 80) term.removeChild(term.firstChild);
-      term.scrollTop = term.scrollHeight;
-    }, 150);
+    const conn = navigator.connection;
+    term.innerHTML = '<div class="ch-line head">live tap \u00b7 every request this page makes \u00b7 verify in devtools' +
+      (conn && conn.rtt != null ? ' \u00b7 rtt\u2248' + conn.rtt + 'ms \u00b7 \u2193' + conn.downlink + 'Mb/s' : '') + '</div>';
+    for (const e of performance.getEntriesByType('resource').slice(-14)) {
+      seen.add(e.name + e.startTime);
+      pushLine(tapLine(e));
+    }
+    perfObs = new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) {
+        const k = e.name + e.startTime;
+        if (seen.has(k)) continue;
+        seen.add(k);
+        pushLine(tapLine(e));
+      }
+    });
+    try { perfObs.observe({ type: 'resource', buffered: false }); } catch (_) {}
+    const base = (document.body.dataset.base || '/');
+    hbTimer = setInterval(() => {
+      fetch(base + 'models/manifest.json?tap=' + Date.now(), { cache: 'no-store' }).catch(() => {});
+    }, 3000);
   }
-  function stopTerm() { if (termTimer) clearInterval(termTimer); termTimer = null; term.innerHTML = ''; }
+  function stopTerm() {
+    if (hbTimer) clearInterval(hbTimer); hbTimer = null;
+    if (perfObs) { perfObs.disconnect(); perfObs = null; }
+    seen.clear(); term.innerHTML = '';
+  }
 
   // ---- canvas instruments ----
   let t = 0;
