@@ -1027,7 +1027,301 @@ function multiMode(env) {
   };
 }
 
-const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode, scope: scopeMode, heatfield: heatfieldMode, logstream: logstreamMode, topo: topoMode, orbital: orbitalMode, multi: multiMode };
+
+// ---------------------------------------------------------------------------
+// emanate — the rack wireframe stays; EM wavefronts radiate from its GPU/DRAM
+// emitter points as expanding, camera-facing rings (+ drifting EM sparks)
+// ---------------------------------------------------------------------------
+function emanateMode({ viewer, ctrl }) {
+  const theme = currentTheme();
+  const em = theme.emanate || {};
+  const col = new THREE.Color(em.color != null ? em.color : 0x5fd4e8);
+  const dark = theme.dark !== false;
+  ctrl.setOpacity(em.rackOpacity != null ? em.rackOpacity : 0.5);
+
+  const root = ctrl.root;
+  viewer.modelRoot.updateMatrixWorld(true);
+  root.updateMatrixWorld(true);
+
+  // emitter points: GPU + memory mesh centres, expressed in modelRoot space
+  const wp = new THREE.Vector3();
+  let pts = [];
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    const t = o.userData.tag;
+    if (t === 'gpu' || t === 'memory') {
+      o.getWorldPosition(wp);
+      pts.push(viewer.modelRoot.worldToLocal(wp.clone()));
+    }
+  });
+  if (pts.length > 12) {
+    const step = Math.floor(pts.length / 12);
+    pts = pts.filter((_, i) => i % step === 0).slice(0, 12);
+  }
+  const bb = new THREE.Box3().setFromObject(root);
+  if (!pts.length) {
+    const c = bb.getCenter(new THREE.Vector3()), sz = bb.getSize(new THREE.Vector3());
+    for (let i = 0; i < 6; i++) pts.push(new THREE.Vector3(c.x, bb.min.y + sz.y * (i + 0.5) / 6, c.z));
+  }
+  const maxR = bb.getBoundingSphere(new THREE.Sphere()).radius * 0.95;
+
+  const group = new THREE.Group();
+  viewer.modelRoot.add(group);
+
+  // unit circle geometry shared by every ring
+  const seg = 72, cp = [];
+  for (let i = 0; i <= seg; i++) { const a = (i / seg) * Math.PI * 2; cp.push(Math.cos(a), Math.sin(a), 0); }
+  const circleGeo = new THREE.BufferGeometry();
+  circleGeo.setAttribute('position', new THREE.Float32BufferAttribute(cp, 3));
+
+  const RINGS = 26;
+  const rings = [];
+  for (let i = 0; i < RINGS; i++) {
+    const mat = new THREE.LineBasicMaterial({ color: col.clone(), transparent: true, opacity: 0,
+      depthWrite: false, blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending });
+    const line = new THREE.Line(circleGeo, mat);
+    group.add(line);
+    rings.push({ line, mat, origin: pts[i % pts.length].clone(), phase: i / RINGS });
+  }
+
+  // drifting EM sparks travelling outward from emitters
+  const SP = 220;
+  const sgeo = new THREE.BufferGeometry();
+  sgeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(SP * 3), 3));
+  const smat = new THREE.PointsMaterial({ color: col.clone(), size: maxR / 90, transparent: true,
+    opacity: dark ? 0.8 : 0.7, depthWrite: false, blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending });
+  const sparks = new THREE.Points(sgeo, smat);
+  group.add(sparks);
+  const sattr = sgeo.attributes.position;
+  const sp = [];
+  for (let i = 0; i < SP; i++) {
+    const o = pts[(i * 7) % pts.length];
+    const dir = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+    sp.push({ o, dir, t: Math.random(), v: 0.004 + Math.random() * 0.01 });
+  }
+
+  let intensity = 1;
+  const parentQ = new THREE.Quaternion(), parentInv = new THREE.Quaternion(), v = new THREE.Vector3();
+
+  return {
+    handlesHighlight: true,
+    onScroll(p, tags) {
+      // brightest while the SDR subsystem is spotlit
+      const set = new Set(tags);
+      intensity = (set.has('gpu') || set.has('memory') || set.size === 0) ? 1 : 0.4;
+    },
+    onFrame() {
+      viewer.modelRoot.getWorldQuaternion(parentQ);
+      parentInv.copy(parentQ).invert();
+      const billboard = parentInv.clone().multiply(viewer.camera.quaternion);
+      for (const r of rings) {
+        r.phase += 0.005;
+        if (r.phase >= 1) { r.phase = 0; r.origin = pts[(Math.random() * pts.length) | 0].clone(); }
+        r.line.position.copy(r.origin);
+        r.line.scale.setScalar(Math.max(0.001, r.phase * maxR));
+        r.line.quaternion.copy(billboard);
+        r.mat.opacity = Math.sin(r.phase * Math.PI) * 0.7 * intensity;
+      }
+      for (let i = 0; i < SP; i++) {
+        const s = sp[i];
+        s.t += s.v;
+        if (s.t >= 1) s.t = 0;
+        v.copy(s.dir).multiplyScalar(s.t * maxR * 0.9).add(s.o);
+        sattr.array[i * 3] = v.x; sattr.array[i * 3 + 1] = v.y; sattr.array[i * 3 + 2] = v.z;
+      }
+      sattr.needsUpdate = true;
+      smat.opacity = (dark ? 0.8 : 0.7) * intensity;
+    },
+    dispose() {
+      viewer.modelRoot.remove(group);
+      circleGeo.dispose(); sgeo.dispose(); smat.dispose();
+      rings.forEach((r) => r.mat.dispose());
+      ctrl.setOpacity(1);
+    },
+  };
+}
+
+
+// ---------------------------------------------------------------------------
+// channels — a spinning wireframe rack stays in the background; each section's
+// signal renders inside an overlaid instrument box that fades with scroll, so
+// the rack is revealed between sections. The SDR section is the exception: it
+// runs the 3D 'emanate' effect (EM waves off the rack) with no box.
+// ---------------------------------------------------------------------------
+function channelsMode({ viewer, ctrl, stage }) {
+  ctrl.setOpacity(0.5);
+  const css = getComputedStyle(document.documentElement);
+  const ACC = (css.getPropertyValue('--terra').trim()) || '#e3342f';
+  const INK = (css.getPropertyValue('--cream').trim()) || '#111111';
+  const TXT = (css.getPropertyValue('--text').trim()) || '#333333';
+  const FNT = (css.getPropertyValue('--text-faint').trim()) || '#888888';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'ch-overlay';
+  overlay.innerHTML =
+    '<div class="ch-box"><div class="ch-head"><span class="ch-title"></span><span class="ch-dot"></span></div>' +
+    '<canvas class="ch-canvas"></canvas><div class="ch-term"></div></div>';
+  stage.appendChild(overlay);
+  const box = overlay.querySelector('.ch-box');
+  const title = overlay.querySelector('.ch-title');
+  const cv = overlay.querySelector('.ch-canvas');
+  const term = overlay.querySelector('.ch-term');
+  const ctx = cv.getContext('2d');
+
+  function sizeCanvas() {
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, r.width * dpr); cv.height = Math.max(1, r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', sizeCanvas);
+
+  const LABELS = { scope: 'OSCILLOSCOPE · DC BUS', packets: 'NETWORK TAP · PACKET FEED',
+    counters: 'HOST · GPU HARDWARE COUNTERS', dataflow: 'DATA PATH · RECONFIGURABLE HW' };
+
+  // ---- terminal (packets) ----
+  let termTimer = null;
+  const r2 = () => Math.random();
+  const pad = (v, n) => String(v).padStart(n, '0');
+  function ts() { const d = new Date(); return pad(d.getHours(),2)+':'+pad(d.getMinutes(),2)+':'+pad(d.getSeconds(),2)+'.'+pad(d.getMilliseconds(),3); }
+  function packetLine() {
+    const lines = [
+      'tap0/p'+(r2()*72|0)+'  '+(40+r2()*360|0)+'B  '+(r2()>0.5?'RoCEv2':'TCP')+'  seq '+(r2()*1e6|0)+'  ok',
+      'nvsw'+(1+(r2()*9|0))+'/p'+(r2()*72|0)+'  tx '+(1.0+r2()*0.8).toFixed(2)+'TB/s  crc 0  replay '+(r2()>0.94?1:0),
+      'verifier  digest '+(r2().toString(16).slice(2,10))+'  attest ok',
+      r2()>0.9 ? '<b class="warn">flag</b>  unexpected egress '+(r2()*72|0)+' -> ext' : 'fabric  bisection '+(118+r2()*11).toFixed(0)+'TB/s  stable',
+    ];
+    return lines[(r2()*lines.length)|0];
+  }
+  function startTerm() {
+    term.innerHTML = '<div class="ch-line head">network tap · rack mgx-07 · mirrored span</div>';
+    termTimer = setInterval(() => {
+      const d = document.createElement('div'); d.className = 'ch-line';
+      d.innerHTML = '<span class="t">' + ts() + '</span> ' + packetLine();
+      term.appendChild(d);
+      while (term.children.length > 80) term.removeChild(term.firstChild);
+      term.scrollTop = term.scrollHeight;
+    }, 150);
+  }
+  function stopTerm() { if (termTimer) clearInterval(termTimer); termTimer = null; term.innerHTML = ''; }
+
+  // ---- canvas instruments ----
+  let t = 0;
+  function drawScope() {
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = FNT; ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+    for (let i = 0; i <= 10; i++) { const x = i / 10 * w; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+    for (let i = 0; i <= 6; i++) { const y = i / 6 * h; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    const N = 260;
+    ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath();
+    for (let i = 0; i <= N; i++) { const x = i / N * w; const xn = i / N * Math.PI * 2;
+      const sq = (Math.sin(xn * 5 + t * 2.4) > 0 ? 0.55 : -0.55) + Math.sin(xn * 40 + t * 18) * 0.06;
+      const y = h / 2 - sq * h * 0.36; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke();
+    ctx.strokeStyle = ACC; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (let i = 0; i <= N; i++) { const x = i / N * w; const xn = i / N * Math.PI * 2;
+      const y = h / 2 - Math.sin(xn * 3 + t * 1.1) * Math.cos(xn + t * 0.4) * h * 0.18;
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.stroke();
+  }
+  const COUNTERS = ['SM ACTIVE', 'TENSOR', 'HBM BW', 'NVLINK', 'PCIe', 'POWER'];
+  function drawCounters() {
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+    ctx.clearRect(0, 0, w, h);
+    const n = COUNTERS.length, pad = 14, bx = 132, bw = w - bx - pad - 56;
+    const rowH = (h - pad * 2) / n;
+    ctx.font = '11px "JetBrains Mono", monospace'; ctx.textBaseline = 'middle';
+    for (let i = 0; i < n; i++) {
+      const y = pad + i * rowH + rowH / 2;
+      const val = 0.45 + 0.5 * (0.5 + 0.5 * Math.sin(t * (0.8 + i * 0.21) + i));
+      ctx.fillStyle = TXT; ctx.textAlign = 'left'; ctx.fillText(COUNTERS[i], pad, y);
+      ctx.globalAlpha = 0.25; ctx.fillStyle = FNT; ctx.fillRect(bx, y - 5, bw, 10); ctx.globalAlpha = 1;
+      ctx.fillStyle = i === n - 1 ? ACC : INK; ctx.fillRect(bx, y - 5, bw * val, 10);
+      ctx.fillStyle = TXT; ctx.textAlign = 'right'; ctx.fillText((val * 100).toFixed(0) + '%', w - pad, y);
+    }
+  }
+  const BLOCKS = ['HOST', 'DPU', 'FPGA', 'SWITCH'];
+  let flow = [];
+  for (let i = 0; i < 26; i++) flow.push(Math.random());
+  function drawDataflow() {
+    const w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+    ctx.clearRect(0, 0, w, h);
+    const n = BLOCKS.length, bw = 92, gap = (w - 28 - n * bw) / (n - 1), y = h / 2, bh = 52;
+    const xs = [];
+    for (let i = 0; i < n; i++) xs.push(14 + i * (bw + gap));
+    ctx.strokeStyle = FNT; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(xs[0] + bw, y); ctx.lineTo(xs[n - 1], y); ctx.stroke(); ctx.globalAlpha = 1;
+    for (let i = 0; i < n; i++) {
+      ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.strokeRect(xs[i], y - bh / 2, bw, bh);
+      ctx.fillStyle = INK; ctx.font = '12px "JetBrains Mono", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(BLOCKS[i], xs[i] + bw / 2, y);
+    }
+    const x0 = xs[0] + bw, x1 = xs[n - 1];
+    ctx.fillStyle = ACC;
+    for (let i = 0; i < flow.length; i++) { flow[i] += 0.006; if (flow[i] > 1) flow[i] -= 1;
+      const x = x0 + (x1 - x0) * flow[i]; ctx.beginPath(); ctx.arc(x, y, 2.4, 0, Math.PI * 2); ctx.fill(); }
+  }
+
+  // ---- channel state ----
+  function chFor(tags) {
+    const set = new Set(tags);
+    if (set.has('power') || set.has('busbar')) return 'scope';
+    if (set.has('nic') || set.has('interconnect')) return 'packets';
+    if (set.has('memory') || set.has('gpu')) return 'em';
+    if (set.has('cpu') || set.has('pcb') || set.has('drive')) return 'counters';
+    if (set.has('connector') || set.has('cable')) return 'dataflow';
+    return 'none';
+  }
+  let channel = 'init', emAdapter = null;
+  function setChannel(c) {
+    if (c === channel) return;
+    if (channel === 'em' && emAdapter) { emAdapter.dispose(); emAdapter = null; ctrl.setOpacity(0.5); }
+    if (channel === 'packets') stopTerm();
+    channel = c;
+    if (c === 'em') { emAdapter = createStageAdapter('emanate', { viewer, ctrl, stage }); return; }
+    if (c === 'none') return;
+    title.textContent = LABELS[c] || '';
+    cv.style.display = c === 'packets' ? 'none' : 'block';
+    term.style.display = c === 'packets' ? 'block' : 'none';
+    requestAnimationFrame(sizeCanvas);
+    if (c === 'packets') startTerm();
+  }
+
+  function sectionFocus() {
+    const secs = document.querySelectorAll('.section');
+    const mid = window.innerHeight / 2; let best = Infinity;
+    for (const s of secs) { const r = s.getBoundingClientRect(); const d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < best) best = d; }
+    return Math.max(0, Math.min(1, 1 - best / (window.innerHeight * 0.42)));
+  }
+
+  return {
+    handlesHighlight: true,
+    onScroll(p, tags) { setChannel(chFor(tags)); if (emAdapter && emAdapter.onScroll) emAdapter.onScroll(p, tags); },
+    onFrame() {
+      t += 1 / 60;
+      if (emAdapter && emAdapter.onFrame) emAdapter.onFrame();
+      const boxed = channel === 'scope' || channel === 'packets' || channel === 'counters' || channel === 'dataflow';
+      const f = boxed ? sectionFocus() : 0;
+      box.style.opacity = f.toFixed(3);
+      box.style.transform = 'translateY(' + ((1 - f) * 26).toFixed(1) + 'px)';
+      box.style.pointerEvents = f > 0.6 ? 'auto' : 'none';
+      if (boxed && f > 0.03) {
+        if (channel === 'scope') drawScope();
+        else if (channel === 'counters') drawCounters();
+        else if (channel === 'dataflow') drawDataflow();
+      }
+    },
+    dispose() {
+      window.removeEventListener('resize', sizeCanvas);
+      if (emAdapter) emAdapter.dispose();
+      stopTerm(); overlay.remove(); ctrl.setOpacity(1);
+    },
+  };
+}
+
+const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode, scope: scopeMode, heatfield: heatfieldMode, logstream: logstreamMode, topo: topoMode, orbital: orbitalMode, emanate: emanateMode, channels: channelsMode, multi: multiMode };
 
 export function createStageAdapter(modeId, env) {
   const fn = MODES[modeId];

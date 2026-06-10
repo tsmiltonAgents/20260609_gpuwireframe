@@ -68,20 +68,21 @@ registerThemes([
   {
     ...BRUTAL_BASE, id: 'brutal-multi', name: 'Channels', blurb: 'FLIR, terminal, contours — per section',
     swatches: ['#ffffff', '#0a0a0a', '#e3342f'],
-    stageMode: 'multi', model: 'gb200-nvl72',
+    stageMode: 'channels', model: 'gb200-nvl72',
     multi: {
       default: 'topo',
       map: [
         // order matters: first match wins. Tags mirror each section's topic.
         { tags: ['power', 'busbar'], mode: 'scope' },        // power: DC-bus trace
         { tags: ['nic', 'interconnect'], mode: 'logstream' }, // network TAPs: packet feed
-        { tags: ['memory', 'gpu'], mode: 'heatfield' },       // SDR / EM: emanation field
+        { tags: ['memory', 'gpu'], mode: 'emanate' },        // SDR / EM: waves off the rack
         { tags: ['cpu', 'pcb', 'drive'], mode: 'voxel' },     // bare metal: the machine
         { tags: ['connector', 'cable'], mode: 'flux' },       // reconfigurable: data through inserted HW
       ],
     },
     topo: { ink: 0x0a0a0a, paper: 0xffffff, mark: 0xe3342f },
     scope: { trace: 0x0a0a0a, trace2: 0xe3342f, grid: 0xd6d6d6 },
+    emanate: { color: 0xe3342f, rackOpacity: 0.42 },
     flux: { power: 0xb88a00, coolant: 0x00657a, fabric: 0x5a00b8 },
     voxel: { div: 50 },
   },

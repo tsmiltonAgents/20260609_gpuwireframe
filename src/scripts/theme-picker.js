@@ -27,6 +27,17 @@ function toggleShortlist(id) {
 export function mountThemePicker() {
   bootTheme();
 
+  // #channels (and #<themeId> / ?theme=) deep-links
+  window.addEventListener('hashchange', () => {
+    const alias = { channels: 'brutal-multi' };
+    const h = location.hash.replace('#', '');
+    const id = alias[h] || h;
+    if (id && THEMES.some((t) => t.id === id) && id !== currentThemeId()) {
+      applyTheme(id);
+      location.reload();
+    }
+  });
+
   const root = document.createElement('div');
   root.className = 'theme-picker';
   root.innerHTML = `

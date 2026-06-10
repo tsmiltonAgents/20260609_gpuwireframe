@@ -14,7 +14,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300;400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;700;900&family=VT323&family=Playfair+Display:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:wght@300;400&family=Archivo+Black&display=swap" rel="stylesheet" />
   <title>Side Channel Cloud</title>
   <script is:inline>
-    document.documentElement.dataset.theme = localStorage.getItem('scc-theme') || 'amodo-dark';
+    (function(){var A={channels:'brutal-multi'};var h=location.hash.replace('#','');var q=new URLSearchParams(location.search).get('theme');var w=A[h]||h||q||localStorage.getItem('scc-theme')||'amodo-dark';document.documentElement.dataset.theme=w;try{localStorage.setItem('scc-theme',w);}catch(e){}})();
   </script>
 </head>
 <body data-base={base}>
@@ -27,6 +27,7 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
       <a href={base} class="active" data-n="01">Landing</a>
       <a href={base + 'gallery/'} data-n="02">Dev Model Picker</a>
       <a href={base + 'explorer/'} data-n="03">Explorer</a>
+      <a href={base + '#channels'} class="chan">Channels</a>
       <a href="https://amododesign.com/" class="ext" data-n="//">Amodo Design</a>
     </nav>
   </header>
