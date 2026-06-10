@@ -70,8 +70,8 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
       <span class="tag">Bare-metal GPU · scopes · SDRs · TAPs</span>
       <h1>Side Channel <em>Cloud</em></h1>
       <p>AI infrastructure for your AI security and verification work. If bare
-         metal is enough access for your research, then the side channel cloud
-         is for you. Our AI cluster is instrumented with scopes, SDRs, TAPs,
+         metal isn't enough access for your research, then the side channel
+         cloud is for you. Our AI cluster is instrumented with scopes, SDRs, TAPs,
          and more to enable your most ambitious hardware R&amp;D.</p>
       <p>And if you're working on open-source or non-profit work, you can get
          completely free access — already paid up for by research funders.</p>
@@ -111,118 +111,79 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
       </div>
     </section>
 
-    <section class="section" data-tags="gpu,cpu,memory" data-xray="false">
-      <span class="tag">02 — Compute</span>
-      <h2>One NVLink domain,<br><em>72 GPUs</em>.</h2>
-      <p>A GB200 NVL72 rack carries 18 compute trays, each with two Grace-Blackwell
-         superchips: 72 Blackwell GPUs and 36 Grace CPUs sharing 13.5 TB of HBM3e
-         behind a single NVLink-5 domain. You get the whole rack, or individual
-         trays, on bare metal.</p>
-      <div class="kv">
-        <div><div class="n">72 / 36</div><div class="l">GPU / Grace CPU</div></div>
-        <div><div class="n">13.5 TB</div><div class="l">HBM3e per rack</div></div>
-        <div><div class="n">18× 1U</div><div class="l">compute trays</div></div>
-      </div>
-      <div class="refs">
-        <span class="refs-label">Further reading</span>
-        <a class="ref arxiv" href="https://arxiv.org/abs/2303.11341" target="_blank" rel="noopener"><b>arXiv</b><span>2303.11341 · Catching a Chinchilla — compute monitoring</span></a>
-        <a class="ref rand" href="https://www.rand.org/pubs/working_papers/WRA3056-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Hardware-Enabled Governance Mechanisms</span></a>
-      </div>
-    </section>
-
-    <section class="section" data-tags="coldplate,tube,manifold" data-xray="true">
-      <span class="tag">03 — Side channels</span>
-      <h2>The <em>coolant loop</em>,<br>instrumented.</h2>
-      <p>Direct-to-chip cold plates on every superchip, blind-mate quick disconnects
-         at the tray rear, and dual vertical manifolds carrying the rack loop.
-         We expose per-plate inlet/outlet temperature, flow rate and pressure delta
-         at one-second resolution.</p>
-      <div class="kv">
-        <div><div class="n">D2C</div><div class="l">cold plate per chip</div></div>
-        <div><div class="n">2×</div><div class="l">rack manifolds</div></div>
-        <div><div class="n">1 s</div><div class="l">sample interval</div></div>
-      </div>
-      <div class="refs">
-        <span class="refs-label">Further reading</span>
-        <a class="ref conf" href="https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/masti" target="_blank" rel="noopener"><b>USENIX</b><span>Thermal covert channels on multi-core (Sec '15)</span></a>
-        <a class="ref conf" href="https://blog.trailofbits.com/2024/01/16/leftoverlocals-listening-to-llm-responses-through-leaked-gpu-local-memory/" target="_blank" rel="noopener"><b>ToB</b><span>LeftoverLocals — leaked GPU local memory</span></a>
-        <a class="ref rand" href="https://www.rand.org/pubs/research_reports/RRA2849-1.html" target="_blank" rel="noopener"><b>RAND</b><span>Securing AI Model Weights · RR-A2849</span></a>
-      </div>
-    </section>
-
-    <section class="section" data-tags="nic,interconnect,connector,cable" data-xray="true">
-      <span class="tag">04 — Network</span>
-      <h2>NVLink counters,<br><em>per link</em>.</h2>
-      <p>Nine NVLink switch trays sit mid-rack, joined to every compute tray through
-         a rear copper cable cartridge. Per-port bandwidth, replay and CRC error
-         counters are exported for the full 130 TB/s domain — observability that
-         normally ends at the cage door.</p>
-      <div class="kv">
-        <div><div class="n">130 TB/s</div><div class="l">NVLink-5 domain</div></div>
-        <div><div class="n">9× 1U</div><div class="l">switch trays</div></div>
-        <div><div class="n">1.8 TB/s</div><div class="l">per GPU</div></div>
-      </div>
-      <div class="refs">
-        <span class="refs-label">Further reading</span>
-        <a class="ref conf" href="https://www.vusec.net/projects/netcat/" target="_blank" rel="noopener"><b>S&P</b><span>NetCAT — network cache attacks (S&P '20)</span></a>
-        <a class="ref conf" href="https://www.cs.ucr.edu/~nael/pubs/ccs18.pdf" target="_blank" rel="noopener"><b>CCS</b><span>Rendered Insecure — practical GPU side channels (CCS '18)</span></a>
-      </div>
-    </section>
-
     <section class="section" data-tags="power,busbar" data-xray="true">
-      <span class="tag">05 — Power</span>
-      <h2>Rail-level<br><em>power metering</em>.</h2>
-      <p>Six power shelves rectify to a 48 V DC busbar running the height of the
-         rack; each tray blind-mates onto it. We meter every shelf, every busbar
-         tap and every VRM domain, so you can attribute watts to workloads and
-         catch a degrading phase before it throttles you.</p>
-      <div class="kv">
-        <div><div class="n">48 V</div><div class="l">DC busbar</div></div>
-        <div><div class="n">≈120 kW</div><div class="l">rack budget</div></div>
-        <div><div class="n">6×</div><div class="l">power shelves</div></div>
-      </div>
+      <span class="tag">02 — Power side channels</span>
+      <h2>Power <em>side channels</em>.</h2>
+      <p>We've instrumented the DC bus to our H200 GPUs. We've already used it to
+         tell whether a GPU is running training or inference, and our collaborators
+         have used it to identify which model is running on a GPU.</p>
       <div class="refs">
-        <span class="refs-label">Further reading</span>
-        <a class="ref conf" href="https://www.hertzbleed.com/" target="_blank" rel="noopener"><b>USENIX</b><span>Hertzbleed — power into remote timing (Sec '22)</span></a>
-        <a class="ref conf" href="https://platypusattack.com/" target="_blank" rel="noopener"><b>S&P</b><span>PLATYPUS — software power side channels (S&P '21)</span></a>
+        <span class="refs-label">Similar research</span>
+        <a class="ref arxiv" href="https://arxiv.org/pdf/2309.11894" target="_blank" rel="noopener"><b>arXiv</b><span>DeepTheft — stealing DNN architectures via power (S&amp;P '24)</span></a>
+        <a class="ref rg" href="https://www.researchgate.net" target="_blank" rel="noopener"><b>RG</b><span>A New Foe in GPUs — power side-channel attacks on NNs</span></a>
+        <a class="ref arxiv" href="https://arxiv.org/pdf/2506.14551" target="_blank" rel="noopener"><b>arXiv</b><span>Empirically-calibrated H100 node power models (2025)</span></a>
       </div>
     </section>
 
-    <section class="section" data-tags="connector,busbar,tube" data-xray="true">
-      <span class="tag">06 — Taps</span>
-      <h2>Physical <em>taps</em>,<br>by design.</h2>
-      <p>Every blind-mate interface in the rack is a sanctioned probe point: busbar
-         taps for current waveforms, QD ports for loop sensing, NVLink cartridge
-         connectors for fabric capture, and BMC/debug headers on every tray. Bring
-         a scope, a logic analyser, or our interposers — the access is contractual,
-         not adversarial.</p>
-      <div class="kv">
-        <div><div class="n">3+</div><div class="l">tap classes / tray</div></div>
-        <div><div class="n">BMC</div><div class="l">out-of-band, yours</div></div>
-        <div><div class="n">scope-ready</div><div class="l">probe fixtures</div></div>
-      </div>
+    <section class="section" data-tags="nic,interconnect" data-xray="true">
+      <span class="tag">03 — Network TAPs</span>
+      <h2>Network <em>TAPs</em>.</h2>
+      <p>Many AI verification regimes rely on network TAPs — devices that let a
+         verifier observe a prover's network packets. We can place TAPs anywhere
+         on the network (speed permitting) to enable your work.</p>
       <div class="refs">
         <span class="refs-label">Further reading</span>
-        <a class="ref arxiv" href="https://arxiv.org/abs/2408.16074" target="_blank" rel="noopener"><b>arXiv</b><span>2408.16074 · Verification for international AI agreements</span></a>
-        <a class="ref cnas" href="https://www.cnas.org/publications/reports/secure-governable-chips" target="_blank" rel="noopener"><b>CNAS</b><span>Secure, Governable Chips</span></a>
+        <a class="ref amodo" href="https://amododesign.com/notes/2026-05-03-network-tapping/" target="_blank" rel="noopener"><b>Amodo</b><span>Note · Network tapping</span></a>
+        <a class="ref substack" href="https://nacicankaya.substack.com/p/research-note-the-fundamentals-and" target="_blank" rel="noopener"><b>Substack</b><span>Naci Cankaya · Fundamentals of network TAPs</span></a>
+      </div>
+    </section>
+
+    <section class="section" data-tags="memory,gpu" data-xray="true">
+      <span class="tag">04 — Software-defined radios</span>
+      <h2>Software-defined <em>radios</em>.</h2>
+      <p>Every accelerator leaks. Clocks, DRAM, voltage regulators and data buses
+         all emit electromagnetic energy that correlates with the computation
+         underneath — and unlike a power tap, EM emanations can often be captured
+         without physical contact.</p>
+      <p>We position SDRs around the cluster, and we can move probes and antennas
+         to wherever your experiment needs them.</p>
+      <div class="refs">
+        <span class="refs-label">Similar research</span>
+        <a class="ref arxiv" href="https://arxiv.org/pdf/2603.02891" target="_blank" rel="noopener"><b>arXiv</b><span>Kraken — higher-order EM attacks on DNNs, near &amp; far field (2026)</span></a>
+        <a class="ref arxiv" href="https://arxiv.org/pdf/2311.00579" target="_blank" rel="noopener"><b>arXiv</b><span>Revealing CNN architectures via side-channel analysis (2023)</span></a>
+        <a class="ref arxiv" href="https://arxiv.org/pdf/2407.09717" target="_blank" rel="noopener"><b>arXiv</b><span>Deep-TEMPEST — EM HDMI eavesdropping with deep learning (2024)</span></a>
+        <a class="ref conf" href="https://www.usenix.org" target="_blank" rel="noopener"><b>USENIX</b><span>Snooping the GPU via magnetic side channel (Sec '22)</span></a>
+      </div>
+    </section>
+
+    <section class="section" data-tags="cpu,pcb,drive" data-xray="true">
+      <span class="tag">05 — Bare-metal access</span>
+      <h2>Bare-metal <em>access</em>.</h2>
+      <p>With deep system access you can run detailed system profiling. Want to
+         research GPU hardware counters? We'll set up a machine with the access
+         to enable it.</p>
+    </section>
+
+    <section class="section" data-tags="connector,cable" data-xray="true">
+      <span class="tag">06 — Reconfigurable hardware</span>
+      <h2>Other reconfigurable <em>hardware</em>.</h2>
+      <p>We can drop programmable hardware into the data path wherever you need it —
+         BlueField DPUs, FPGAs, SmartNICs, custom switches. Whatever the setup, we
+         can accommodate it.</p>
+      <div class="refs">
+        <span class="refs-label">From our notebook</span>
+        <a class="ref amodo" href="https://amododesign.com/notes/2026-03-16-dpu-bandwidth-limiter/" target="_blank" rel="noopener"><b>Amodo</b><span>Note · Tray-level bandwidth limits with BlueField DPUs</span></a>
       </div>
     </section>
 
     <section class="section" id="provision" data-tags="" data-xray="false">
-      <span class="tag">07 — Provision</span>
-      <h2>Tray or rack.<br><em>Yours in minutes.</em></h2>
-      <p>Pick your dev model from the picker — GB200 NVL72, DGX H100, or PCIe —
-         register your interest above, and get bare-metal access plus the full
-         telemetry feed when your wave opens.</p>
+      <span class="tag">07 — Get started</span>
+      <h2>Ready when <em>you are</em>.</h2>
+      <p>Register your interest at the top of the page — free for open-source and
+         non-profit research — or browse the standard tray and rack setups first.</p>
       <div class="cta">
-        <a class="btn" href={base + 'gallery/'}>Open the Dev Model Picker →</a>
-        <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Get Access Today ↑</a>
-      </div>
-      <div class="refs">
-        <span class="refs-label">Further reading</span>
-        <a class="ref arxiv" href="https://arxiv.org/abs/2303.11341" target="_blank" rel="noopener"><b>arXiv</b><span>2303.11341 · Compute monitoring</span></a>
-        <a class="ref arxiv" href="https://arxiv.org/abs/2408.16074" target="_blank" rel="noopener"><b>arXiv</b><span>2408.16074 · Treaty verification methods</span></a>
-        <a class="ref substack" href="https://importai.substack.com/" target="_blank" rel="noopener"><b>Substack</b><span>Import AI</span></a>
+        <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Get access ↑</a>
+        <a class="btn" href={base + 'gallery/'}>Dev Model Picker →</a>
       </div>
     </section>
 

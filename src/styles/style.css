@@ -428,3 +428,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 /* mission card lead line */
 .explainer-card .lead { color: var(--text); font-size: 17.5px; line-height: 1.85; }
 .explainer-card .lead b { color: var(--terra); font-weight: 600; }
+
+/* extra reference-chip brands */
+.ref.amodo b { background: #2f7d72; }   /* Amodo notes — teal */
+.ref.rg b { background: #00a99d; }       /* ResearchGate — teal-green */
