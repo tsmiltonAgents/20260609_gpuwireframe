@@ -34,17 +34,6 @@ const base = (import.meta.env.BASE_URL.replace(/\/+$/, '')) + '/';
   <!-- pinned right column: wireframe + (during the hero) the access card -->
   <div class="scroll-stage stage-dim" id="stage">
     <canvas id="stage-canvas"></canvas>
-    <div class="readout">
-      DEV MODEL · <b data-model-name>—</b> <a id="ro-change" href={base + 'gallery/'}>change ↗</a><br>
-      DIMS ······ <b data-model-dims>—</b><br>
-      SUBSYSTEM · <b id="ro-sub">all</b><br>
-      VIEW ······ <b id="ro-mode">ASSEMBLY</b> · SCROLL <b id="ro-pct">0%</b>
-    </div>
-    <div class="titleblock">
-      SCC-HW · REV A<br>
-      UNITS mm · SCALE NTS<br>
-      THIRD-ANGLE PROJECTION
-    </div>
 
     <aside class="access-card show" id="access-card">
       <span class="tag">Early access</span>

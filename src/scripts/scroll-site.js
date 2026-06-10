@@ -118,9 +118,12 @@ function onScroll() {
     adapter.onScroll(p, tags, xray);
   }
 
-  document.getElementById('ro-sub').textContent = tags.length ? tags.join(' · ') : 'all';
-  document.getElementById('ro-mode').textContent = xray ? 'X-RAY' : 'ASSEMBLY';
-  document.getElementById('ro-pct').textContent = Math.round(p * 100) + '%';
+  const roSub = document.getElementById('ro-sub');
+  if (roSub) {
+    roSub.textContent = tags.length ? tags.join(' · ') : 'all';
+    document.getElementById('ro-mode').textContent = xray ? 'X-RAY' : 'ASSEMBLY';
+    document.getElementById('ro-pct').textContent = Math.round(p * 100) + '%';
+  }
 }
 
 // gentle constant drift + scroll-driven target, lerped each frame.
