@@ -323,3 +323,49 @@ h1, h2, h3 { font-family: var(--display); font-weight: 300; color: var(--cream);
 /* ascii stage layer obeys stage dimming like the canvas does */
 .scroll-stage .ascii-stage { transition: opacity 0.6s ease; }
 .scroll-stage.stage-dim .ascii-stage { opacity: 0.12; }
+
+/* ---- theme arrows + toast + shortlist ---- */
+.theme-arrow {
+  position: fixed; top: 50%; transform: translateY(-50%); z-index: 88;
+  width: 44px; height: 64px; cursor: pointer; font-size: 30px; line-height: 1;
+  color: var(--text-dim); background: var(--glass); border: 1px solid var(--border);
+  backdrop-filter: blur(6px); transition: all 0.2s ease; font-family: var(--mono);
+  display: flex; align-items: center; justify-content: center; padding-bottom: 4px;
+}
+.theme-arrow.left { left: 0; border-left: none; border-radius: 0 10px 10px 0; }
+.theme-arrow.right { right: 0; border-right: none; border-radius: 10px 0 0 10px; }
+.theme-arrow:hover { color: var(--cream); border-color: var(--terra); }
+.theme-toast {
+  position: fixed; top: 74px; left: 50%; transform: translate(-50%, -8px); z-index: 88;
+  font-family: var(--mono); font-size: 12.5px; color: var(--text);
+  background: var(--glass); border: 1px solid var(--border); border-radius: 999px;
+  padding: 9px 18px; opacity: 0; pointer-events: none; transition: all 0.3s ease;
+  backdrop-filter: blur(8px); white-space: nowrap;
+}
+.theme-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.theme-toast b { color: var(--cream); font-weight: 600; }
+.theme-toast span { color: var(--text-dim); margin-left: 8px; }
+.theme-toast em { color: var(--terra); font-style: normal; margin-left: 6px; }
+
+.theme-picker { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.tp-star {
+  width: 46px; height: 34px; border-radius: 999px; cursor: pointer; font-size: 16px;
+  color: var(--text-dim); background: var(--glass); border: 1px solid var(--border);
+  transition: all 0.2s ease; backdrop-filter: blur(6px);
+}
+.tp-star:hover { color: var(--terra); border-color: var(--terra); }
+.tp-star.on { color: var(--terra); border-color: var(--terra); }
+.tp-filter {
+  font-family: var(--mono); font-size: 11px; cursor: pointer; color: var(--text-dim);
+  background: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px;
+}
+.tp-filter.on, .tp-filter:hover { color: var(--terra); border-color: var(--terra); }
+.tp-fav { color: var(--terra); font-style: normal; font-size: 10px; }
+.tp-empty { font-size: 11.5px; color: var(--text-faint); padding: 14px 12px; line-height: 1.6; }
+.theme-picker .tp-panel { bottom: 96px; }
+
+/* stages that disable model dragging hide the hint */
+.scroll-stage.no-drag .drag-hint { display: none; }
+.scroll-stage.no-drag canvas { cursor: default; }
+
+@media (max-width: 860px) { .theme-arrow { display: none; } }

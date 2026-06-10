@@ -39,7 +39,7 @@ hairline page frame, numbered nav).
 
 ## Design systems
 
-Ten switchable themes (bottom-right picker, `t` to cycle): Amodo Dark (default),
+Thirty switchable themes (bottom-right picker, edge arrows / ←→ to browse, ☆ to shortlist, `t` to cycle): Amodo Dark (default),
 Blueprint, Phosphor, Preprint (paper), Brutalist, Swiss, Synthwave, Mission
 Control, Noir, Acid Lab. Eight were designed by parallel agents against a token
 contract (`scripts/build-themes.mjs` regenerates from `themes-design.json`).

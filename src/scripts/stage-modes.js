@@ -582,7 +582,409 @@ function slicesMode({ viewer, ctrl }) {
   };
 }
 
-const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode };
+
+// ===========================================================================
+// PURE-VIBE STAGES — no rack model; the stage becomes its own instrument.
+// Shared helper: swap the wireframe out for an adapter-owned group.
+// ===========================================================================
+function takeStage(viewer, ctrl, stage, { drag = true } = {}) {
+  viewer.modelRoot.remove(ctrl.root);
+  if (viewer._grid) viewer._grid.visible = false;
+  const group = new THREE.Group();
+  viewer.modelRoot.add(group);
+  if (!drag) {
+    viewer.controls.enableRotate = false;
+    viewer.controls.enableZoom = false;
+    stage.classList.add('no-drag');
+  }
+  return {
+    group,
+    release() {
+      viewer.modelRoot.remove(group);
+      viewer.modelRoot.add(ctrl.root);
+      if (viewer._grid) viewer._grid.visible = true;
+      viewer.controls.enableRotate = true;
+      viewer.controls.enableZoom = true;
+      stage.classList.remove('no-drag');
+      viewer.frame();
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// scope — oscilloscope: graticule + animated traces; sections switch signals
+// ---------------------------------------------------------------------------
+function scopeMode({ viewer, ctrl, stage }) {
+  const theme = currentTheme();
+  const sc = theme.scope || {};
+  const trace1Color = sc.trace != null ? sc.trace : 0x28ff9e;
+  const trace2Color = sc.trace2 != null ? sc.trace2 : 0xffb000;
+  const gridColor = sc.grid != null ? sc.grid : 0x153528;
+  const st = takeStage(viewer, ctrl, stage, { drag: false });
+
+  const W = 120, H = 70;
+  // graticule
+  const gpts = [];
+  for (let i = 0; i <= 12; i++) gpts.push(new THREE.Vector3(-W / 2 + (i * W) / 12, -H / 2, 0), new THREE.Vector3(-W / 2 + (i * W) / 12, H / 2, 0));
+  for (let i = 0; i <= 8; i++) gpts.push(new THREE.Vector3(-W / 2, -H / 2 + (i * H) / 8, 0), new THREE.Vector3(W / 2, -H / 2 + (i * H) / 8, 0));
+  st.group.add(new THREE.LineSegments(
+    new THREE.BufferGeometry().setFromPoints(gpts),
+    new THREE.LineBasicMaterial({ color: gridColor, transparent: true, opacity: 0.8 })));
+
+  const N = 480;
+  function makeTrace(color, op) {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+    const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color, transparent: true, opacity: op }));
+    st.group.add(line);
+    return geo.attributes.position;
+  }
+  const tr1 = makeTrace(trace1Color, 0.95);
+  const tr2 = makeTrace(trace2Color, 0.55);
+  viewer.frame(1.15);
+
+  // signal generators per section family
+  const SIGS = {
+    hero:    (x, t) => Math.sin(x * 4 + t * 2.0) * Math.sin(t * 0.7) * 0.8,
+    compute: (x, t) => Math.sin(x * 6 + t * 3) * 0.5 + Math.sin(x * 17 + t * 7) * 0.18,
+    thermal: (x, t) => Math.sin(x * 2 + t * 0.6) * 0.65 + Math.sin(x * 5 + t * 0.23) * 0.2,
+    network: (x, t) => { const burst = Math.sin(x * 3 - t * 5); return (burst > 0.55 ? Math.sin(x * 60 + t * 30) * 0.8 : 0.04 * Math.sin(x * 30 + t * 9)); },
+    power:   (x, t) => (Math.sin(x * 5 + t * 2.4) > 0 ? 0.62 : -0.62) + Math.sin(x * 40 + t * 18) * 0.06,
+    taps:    (x, t) => (Math.sin(x * 93.7 + t * 41) + Math.sin(x * 57.3 - t * 23)) * 0.22,
+  };
+  function sigFor(tags) {
+    const set = new Set(tags);
+    if (set.has('power') || set.has('busbar')) return SIGS.power;
+    if (set.has('coldplate') || set.has('tube') || set.has('manifold')) return SIGS.thermal;
+    if (set.has('nic') || set.has('interconnect') || set.has('cable')) return SIGS.network;
+    if (set.has('connector')) return SIGS.taps;
+    if (set.has('gpu') || set.has('cpu') || set.has('memory')) return SIGS.compute;
+    return SIGS.hero;
+  }
+  let cur = SIGS.hero, prev = SIGS.hero, blend = 1;
+
+  return {
+    noRotate: true, handlesHighlight: true,
+    onScroll(p, tags) {
+      const next = sigFor(tags);
+      if (next !== cur) { prev = cur; cur = next; blend = 0; }
+    },
+    onFrame() {
+      const t = performance.now() / 1000;
+      blend = Math.min(1, blend + 0.03);
+      for (let i = 0; i < N; i++) {
+        const x = -W / 2 + (i / (N - 1)) * W;
+        const xn = (i / (N - 1)) * Math.PI * 2;
+        const y = (prev(xn, t) * (1 - blend) + cur(xn, t) * blend) * (H / 2.4);
+        tr1.array[i * 3] = x; tr1.array[i * 3 + 1] = y; tr1.array[i * 3 + 2] = 0.5;
+        const y2 = Math.sin(xn * 3 + t * 1.1) * Math.cos(xn + t * 0.4) * (H / 5);
+        tr2.array[i * 3] = x; tr2.array[i * 3 + 1] = y2; tr2.array[i * 3 + 2] = 0;
+      }
+      tr1.needsUpdate = true; tr2.needsUpdate = true;
+    },
+    dispose() { st.release(); },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// heatfield — thermal-camera shader plane; sections move the hotspots
+// ---------------------------------------------------------------------------
+function heatfieldMode({ viewer, ctrl, stage }) {
+  const st = takeStage(viewer, ctrl, stage, { drag: false });
+  const uniforms = {
+    uTime: { value: 0 }, uHot: { value: 0.55 },
+    uFocus: { value: new THREE.Vector2(0.5, 0.45) }, uScale: { value: 2.2 },
+  };
+  const mat = new THREE.ShaderMaterial({
+    uniforms, side: THREE.DoubleSide,
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: `
+      varying vec2 vUv; uniform float uTime, uHot, uScale; uniform vec2 uFocus;
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+      float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
+        return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y); }
+      float fbm(vec2 p){ float v = 0.0, a = 0.5;
+        for (int i = 0; i < 5; i++){ v += a * noise(p); p = p * 2.03 + vec2(11.7, 5.3); a *= 0.55; } return v; }
+      vec3 inferno(float t){
+        t = clamp(t, 0.0, 1.0);
+        return vec3(
+          clamp(2.2*t - 0.20, 0.0, 1.0) * (0.95 + 0.05*t),
+          clamp(1.9*t - 0.65, 0.0, 1.0),
+          clamp(t < 0.42 ? 1.4*t + 0.18 : 2.2 - 3.4*t, 0.0, 1.0) * 0.85);
+      }
+      void main(){
+        vec2 p = vUv * uScale * vec2(1.7, 1.0);
+        float n = fbm(p + uTime * 0.06 + fbm(p * 1.7 - uTime * 0.04));
+        float d = distance(vUv, uFocus);
+        float heat = n * 0.72 + uHot * smoothstep(0.55, 0.05, d) * 0.75;
+        vec3 col = inferno(heat * 0.92);
+        gl_FragColor = vec4(col * 0.92, 1.0);
+      }`,
+  });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(130, 78), mat);
+  st.group.add(plane);
+  viewer.frame(1.12);
+
+  const FOCI = {
+    hero: [0.5, 0.45, 0.45], compute: [0.5, 0.62, 0.85], thermal: [0.46, 0.4, 1.0],
+    network: [0.7, 0.55, 0.6], power: [0.5, 0.16, 0.95], taps: [0.26, 0.5, 0.7],
+  };
+  function fociFor(tags) {
+    const set = new Set(tags);
+    if (set.has('power') || set.has('busbar')) return FOCI.power;
+    if (set.has('coldplate') || set.has('tube')) return FOCI.thermal;
+    if (set.has('nic') || set.has('cable')) return FOCI.network;
+    if (set.has('connector')) return FOCI.taps;
+    if (set.has('gpu')) return FOCI.compute;
+    return FOCI.hero;
+  }
+  const target = { x: 0.5, y: 0.45, hot: 0.45 };
+
+  return {
+    noRotate: true, handlesHighlight: true,
+    onScroll(p, tags) { const f = fociFor(tags); target.x = f[0]; target.y = f[1]; target.hot = f[2]; },
+    onFrame() {
+      uniforms.uTime.value = performance.now() / 1000;
+      uniforms.uFocus.value.x += (target.x - uniforms.uFocus.value.x) * 0.04;
+      uniforms.uFocus.value.y += (target.y - uniforms.uFocus.value.y) * 0.04;
+      uniforms.uHot.value += (target.hot - uniforms.uHot.value) * 0.04;
+    },
+    dispose() { st.release(); mat.dispose(); plane.geometry.dispose(); },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// logstream — DOM telemetry console; sections switch the feed
+// ---------------------------------------------------------------------------
+function logstreamMode({ viewer, ctrl, stage }) {
+  const st = takeStage(viewer, ctrl, stage, { drag: false });
+  viewer.canvas.style.display = 'none';
+  const el = document.createElement('div');
+  el.className = 'log-stage';
+  stage.insertBefore(el, stage.firstChild);
+
+  const r = () => Math.random();
+  const pad = (v, n) => String(v).padStart(n, '0');
+  const ts = () => { const d = new Date(); return `${pad(d.getHours(),2)}:${pad(d.getMinutes(),2)}:${pad(d.getSeconds(),2)}.${pad(d.getMilliseconds(),3)}`; };
+  const GEN = {
+    hero: () => [
+      `<i>scc-agent</i> session attach rack=mgx-07 bare_metal=true`,
+      `<i>telemetry</i> channels open: power(214) thermal(96) fabric(1318)`,
+      `<i>scc-agent</i> tray nv-${1 + (r() * 18 | 0)} lease verified · key rotation ok`,
+    ],
+    compute: () => [
+      `<i>gpu${r() * 72 | 0}</i> sm_act ${(62 + r() * 35).toFixed(1)}% tensor ${(55 + r() * 42).toFixed(1)}% hbm ${(2.1 + r() * 1.6).toFixed(2)}TB/s`,
+      `<i>grace${r() * 36 | 0}</i> c2c ${(580 + r() * 280).toFixed(0)}GB/s lpddr ${(310 + r() * 110).toFixed(0)}GB/s`,
+    ],
+    thermal: () => [
+      `<i>plate${r() * 72 | 0}</i> in ${(16.5 + r() * 2).toFixed(1)}C out ${(38 + r() * 9).toFixed(1)}C flow ${(1.4 + r() * 0.7).toFixed(2)}lpm`,
+      `<i>cdu-a</i> dP ${(14 + r() * 9).toFixed(1)}kPa reservoir ${(61 + r() * 7).toFixed(1)}% pump2 ${(2900 + r() * 400 | 0)}rpm`,
+      r() > 0.9 ? `<b class="warn">warn</b> plate${r() * 72 | 0} dT trending +${(0.3 + r() * 0.5).toFixed(2)}C/min` : `<i>loop</i> facility supply ${(14.8 + r() * 1.2).toFixed(1)}C ok`,
+    ],
+    network: () => [
+      `<i>nvsw${1 + (r() * 9 | 0)}/p${r() * 72 | 0}</i> tx ${(1.1 + r() * 0.7).toFixed(2)}TB/s rx ${(1.0 + r() * 0.8).toFixed(2)}TB/s crc 0 replay ${r() > 0.93 ? 1 : 0}`,
+      `<i>fabric</i> domain bisection ${(118 + r() * 11).toFixed(0)}TB/s topology stable`,
+    ],
+    power: () => [
+      `<i>shelf${1 + (r() * 6 | 0)}</i> 48V ${(47.6 + r() * 0.7).toFixed(2)}V ${(310 + r() * 220).toFixed(1)}A ${(15 + r() * 11).toFixed(2)}kW pf ${(0.985 + r() * 0.012).toFixed(3)}`,
+      `<i>busbar</i> tap nv-${1 + (r() * 18 | 0)} ripple ${(8 + r() * 14).toFixed(1)}mVpp`,
+      r() > 0.92 ? `<b class="err">excursion</b> vrm gpu${r() * 72 | 0} phase${1 + (r() * 13 | 0)} +${(2 + r() * 5).toFixed(1)}%` : `<i>rectifier</i> efficiency ${(96.8 + r() * 1.1).toFixed(2)}%`,
+    ],
+    taps: () => [
+      `<i>bmc nv-${1 + (r() * 18 | 0)}</i> sdr dump ok · ${(118 + r() * 40 | 0)} sensors`,
+      `<i>probe</i> qd-${r() > 0.5 ? 'supply' : 'return'} fixture armed · scope trig ${(2 + r() * 6).toFixed(1)}mV`,
+      `<i>interposer</i> nvlink cartridge lane ${r() * 18 | 0} eye ${(0.62 + r() * 0.2).toFixed(2)}UI`,
+    ],
+  };
+  function genFor(tags) {
+    const set = new Set(tags);
+    if (set.has('power') || set.has('busbar')) return GEN.power;
+    if (set.has('coldplate') || set.has('tube')) return GEN.thermal;
+    if (set.has('nic') || set.has('cable')) return GEN.network;
+    if (set.has('connector')) return GEN.taps;
+    if (set.has('gpu')) return GEN.compute;
+    return GEN.hero;
+  }
+  let gen = GEN.hero;
+  el.innerHTML = `<div class="log-line head">side channel cloud · telemetry multiplex · rack mgx-07</div>`;
+  const timer = setInterval(() => {
+    const lines = gen();
+    const line = lines[(Math.random() * lines.length) | 0];
+    const div = document.createElement('div');
+    div.className = 'log-line';
+    div.innerHTML = `<span class="t">${ts()}</span> ${line}`;
+    el.appendChild(div);
+    while (el.children.length > 160) el.removeChild(el.firstChild);
+    el.scrollTop = el.scrollHeight;
+  }, 140);
+
+  return {
+    noRotate: true, handlesHighlight: true,
+    onScroll(p, tags) { gen = genFor(tags); },
+    dispose() { clearInterval(timer); el.remove(); viewer.canvas.style.display = ''; st.release(); },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// topo — drifting topographic contour shader; sections move the survey mark
+// ---------------------------------------------------------------------------
+function topoMode({ viewer, ctrl, stage }) {
+  const theme = currentTheme();
+  const tp = theme.topo || {};
+  const ink = new THREE.Color(tp.ink != null ? tp.ink : 0x2b2a26);
+  const paper = new THREE.Color(tp.paper != null ? tp.paper : 0xf1ecdf);
+  const mark = new THREE.Color(tp.mark != null ? tp.mark : 0xd23b2e);
+  const st = takeStage(viewer, ctrl, stage, { drag: false });
+  const uniforms = {
+    uTime: { value: 0 }, uInk: { value: new THREE.Vector3(ink.r, ink.g, ink.b) },
+    uPaper: { value: new THREE.Vector3(paper.r, paper.g, paper.b) },
+    uMark: { value: new THREE.Vector3(mark.r, mark.g, mark.b) },
+    uFocus: { value: new THREE.Vector2(0.5, 0.5) },
+  };
+  const mat = new THREE.ShaderMaterial({
+    uniforms, side: THREE.DoubleSide,
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: `
+      varying vec2 vUv; uniform float uTime; uniform vec3 uInk, uPaper, uMark; uniform vec2 uFocus;
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+      float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
+        return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y); }
+      float fbm(vec2 p){ float v = 0.0, a = 0.5;
+        for (int i = 0; i < 5; i++){ v += a*noise(p); p = p*2.1 + vec2(7.3, 3.1); a *= 0.52; } return v; }
+      void main(){
+        vec2 p = vUv * vec2(2.6, 1.6);
+        float h = fbm(p + vec2(uTime*0.012, -uTime*0.008));
+        float bands = h * 26.0;
+        float f = abs(fract(bands) - 0.5);
+        float w = fwidth(bands) * 1.4;
+        float line = 1.0 - smoothstep(0.06, 0.06 + w, f);
+        float idx = step(fract(bands / 5.0), 0.2 / 5.0) * 0.6;
+        vec3 col = mix(uPaper, uInk, clamp(line * (0.42 + idx), 0.0, 1.0));
+        // survey cross
+        vec2 d = vUv - uFocus;
+        float cross_ = (1.0 - smoothstep(0.001, 0.0035, abs(d.x))) * step(abs(d.y), 0.035)
+                     + (1.0 - smoothstep(0.001, 0.0035, abs(d.y))) * step(abs(d.x), 0.035);
+        float ring = 1.0 - smoothstep(0.012, 0.016, abs(length(d) - 0.05));
+        col = mix(col, uMark, clamp(cross_ + ring, 0.0, 1.0) * 0.9);
+        gl_FragColor = vec4(col, 1.0);
+      }`,
+  });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(130, 80), mat);
+  st.group.add(plane);
+  viewer.frame(1.12);
+
+  const SPOTS = { hero: [0.5, 0.5], compute: [0.62, 0.6], thermal: [0.42, 0.38],
+    network: [0.72, 0.46], power: [0.5, 0.22], taps: [0.3, 0.58] };
+  function spotFor(tags) {
+    const set = new Set(tags);
+    if (set.has('power') || set.has('busbar')) return SPOTS.power;
+    if (set.has('coldplate') || set.has('tube')) return SPOTS.thermal;
+    if (set.has('nic') || set.has('cable')) return SPOTS.network;
+    if (set.has('connector')) return SPOTS.taps;
+    if (set.has('gpu')) return SPOTS.compute;
+    return SPOTS.hero;
+  }
+  const tgt = { x: 0.5, y: 0.5 };
+  return {
+    noRotate: true, handlesHighlight: true,
+    onScroll(p, tags) { const sp = spotFor(tags); tgt.x = sp[0]; tgt.y = sp[1]; },
+    onFrame() {
+      uniforms.uTime.value = performance.now() / 1000;
+      uniforms.uFocus.value.x += (tgt.x - uniforms.uFocus.value.x) * 0.05;
+      uniforms.uFocus.value.y += (tgt.y - uniforms.uFocus.value.y) * 0.05;
+    },
+    dispose() { st.release(); mat.dispose(); plane.geometry.dispose(); },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// orbital — the NVLink domain as a constellation: 72 GPU stars, 9 switch
+// hubs, pulses travelling the edges
+// ---------------------------------------------------------------------------
+function orbitalMode({ viewer, ctrl, stage }) {
+  const theme = currentTheme();
+  const ob = theme.orbital || {};
+  const starCol = new THREE.Color(ob.star != null ? ob.star : 0xe8ecf8);
+  const hubCol = new THREE.Color(ob.hub != null ? ob.hub : 0xd8b36a);
+  const edgeCol = ob.edge != null ? ob.edge : 0x26304e;
+  const pulseCol = ob.pulse != null ? ob.pulse : 0xd8b36a;
+  const st = takeStage(viewer, ctrl, stage, { drag: true });
+
+  const gpuPos = [], hubPos = [];
+  for (let ring = 0; ring < 4; ring++) {
+    const y = -27 + ring * 18;
+    for (let i = 0; i < 18; i++) {
+      const a = (i / 18) * Math.PI * 2 + ring * 0.18;
+      gpuPos.push(new THREE.Vector3(Math.cos(a) * 36, y, Math.sin(a) * 36));
+    }
+  }
+  for (let i = 0; i < 9; i++) hubPos.push(new THREE.Vector3(0, -22 + i * 5.5, 0));
+
+  function pointCloud(list, color, size) {
+    const geo = new THREE.BufferGeometry().setFromPoints(list);
+    const m = new THREE.PointsMaterial({ color, size, transparent: true, opacity: 0.95,
+      depthWrite: false, blending: THREE.AdditiveBlending });
+    const pts = new THREE.Points(geo, m);
+    st.group.add(pts);
+    return m;
+  }
+  const gpuMat = pointCloud(gpuPos, starCol, 1.7);
+  const hubMat = pointCloud(hubPos, hubCol, 2.6);
+
+  // edges: each gpu to its 2 nearest hubs
+  const edges = [];
+  const epts = [];
+  for (const g of gpuPos) {
+    const sorted = [...hubPos].sort((a, b) => g.distanceTo(a) - g.distanceTo(b));
+    for (const h of sorted.slice(0, 2)) { edges.push([g, h]); epts.push(g, h); }
+  }
+  const edgeMat = new THREE.LineBasicMaterial({ color: edgeCol, transparent: true, opacity: 0.4 });
+  st.group.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(epts), edgeMat));
+
+  // pulses
+  const PN = 180;
+  const pgeo = new THREE.BufferGeometry();
+  pgeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(PN * 3), 3));
+  const pulseMat = new THREE.PointsMaterial({ color: pulseCol, size: 1.2, transparent: true,
+    opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending });
+  const ppts = new THREE.Points(pgeo, pulseMat);
+  st.group.add(ppts);
+  const pattr = pgeo.attributes.position;
+  const pstate = Array.from({ length: PN }, () => ({ e: (Math.random() * edges.length) | 0, t: Math.random(), v: 0.004 + Math.random() * 0.012 }));
+
+  viewer.frame(1.2);
+  let speedMul = 1;
+
+  return {
+    handlesHighlight: true,
+    onScroll(p, tags) {
+      const set = new Set(tags);
+      const net = set.has('nic') || set.has('interconnect') || set.has('cable');
+      const pow = set.has('power') || set.has('busbar');
+      const cmp = set.has('gpu') || set.has('memory');
+      speedMul = net ? 3.2 : 1;
+      gpuMat.opacity = cmp || set.size === 0 ? 0.95 : 0.4;
+      hubMat.opacity = pow || net || set.size === 0 ? 0.95 : 0.45;
+      edgeMat.opacity = net ? 0.8 : 0.4;
+      pulseMat.opacity = net ? 1.0 : set.size === 0 ? 0.9 : 0.35;
+    },
+    onFrame() {
+      const v = new THREE.Vector3();
+      for (let i = 0; i < PN; i++) {
+        const ps = pstate[i];
+        ps.t += ps.v * speedMul;
+        if (ps.t >= 1) { ps.t = 0; ps.e = (Math.random() * edges.length) | 0; }
+        const [a, b] = edges[ps.e];
+        v.lerpVectors(a, b, ps.t);
+        pattr.array[i * 3] = v.x; pattr.array[i * 3 + 1] = v.y; pattr.array[i * 3 + 2] = v.z;
+      }
+      pattr.needsUpdate = true;
+    },
+    dispose() { st.release(); },
+  };
+}
+
+const MODES = { points: pointsMode, exploded: explodedMode, ascii: asciiMode, ortho: orthoMode, flux: fluxMode, voxel: voxelMode, stamp: stampMode, glitch: glitchMode, slices: slicesMode, scope: scopeMode, heatfield: heatfieldMode, logstream: logstreamMode, topo: topoMode, orbital: orbitalMode };
 
 export function createStageAdapter(modeId, env) {
   const fn = MODES[modeId];
